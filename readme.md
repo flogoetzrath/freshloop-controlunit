@@ -51,3 +51,5 @@ Form: [Name+Link] - [Description] - [Name of Directory in Project]
 * [Timepicker](https://github.com/sandunangelo/jquery-timesetter) - A jQuery plugin to generate timepicker-ui components - timepicker
 * [Toastr](https://github.com/CodeSeven/toastr) - A basic tooltip library - toastr
 
+Furthermore a code fragment of a plugin is used, that can't be retraced at this point. The fragment is contained in the directory "moveit" under root > lib. In order for the application to work in its full glory, the "moveit" directory has to be moved inside the "ui" folder.
+
