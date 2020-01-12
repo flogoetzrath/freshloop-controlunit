@@ -1,0 +1,67 @@
+<?php $TC->dispatch(); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<meta charset="UTF-8">
+		<meta name="viewport"
+		      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="author" content="Florian Götzrath">
+		<meta name="theme-color" content="#010204">
+
+		<?php $_SESSION['page_type'] = TemplateController::get_current_template() ?? 'App'; ?>
+
+		<title><?php echo ucfirst(APP_NAME); ?> | <?php echo ucfirst($_SESSION['page_type']); ?></title>
+
+		<!-- manifest -->
+		<link rel="manifest" href="/views/public/manifest.json">
+
+		<!-- title icon -->
+		<link rel="icon" href="<?php echo MEDIA_URI; ?>/icon256.png" type="image/png" sizes="256x256">
+
+		<!-- frameworks & libraries -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/bootstrap/css/bootstrap.min.css' ?>">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/jquery/jquery_ui.css' ?>">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/bulma/css/bulma.min.css' ?>">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/fontawesome/css/all.css' ?>">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/slick/css/slick-theme.css' ?>">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/slick/css/slick.css' ?>">
+		<link rel="stylesheet" href="<?php echo LIBUI_URI.'/toastr/css/toastr.css' ?>">
+
+		<?php if($TC->data['config']['app_dashboard_tutorial'] === "enabled") { ?>
+			<link rel="stylesheet" href="<?php echo LIBUI_URI.'/driverjs/css/driver.min.css' ?>">
+		<?php } ?>
+
+		<!-- global.css -->
+		<link rel="stylesheet" href="<?php echo STYLESHEET_URI.'/global.css'; ?>">
+
+		<!-- template specific -->
+		<?php if(file_exists(PUBLIC_PATH.'/css/'.$_SESSION['page_type'].'.css')): ?>
+			<link rel="stylesheet" href="<?php echo STYLESHEET_URI.'/'.$_SESSION['page_type'].'.css'; ?>">
+		<?php endif; ?>
+
+		<!-- mod specifc -->
+		<?php if(file_exists(VIEWS_MODS_PATH."/$dist_name/public/$dist_name.css")): ?>
+			<link rel="stylesheet" href="<?php echo VIEWS_MODS_URI."/$dist_name/public/$dist_name.css"; ?>">
+		<?php endif; ?>
+
+	</head>
+	<body class="<?php echo $_SESSION['page_type']; ?>-body">
+		<div class="body-inner">
+
+			<?php
+				// If the header is loaded into a preloader-valid page and the debug mode is turned off
+				if(isSizedString($dist_name) && !DEBUG_MODE)
+				{
+					if($dist_name === "admin" || strpos($dist_name, "mod_") !== false && $dist_name !== "mod_auth")
+					{
+
+						$TC->the_preloader();
+
+					}
+				}
+

@@ -1,0 +1,332 @@
+<?php
+	/**
+	 * @name: Spotify Liveticker Widget
+	 * @description: A widget to establish basic liveticker functionality and to initialize a spotify connection if necessary
+	 * @params: No additional params required
+	 */
+?>
+<?php
+	// Generate random and unique widget id
+	$widget_id = uniqid();
+
+	// Get module instance
+	$mod_sensorResponder = $TC->modules['mod_sensorResponder'];
+	// Get the song history
+	$songHistory = $mod_sensorResponder->getSongHistory();
+	// If song history has been cleared or never updated
+	if(!isSizedArray($songHistory)) $mod_sensorResponder->captureSongHistory();
+?>
+<?php
+	/**
+	 * Extracts and shortens, if necessary, the title of a song payload
+	 *
+	 * @param $full_payload
+	 *
+	 * @return string
+	 */
+	$getShortenedTitle = function($full_payload)
+	{
+
+		$songTitle = @$full_payload->item->name;
+
+		if(count(explode(" ", $songTitle)) > 3) {
+			$songTitleParts = deep_explode(" ", $songTitle);
+			$songTitle = $songTitleParts[0]." ".$songTitleParts[1]." ".$songTitleParts[2]."...";
+		}
+
+		return $songTitle;
+
+	} // inline function $getShortenedTitle()
+?>
+
+<style>
+	#widget__spotify_liveticker .inner-container{ width: 100%; position: relative; height: 100%; }
+	#widget__spotify_liveticker .icon-box{ width: 150px; height: 68px; float: left; border-right: 2px solid rgba(10,10,10,.1); }
+	#widget__spotify_liveticker .icon-box i{ font-size: 30px; color: #2f5a8f; }
+	#widget__spotify_liveticker .content-box{ width: calc(100% - 150px); float: left; }
+	#widget__spotify_liveticker .liveticker-box{ float: left; padding: 0 1.25rem; height: 68px; }
+	#widget__spotify_liveticker .liveticker-box_inner{ transform: translateY(20%); }
+	#widget__spotify_liveticker .liveticker-box_inner span#title{ color: #2d2d2d; font-weight: 500; }
+	#widget__spotify_liveticker .liveticker-box_inner span#artist{ color: #a2a8b1; font-weight: 500; font-size: 13px; line-height: 150%; }
+	#widget__spotify_liveticker .liveticker_border-left{ border-left: 2px solid rgba(10,10,10,.1); }
+	#widget__spotify_liveticker .liveticker_settings__inner label.switch-label{ margin-top: 5px; }
+	#widget__spotify_liveticker .liveticker_settings__inner label.control-label{ padding-top: 8px; }
+	#widget__spotify_liveticker .btn-sync { color: #fff; }
+
+	@media (min-width: 320px) and (max-width: 768px) {
+		#widget__spotify_liveticker .liveticker_border-left{ border-left: 0; border-top: 1px solid rgba(10,10,10,.1); padding-top: 10px; padding-bottom: 10px; margin-top: 10px; }
+	}
+</style>
+
+<!-- Widget -->
+<div id="widget__spotify_liveticker" class="widget-<?php echo $widget_id ?>">
+	<div class="card" style="margin:0;">
+		<?php if(!($mod_sensorResponder->SpotifyIntegration->isSpotifyConnected())) { ?>
+			<div class="inner-container">
+				<div class="icon-box flex-centered">
+					<div class="icon-box-inner">
+						<i class="fab fa-spotify"></i>
+					</div>
+				</div>
+				<div class="content-box card-body">
+					<?php global $sensorResponder_spotifyError_notConnected, $sensorResponder_spotify_linkNow; ?>
+					<?php echo $sensorResponder_spotifyError_notConnected[$GLOBALS['lang']]; ?>
+					<a href="?page=Admin&mod=mod_sensorResponder&action=RequestSpotifyAuthorization">
+						<?php echo $sensorResponder_spotify_linkNow[$GLOBALS['lang']]; ?>
+					</a>
+				</div>
+			</div>
+		<?php } else { ?>
+			<?php if(!isSizedArray($songHistory)) { ?>
+				<div class="card-body">
+					<?php global $sensorResponder_noSongRecorded; ?>
+					<?php echo $sensorResponder_noSongRecorded[$GLOBALS['lang']]; ?>
+				</div>
+			<?php } else { ?>
+				<div class="row">
+					<div class="col-md-6">
+						<?php $activeSong = end($songHistory); ?>
+						<div class="inner-container">
+							<?php $img_width = @$activeSong->item->album->images[2]->width; ?>
+							<?php $img_url = @$activeSong->item->album->images[2]->url; ?>
+							<diEv class="icon-box" style="background-image: url('<?php echo $img_url; ?>'); width: <?php echo $img_width; ?>px;"></diEv>
+							<div class="row">
+								<div class="col-md-8">
+									<?php if(!is_null($activeSong) && is_object($activeSong)) { ?>
+										<div class="liveticker-box" style="width: calc(100% - <?php echo $img_width; ?>px);">
+											<div class="liveticker-box_inner">
+												<span id="title"><?php echo $getShortenedTitle($activeSong); ?></span><br>
+												<span id="artist"><?php echo @$activeSong->item->album->artists[0]->name; ?></span>
+											</div>
+										</div>
+									<?php } else { ?>
+										<div class="liveticker-box align-items-center" style="display: flex;">
+											<?php global $sensorResponder_noSongPlaying; ?>
+											<?php echo $sensorResponder_noSongPlaying[$GLOBALS['lang']]; ?>
+										</div>
+									<?php } ?>
+								</div>
+								<div class="col-md-4 flex-centered">
+									<?php global $sensorResponder_manualSongCapturing, $sensorResponder_spotifyLog; ?>
+									<a
+										class="btn-sync btn-gradient btn-gradient-lbluegreen"
+										href="?page=Admin&mod=mod_sensorResponder&action=CaptureSongHistory"
+										data-placement="bottom"
+										title="<?php echo $sensorResponder_manualSongCapturing[$GLOBALS['lang']]; ?>"
+									>
+										<i class="fas fa-sync-alt"></i>
+									</a>
+									<a
+										class="btn-sync btn-gradient btn-gradient-lbluepurple"
+										href="#"
+										style="margin-left:5px;"
+										data-toggle="modal"
+										data-target="#spotifyHistoryModal-<?php echo $widget_id; ?>"
+										onclick="$($(this).data('target')).appendTo('body');"
+										title="<?php echo $sensorResponder_spotifyLog[$GLOBALS['lang']]; ?>"
+									>
+										<i class="fas fa-list"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 liveticker_settings liveticker_border-left flex-centered">
+						<div class="liveticker_settings__inner" style="width: 90%;">
+							<?php renderForm_init("?page=Admin&mod=mod_sensorResponder&action=SongHistoryCapturingAction", ["activate_card_wrap" => false]); ?>
+								<?php $cronJob_isActive = $TC->data['config']['mod_sensorResponder__automaticSongCapturing'] === "enabled"; ?>
+								<?php global $sensorResponder_automaticSongHistoryCapturing; ?>
+								<?php renderForm_toggleSwitch("automatic_song_capturing", $sensorResponder_automaticSongHistoryCapturing[$GLOBALS['lang']], $cronJob_isActive, array(
+									"container" => false,
+									"standard_css" => true,
+									"submit_onchange" => true
+								)); ?>
+								<button type="submit" style="display:none;"></button>
+							<?php renderForm_close("", ["activate_submit_btn" => false, "activate_card_wrap" => false]); ?>
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+		<?php } ?>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade spotify_songhistory_modal" id="spotifyHistoryModal-<?php echo $widget_id; ?>" tabindex="-1" role="dialog" aria-labelledby="tableModalExpanded" aria-hidden="true">
+	<div class="modal-dialog modal-borderless" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle"><?php echo $sensorResponder_spotifyLog[$GLOBALS['lang']]; ?></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body table_widget">
+				<table>
+					<thead>
+						<tr>
+							<?php global $music_title, $music_artist, $music_album, $music_genres; ?>
+							<th><?php echo $music_title[$GLOBALS['lang']]; ?></th>
+							<th><?php echo $music_artist[$GLOBALS['lang']]; ?></th>
+							<th><?php echo $music_album[$GLOBALS['lang']]; ?></th>
+							<th><?php echo $music_genres[$GLOBALS['lang']]; ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php $unusable_entries = 0; ?>
+						<?php foreach($songHistory as $k => $song) { ?>
+							<?php
+								$title = @$song->item->name ?: "-";
+								$interpret = @$song->item->album->artists[0]->name ?: "-";
+								$album_name = @$song->item->album->name ?: "-";
+								$genres = @implode(", ", @$song->item->genres) ?: "-";
+
+								if($title === "-" && $interpret === "-" && $album_name === "-" && $genres === "-")
+								{
+
+									$unusable_entries ++;
+									continue;
+
+								}
+							?>
+							<tr>
+								<td>
+									<a href="<?php echo @$song->context->external_urls->spotify ?: ""; ?>" target="_blank">
+										<?php echo $title; ?>
+									</a>
+								</td>
+								<td><?php echo $interpret; ?></td>
+								<td><?php echo $album_name; ?></td>
+								<td><?php echo $genres; ?></td>
+							</tr>
+						<?php } ?>
+					</tbody>
+					<?php if($unusable_entries === count($songHistory)) { ?>
+						<div class="liveticker-box align-items-center" style="display: flex;">
+							<?php global $no_data; ?>
+							<?php echo $no_data[$GLOBALS['lang']]; ?>
+						</div>
+					<?php } ?>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<?php global $close; ?>
+				<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal"><?php echo $close[$GLOBALS['lang']]; ?></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Refresh Liveticker via AJAX -->
+<?php
+	// Get config values if they are not read yet
+	$TC->readConfig();
+
+	// If automatic capturing is enabled, refresh the liveticker via AJAX
+	if($TC->data['config']['mod_sensorResponder__automaticSongCapturing'] === "enabled") {
+?>
+	<script>
+		/**
+		 * Issues the request to the Backend which will get an object with the current song history in return
+		 */
+		function requestSongUpdate()
+		{
+
+			let xmlhttp = null;
+
+			// Init XMLHttp
+			if(window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+			else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+			// Prepare action for when getting a response
+			xmlhttp.onreadystatechange = function()
+			{
+				if(this.readyState === 4 && this.status === 200)
+				{
+
+					// Clean already buffered output from the response and parse the actual target content
+					let res = this.responseText;
+					res = res.substring(res.lastIndexOf("</style>") + 8, res.length);
+
+					if(res.match(/(.*?)(<script>.*?<\/script>)(.*)/))
+						res = res.substring(res.lastIndexOf("/script>") + 8, res.length);
+
+					res = JSON.parse(res);
+
+					if(res === null) return false;
+
+					// Update the UI
+					applySongHistoryLogDataToUI(res);
+
+				}
+			};
+
+			// Send the request
+			xmlhttp.open("GET", "?page=Admin&mod=<?php echo $mod_sensorResponder::ACTIVE_MOD; ?>&action=AJAX_RefreshSongHistory", true);
+			xmlhttp.send();
+
+		} // function requestSongUpdate()
+
+		/**
+		 * Manipulates the DOM to make use of the updated song data
+		 */
+		function applySongHistoryLogDataToUI(historyData)
+		{
+
+			// If there is no data, exit the function call
+			if(historyData.length <= 0) return false;
+
+			// Grab crucial markup
+			let titleMarkup = document.getElementById("title");
+			let artistMarkup = document.getElementById("artist");
+			let coverImgArea = document.querySelector('.icon-box');
+
+			let songHistoryModalTBody = document.getElementById("spotifyHistoryModal-<?php echo $widget_id; ?>").querySelector("tbody");
+
+			// Separate data of current song
+			let currentSong = historyData[historyData.length - 1];
+			let currentSong_title = currentSong.item.name.split(" ").slice(0, 3).join(" ") + "..." || "-";
+			let currentSong_artist = currentSong.item.album.artists[0].name || "-";
+			let currentSong_coverImg_url = currentSong.item.album.images[2].url || "";
+			let currentSong_coverImg_width = currentSong.item.album.images[2].width || "auto";
+
+			if(
+				Object.keys(currentSong).length <= 0
+				||
+				currentSong_title === "-" &&
+				currentSong_artist === "-" &&
+				currentSong_coverImg_url === ""
+			)
+			{
+
+				return false;
+
+			}
+
+			// Apply data of current song to the front-facing markup
+			titleMarkup.innerHTML = currentSong_title;
+			artistMarkup.innerHTML = currentSong_artist;
+			coverImgArea.style.backgroundImage = "url('" + currentSong_coverImg_url + "')";
+			coverImgArea.style.width = currentSong_coverImg_width + "px";
+
+			// Apply song history data to the frontend modal log
+			songHistoryModalTBody.innerHTML = "";
+
+			historyData.forEach(song => {
+				let additionalMarkup =
+					"<tr>" +
+						"<td><a href='" + (song.context.external_urls.spotify || '') + "' target='_blank'>" + (song.item.name || '-') + "</a></td>" +
+						"<td>" + (song.item.album.artists[0].name || '-') + "</td>" +
+						"<td>" + (song.item.album.name || '-') + "</td>" +
+						"<td>" + (song.item.genres.join(", ") || '-') + "</td>" +
+					"</tr>";
+
+				songHistoryModalTBody.innerHTML += additionalMarkup;
+			});
+
+		} // function applySongHistoryLogDataToUI()
+
+		// Init automatic request after 10 seconds
+		let interval = setInterval(() => requestSongUpdate(), 10000);
+	</script>
+<?php } ?>

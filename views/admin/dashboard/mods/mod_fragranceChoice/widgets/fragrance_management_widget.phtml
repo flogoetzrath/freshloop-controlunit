@@ -1,0 +1,279 @@
+<?php
+	/**
+	 * @name: Fragrance Management Widget
+	 * @description: A widget to add/remove fragrances and to assign them to certain events
+	 * @params: $unit_data (optional): Holds data from all units coming directly from the db (pass if available in context to reduce db calls)
+	 */
+?>
+
+<?php
+	$widget_id = uniqid();
+
+	$mod_fchoice = $TC->modules['mod_fragranceChoice'];
+	$mod_data = $mod_fchoice->store;
+
+	$modTimeIsActive = $TC->isActiveMod('mod_time');
+	$mod_time = @$TC->modules['mod_time'] ?: null;
+	$event_data = @$mod_time->store ?: null;
+
+	$modSensorResponderIsActive = $TC->isActiveMod('mod_sensorResponder');
+	$mod_sensorResponder = @$TC->modules['mod_sensorResponder'] ?: null;
+	$mevent_data = @$mod_sensorResponder->store ?: null;
+
+	if(isSizedArray($data['unit_data'])) $unit_data = $data['unit_data'];
+	else
+	{
+
+		$TC->loadData('unit', 0);
+		$unit_data = $TC->data['unit'][0];
+
+	}
+?>
+
+<style>
+	#widget__fragrance_management .widget-container{ width: 100%; }
+	#widget__fragrance_management .pill-tab{ display: inline-block; position: absolute; padding-left: 15px; }
+	#widget__fragrance_management .pill-tab li a{ padding: 5px 10px; transition: 0.1s all ease-in-out; }
+	#widget__fragrance_management .btn-del{ margin-right: 5px !important; cursor: pointer; }
+	#widget__fragrance_management .btn-del i{ color: var(--red) !important; }
+	#widget__fragrance_management .assign_fragrance_event_modal-trigger i{ padding-left: 5px; color: rgba(0, 0, 0, .8) !important; }
+
+	.fragrance_management_modal .modal label,
+	.fragrance_management_modal input[type="text"]{ width: 50% !important; float: right !important; }
+	.fragrance_management_modal input{ margin-bottom: 5px; }
+	.fragrance_management_modal input:last-child{ margin-bottom: 0; }
+</style>
+
+<div id="widget__fragrance_management" class="widget-<?php echo $widget_id ?>">
+	<div class="table_widget card flex-centered">
+		<div class="widget-container">
+			<div class="widget-header">
+				<h1>Duftverwaltung</h1>
+				<div class="pill-tab">
+					<ul class="nav nav-pills" id="pills-tab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="pills-general-tab" data-toggle="pill" href="#pills-general" role="tab" aria-controls="pills-general" aria-selected="true">
+								<?php global $fragranceChoice_generalFragrances__short; ?>
+								<?php echo $fragranceChoice_generalFragrances__short[$GLOBALS['lang']]; ?>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="pills-assigned-tab" data-toggle="pill" href="#pills-assigned" role="tab" aria-controls="pills-assigned" aria-selected="false">
+								<?php global $fragranceChoice_assignedFragrances__short; ?>
+								<?php echo $fragranceChoice_assignedFragrances__short[$GLOBALS['lang']]; ?>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<a id="addFragrance" data-toggle="modal" data-target="#fragrance_management_modal-<?php echo $widget_id; ?>" onclick="$($(this).data('target')).appendTo('body');">
+					<?php global $add; ?>
+					<?php echo $add[$GLOBALS['lang']]; ?>
+				</a>
+			</div>
+			<div id="pills-tabContent" class="tab-content">
+				<?php global $name, $scent, $used, $times, $unit, $position, $no_data, $delete; ?>
+				<?php global $event_deleteConfirmation_heading, $fragranceChoice_deleteFragrance__text, $time_events; ?>
+				<div class="tab-pane fade show active" id="pills-general" role="tabpanel" aria-labelledby="pills-general-tab">
+					<?php if(isSizedArray($mod_data)) { ?>
+						<table>
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th><?php echo $name[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $scent[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $used[$GLOBALS['lang']]; ?></th>
+									<?php if($modTimeIsActive) { ?>
+										<th><?php echo $time_events[$GLOBALS['lang']]; ?></th>
+									<?php } ?>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach($mod_data as $k => $fragrance) { ?>
+									<?php if((bool)$fragrance['fragrance_isGeneralFragrance'] !== true) continue; ?>
+									<tr>
+										<td>#<?php echo $fragrance['fragrance_id']; ?></td>
+										<td>
+											<button type="button" class="no-btn btn-del trigger-component_modal-<?php echo $fragrance['fragrance_id']; ?>">
+												<i class="fas fa-times"></i>
+											</button>
+											<?php $TC->load_component("modal_confirmation", [
+												"id" => $fragrance['fragrance_id'],
+												"title" => $event_deleteConfirmation_heading[$GLOBALS['lang']],
+												"msg" => $fragranceChoice_deleteFragrance__text[$GLOBALS['lang']],
+												"accept_btn" => $delete[$GLOBALS['lang']],
+												"accept_url" => "?page=Admin&mod=mod_fragranceChoice&action=deleteGeneralFragrance&fragrance_id=".$fragrance['fragrance_id']], false); ?>
+											<?php echo $fragrance['fragrance_name']; ?>
+										</td>
+										<td><?php echo $fragrance['fragrance_scent']; ?></td>
+										<td><?php echo count($mod_fchoice->getAssignedFragrancesOfGeneralFType($fragrance['fragrance_id']))." ".$times[$GLOBALS['lang']]; ?></td>
+										<?php if($modTimeIsActive) { ?>
+											<td>
+												(<?php echo count($mod_time->getEventsByFragranceID($fragrance['fragrance_id'])); ?>)
+												<a data-toggle="modal" data-target="#assign_fragrance_event_modal-<?php echo $fragrance['fragrance_id']; ?>" onclick="$($(this).data('target')).appendTo('body');" class="assign_fragrance_event_modal-trigger">
+													<i class="fas fa-edit"></i>
+												</a>
+											</td>
+
+											<!-- Modal for fragranceManagementAction -->
+											<?php global $form_save, $close; ?>
+											<?php global $fragranceChoice_selectedFragrance; ?>
+											<div class="modal fade fragrance_management_modal fragrance_management_wrapper" id="assign_fragrance_event_modal-<?php echo $fragrance['fragrance_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="tableModalExpanded" aria-hidden="true">
+												<div class="modal-dialog modal-dialog-centered modal-borderless" role="document">
+													<div class="modal-content">
+														<?php renderForm_init("?page=Admin&mod=mod_fragranceChoice&action=assignFragranceToEvent", ["activate_card_wrap" => false]); ?>
+														<div class="modal-header">
+															<h5 class="modal-title" id="exampleModalLongTitle"><?php echo $fragranceChoice_selectedFragrance[$GLOBALS['lang']] ?>: <b><?php echo $fragrance['fragrance_name']; ?></b></h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body table_widget">
+															<input type="hidden" name="fragrance_id" value="<?php echo $fragrance['fragrance_id']; ?>">
+															<?php
+																global $fragranceChoice_eventManagedByExternalModule;
+
+																$toggle_switch_config = array(
+																	"container" => false,
+																	"standard_css" => true,
+																	"changeable" => true
+																);
+
+																// General events
+																foreach($event_data as $k => $event)
+																{
+
+																	// If the event is controlled by another module
+																	if((int)$event['event_type'] === mod_fragranceCollective::MODULE_EVENT_TYPE_INDEX)
+																	{
+
+																		$toggle_switch_config["changeable"] = false;
+																		$toggle_switch_config["changeable_err_msg"] = $fragranceChoice_eventManagedByExternalModule[$GLOBALS['lang']];
+
+																	} else $toggle_switch_config["changeable"] = true;
+
+																	$switch_isEnabled = !is_null($event['event_fragrance_id']) && $event['event_fragrance_id'] === $fragrance['fragrance_id']
+																		? true
+																		: false;
+
+																	global $time_types_concurrentSpray;
+																	$event_type_translated = (int)$event['event_type'] === 3 ? $time_types_concurrentSpray[$GLOBALS['lang']] : $mod_time->event_types_lang[ mod_time::EVENT_TYPES[ $event['event_type'] ] ];
+																	$switch_title = $event['event_name'].' <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="'.$event_type_translated.'" style="opacity:.3;"></i>';
+
+																	renderForm_toggleSwitch("id_".uniqid()."event-".$event['event_id'], $switch_title, $switch_isEnabled, $toggle_switch_config);
+
+																}
+
+																// Music-Events
+																if(isSizedArray($mevent_data))
+																{
+																	foreach($mevent_data as $k => $mevent)
+																	{
+
+																		$switch_isEnabled = !is_null($mevent['mevent_fragrance_id']) && $mevent['mevent_fragrance_id'] === $fragrance['fragrance_id']
+																			? true
+																			: false;
+
+																		$toggle_switch_config["changeable"] = true;
+																		$toggle_switch_config["changeable_err_msg"] = null;
+
+																		global $sensorResponder_musicEvent;
+																		$switch_title = $mevent['mevent_name'].' <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="'.$sensorResponder_musicEvent[$GLOBALS['lang']].'" style="opacity:.3;"></i>';
+
+																		renderForm_toggleSwitch("id_".uniqid()."mevent-".$mevent['mevent_id'], $switch_title, $switch_isEnabled, $toggle_switch_config);
+
+																	}
+																}
+															?>
+														</div>
+														<div class="modal-footer">
+															<button type="submit" class="btn btn-gradient btn-gradient-lbluegreen"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+															<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal"><?php echo $close[$GLOBALS['lang']]; ?></button>
+														</div>
+														<?php renderForm_close("", array("activate_submit_btn" => false)) ?>
+													</div>
+												</div>
+											</div>
+										<?php } ?>
+									</tr>
+								<?php } ?>
+							</tbody>
+						</table>
+					<?php } else echo $no_data[$GLOBALS['lang']]; ?>
+				</div>
+				<div class="tab-pane fade" id="pills-assigned" role="tabpanel" aria-labelledby="pills-assigned-tab">
+					<?php if(isSizedArray($mod_data)) { ?>
+						<table>
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th><?php echo $name[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $scent[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $unit[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $position[$GLOBALS['lang']]; ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach($mod_data as $k => $fragrance) { ?>
+									<?php if((bool)$fragrance['fragrance_isGeneralFragrance'] === true) continue; ?>
+									<?php foreach($unit_data as $k => $unit) if($unit['unit_id'] === $fragrance['fragrance_unit']) $target_unit = $unit; ?>
+									<tr>
+										<td>#<?php echo $fragrance['fragrance_id']; ?></td>
+										<td><?php echo $fragrance['fragrance_name']; ?></td>
+										<td><?php echo $fragrance['fragrance_scent']; ?></td>
+										<td>
+											<?php if(isSizedArray($target_unit)) {
+												echo $target_unit['unit_name'] . "#" . $target_unit['unit_id'] ;
+												} else {
+												echo $no_data[$GLOBALS['lang']];
+											} ?>
+										</td>
+										<td><?php echo $fragrance['fragrance_position']; ?></td>
+									</tr>
+								<?php } ?>
+							</tbody>
+						</table>
+					<?php } else echo $no_data[$GLOBALS['lang']]; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for fragranceManagementAction -->
+	<?php global $fragranceChoice_addFragrance; ?>
+	<div class="modal fade fragrance_management_modal fragrance_management_wrapper" id="fragrance_management_modal-<?php echo $widget_id; ?>" tabindex="-1" role="dialog" aria-labelledby="tableModalExpanded" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-borderless" role="document">
+			<div class="modal-content">
+				<?php renderForm_init("?page=Admin&mod=mod_fragranceChoice&action=FragranceManagementAction", ["activate_card_wrap" => false]); ?>
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLongTitle"><?php echo $fragranceChoice_addFragrance[$GLOBALS['lang']]; ?></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body table_widget">
+						<?php global $smell; ?>
+						<?php renderForm_input("fr_name", $name[$GLOBALS['lang']], null, array(
+							"type" => "text",
+							"container" => false,
+							"required" => true,
+							"class" => isset_true($TC->view['frname_err']['err_status']) ? "input-error" : "",
+							"placeholder" => isset_true($TC->view['frname_err']['err_status']) ? $TC->view['frname_err']['err_msg'] : ""));
+						?>
+						<?php renderForm_input("fr_scent", $smell[$GLOBALS['lang']], null, array(
+							"type" => "text",
+							"container" => false,
+							"required" => true,
+							"class" => isset_true($TC->view['frscent_err']['err_status']) ? "input-error" : "",
+							"placeholder" => isset_true($TC->view['frscent_err']['err_status']) ? $TC->view['frscent_err']['err_msg'] : ""));
+						?>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-gradient btn-gradient-lbluegreen"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+						<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal"><?php echo $close[$GLOBALS['lang']]; ?></button>
+					</div>
+				<?php renderForm_close("", array("activate_submit_btn" => false)) ?>
+			</div>
+		</div>
+	</div>
+
+</div> <!-- #widget__fragrance_management -->

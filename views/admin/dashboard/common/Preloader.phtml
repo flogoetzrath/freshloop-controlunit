@@ -1,0 +1,41 @@
+<style>
+	#preloader{ transition: 0.2s all ease-in-out; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; z-index: 10000000; background: #14293D linear-gradient(45deg, #14293D, #1F365C); }
+	#preloader *{ -webkit-transition: all 0.3s; -moz-transition: all 0.3s; -o-transition: all 0.3s; transition: all 0.3s; }
+	#preloader .vertical-centered-box { position: absolute; width: 100vw; height: 100vh; text-align: center; }
+	#preloader .vertical-centered-box:after { content: ''; display: inline-block; height: 100%; vertical-align: middle; margin-right: -0.25em; }
+	#preloader .vertical-centered-box .content { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; display: inline-block; vertical-align: middle; text-align: left; font-size: 0; }
+	.loader-circle { position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1); margin-left: -60px; margin-top: -60px; }
+	.loader-line-mask { position: absolute; left: 50%; top: 50%; width: 60px; height: 120px; margin-left: -60px; margin-top: -60px; overflow: hidden; -webkit-transform-origin: 60px 60px; -moz-transform-origin: 60px 60px; -ms-transform-origin: 60px 60px; -o-transform-origin: 60px 60px; transform-origin: 60px 60px; -webkit-mask-image: -webkit-linear-gradient(top, #000000, rgba(0, 0, 0, 0)); -webkit-animation: rotate 1.2s infinite linear; -moz-animation: rotate 1.2s infinite linear; -o-animation: rotate 1.2s infinite linear; animation: rotate 1.2s infinite linear; }
+	.loader-line-mask .loader-line { width: 120px; height: 120px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5); }
+	lesshat-selector { -lh-property: 0; }
+	@-webkit-keyframes rotate{ 0% { -webkit-transform: rotate(0deg);} 100% { -webkit-transform: rotate(360deg);}}
+	@-moz-keyframes rotate{ 0% { -moz-transform: rotate(0deg);} 100% { -moz-transform: rotate(360deg);}}
+	@-o-keyframes rotate{ 0% { -o-transform: rotate(0deg);} 100% { -o-transform: rotate(360deg);}}
+	@keyframes rotate{ 0% {-webkit-transform: rotate(0deg);-moz-transform: rotate(0deg);-ms-transform: rotate(0deg);transform: rotate(0deg);} 100% {-webkit-transform: rotate(360deg);-moz-transform: rotate(360deg);-ms-transform: rotate(360deg);transform: rotate(360deg);}}
+	[not-existing] { zoom: 1; }
+	lesshat-selector { -lh-property: 0; }
+	@-webkit-keyframes fade{ 0% { opacity: 1;} 50% { opacity: 0.25;}}
+	@-moz-keyframes fade{ 0% { opacity: 1;} 50% { opacity: 0.25;}}
+	@-o-keyframes fade{ 0% { opacity: 1;} 50% { opacity: 0.25;}}
+	@keyframes fade{ 0% { opacity: 1;} 50% { opacity: 0.25;}}
+	[not-existing] { zoom: 1; }
+	lesshat-selector { -lh-property: 0; }
+	@-webkit-keyframes fade-in{ 0% { opacity: 0;} 100% { opacity: 1;}}
+	@-moz-keyframes fade-in{ 0% { opacity: 0;} 100% { opacity: 1;}}
+	@-o-keyframes fade-in{ 0% { opacity: 0;} 100% { opacity: 1;}}
+	@keyframes fade-in{ 0% { opacity: 0;} 100% { opacity: 1;}}
+	[not-existing] { zoom: 1; }
+</style>
+
+<div id="preloader">
+	<div class="vertical-centered-box">
+		<div class="content">
+			<div class="loader-circle"></div>
+			<div class="loader-line-mask">
+				<div class="loader-line"></div>
+			</div>
+			<!-- svg from MEDIA_PATH./icon256_white.svg -->
+			<svg width="30px" height="35px" viewBox="0 0 172 218" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g id="Hintergrund" transform="matrix(1,0,0,1,-54,-281)"><use xlink:href="#_Image1" x="53" y="280" width="174px" height="220px"/></g><defs><image id="_Image1" width="174px" height="220px" xlink:href="data:image/png;base64,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"/></defs></svg>
+		</div>
+	</div>
+</div>

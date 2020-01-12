@@ -1,0 +1,42 @@
+<style>
+	.mod-enabled { display: flex; justify-content: flex-end; align-items: flex-start; margin-top: -5px; }
+	@media only screen and (max-width: 576px) {
+		.mod-title h1{ text-align: center; }
+		.mod-enabled { margin-bottom: 10px; justify-content: center; }
+	}
+</style>
+
+<section id="top_layer" class="mod_header widget-squares col-md-12 row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-body row">
+				<div class="mod-title col-lg-10 col-md-6 col-12 col-sm-6">
+					<h1 class="section-header page-header">{{ mods_mod }} {{ mod_name_lang }}</h1>
+				</div>
+				<div class="mod-enabled col-lg-2 col-md-6 col-12 col-sm-6">
+					[[ renderForm_init("?page=Admin&action=updateModStatuses", ["activate_card_wrap" => false, "form_class" => "mod_header__form"]); ]]
+					<div class="row">
+						<div class="input-toggle_switch col-md-6 col-6">
+							[[ renderForm_toggleSwitch("{{ mod_name }}", "", {{ mod_status }}, array("container" => false, "element_class" => "mod_header-toggleSwitch", "standard_css" => true, "disabled" => (bool){{ checkbox_disabled }} ?: false)); ]]
+						</div>
+						<button class="btn-gradient btn-gradient-blue btn-mod_status_submit col-md-6 col-6" type="submit"><i class="fas fa-check"></i></button>
+					</div>
+					[[ renderForm_close("", array("activate_submit_btn" => false, "activate_card_wrap" => false)); ]]
+				</div>
+				<div class="mod-description col-md-12">
+					<h3 class="section-sub" style="margin-bottom: 0;">{{ mod_description }}</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+[[ $js = "moveElinDOM('.mod_header__form', '.mod-enabled');"; ]]
+[[ $GLOBALS['js']['mod_header-form_init'] = array($js, []); ]]
+
+[[ $js = "moveElinDOM('.mod_header-toggleSwitch', '.input-toggle_switch');"; ]]
+[[ $GLOBALS['js']['mod_header-form_toggleSwitch'] = array($js, []); ]]
+
+[[ $js = "moveElinDOM('.mod-enabled > .row', '.mod_header__form');"; ]]
+[[ $GLOBALS['js']['mod_header-form_finalCut'] = array($js, []); ]]

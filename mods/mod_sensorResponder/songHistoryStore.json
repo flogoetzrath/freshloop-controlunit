@@ -1,0 +1,1939 @@
+[
+	{
+		"timestamp": 1571515225125,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 37293,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/6qqNVTkY8uBg9cP3Jd7DAH"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/6qqNVTkY8uBg9cP3Jd7DAH",
+						"id": "6qqNVTkY8uBg9cP3Jd7DAH",
+						"name": "Billie Eilish",
+						"type": "artist",
+						"uri": "spotify:artist:6qqNVTkY8uBg9cP3Jd7DAH"
+					},
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/1uNFoZAHBGtllmzznpCI3s"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/1uNFoZAHBGtllmzznpCI3s",
+						"id": "1uNFoZAHBGtllmzznpCI3s",
+						"name": "Justin Bieber",
+						"type": "artist",
+						"uri": "spotify:artist:1uNFoZAHBGtllmzznpCI3s"
+					}
+				],
+				"available_markets": [
+					"AD",
+					"AE",
+					"AR",
+					"AT",
+					"AU",
+					"BE",
+					"BG",
+					"BH",
+					"BO",
+					"BR",
+					"CA",
+					"CH",
+					"CL",
+					"CO",
+					"CR",
+					"CY",
+					"CZ",
+					"DE",
+					"DK",
+					"DO",
+					"DZ",
+					"EC",
+					"EE",
+					"EG",
+					"ES",
+					"FI",
+					"FR",
+					"GB",
+					"GR",
+					"GT",
+					"HK",
+					"HN",
+					"HU",
+					"ID",
+					"IE",
+					"IL",
+					"IN",
+					"IS",
+					"IT",
+					"JO",
+					"JP",
+					"KW",
+					"LB",
+					"LI",
+					"LT",
+					"LU",
+					"LV",
+					"MA",
+					"MC",
+					"MT",
+					"MX",
+					"MY",
+					"NI",
+					"NL",
+					"NO",
+					"NZ",
+					"OM",
+					"PA",
+					"PE",
+					"PH",
+					"PL",
+					"PS",
+					"PT",
+					"PY",
+					"QA",
+					"RO",
+					"SA",
+					"SE",
+					"SG",
+					"SK",
+					"SV",
+					"TH",
+					"TN",
+					"TR",
+					"TW",
+					"US",
+					"UY",
+					"VN",
+					"ZA"
+				],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/6lMlX68jJrx67hiCqdiDvW"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/6lMlX68jJrx67hiCqdiDvW",
+				"id": "6lMlX68jJrx67hiCqdiDvW",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/599bdef7fe3299b75a6a16831e96aa0761954714",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/fa4a60af33333d5a3b8fc1daeec9ba2879ed6841",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/4a8f2a7fa85d91550a8e57025484faff00fdb7e6",
+						"width": 64
+					}
+				],
+				"name": "bad guy (with Justin Bieber)",
+				"release_date": "2019-07-11",
+				"release_date_precision": "day",
+				"total_tracks": 1,
+				"type": "album",
+				"uri": "spotify:album:6lMlX68jJrx67hiCqdiDvW"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/6qqNVTkY8uBg9cP3Jd7DAH"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/6qqNVTkY8uBg9cP3Jd7DAH",
+					"id": "6qqNVTkY8uBg9cP3Jd7DAH",
+					"name": "Billie Eilish",
+					"type": "artist",
+					"uri": "spotify:artist:6qqNVTkY8uBg9cP3Jd7DAH"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/1uNFoZAHBGtllmzznpCI3s"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/1uNFoZAHBGtllmzznpCI3s",
+					"id": "1uNFoZAHBGtllmzznpCI3s",
+					"name": "Justin Bieber",
+					"type": "artist",
+					"uri": "spotify:artist:1uNFoZAHBGtllmzznpCI3s"
+				}
+			],
+			"available_markets": [
+				"AD",
+				"AE",
+				"AR",
+				"AT",
+				"AU",
+				"BE",
+				"BG",
+				"BH",
+				"BO",
+				"BR",
+				"CA",
+				"CH",
+				"CL",
+				"CO",
+				"CR",
+				"CY",
+				"CZ",
+				"DE",
+				"DK",
+				"DO",
+				"DZ",
+				"EC",
+				"EE",
+				"EG",
+				"ES",
+				"FI",
+				"FR",
+				"GB",
+				"GR",
+				"GT",
+				"HK",
+				"HN",
+				"HU",
+				"ID",
+				"IE",
+				"IL",
+				"IN",
+				"IS",
+				"IT",
+				"JO",
+				"JP",
+				"KW",
+				"LB",
+				"LI",
+				"LT",
+				"LU",
+				"LV",
+				"MA",
+				"MC",
+				"MT",
+				"MX",
+				"MY",
+				"NI",
+				"NL",
+				"NO",
+				"NZ",
+				"OM",
+				"PA",
+				"PE",
+				"PH",
+				"PL",
+				"PS",
+				"PT",
+				"PY",
+				"QA",
+				"RO",
+				"SA",
+				"SE",
+				"SG",
+				"SK",
+				"SV",
+				"TH",
+				"TN",
+				"TR",
+				"TW",
+				"US",
+				"UY",
+				"VN",
+				"ZA"
+			],
+			"disc_number": 1,
+			"duration_ms": 194839,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "USUM71912813"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/3yNZ5r3LKfdmjoS3gkhUCT"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/3yNZ5r3LKfdmjoS3gkhUCT",
+			"id": "3yNZ5r3LKfdmjoS3gkhUCT",
+			"is_local": false,
+			"name": "bad guy (with Justin Bieber)",
+			"popularity": 87,
+			"preview_url": "https:\/\/p.scdn.co\/mp3-preview\/7b05a0a0b02c083340c4f0111e311ed7ef8e3d8b?cid=da3567d730834dbe967c280aef0fe049",
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:3yNZ5r3LKfdmjoS3gkhUCT",
+			"genres": [
+				"electropop",
+				"pop"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515420452,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 22360,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/09agIJMxCD2k87ys9Al0f0"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/09agIJMxCD2k87ys9Al0f0",
+						"id": "09agIJMxCD2k87ys9Al0f0",
+						"name": "VIZE",
+						"type": "artist",
+						"uri": "spotify:artist:09agIJMxCD2k87ys9Al0f0"
+					},
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/3Q1GZN8Q2eH1o9e7umyjL2"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/3Q1GZN8Q2eH1o9e7umyjL2",
+						"id": "3Q1GZN8Q2eH1o9e7umyjL2",
+						"name": "Laniia",
+						"type": "artist",
+						"uri": "spotify:artist:3Q1GZN8Q2eH1o9e7umyjL2"
+					}
+				],
+				"available_markets": [
+					"AD",
+					"AE",
+					"AT",
+					"BH",
+					"CH",
+					"CY",
+					"CZ",
+					"DE",
+					"DZ",
+					"EG",
+					"GR",
+					"HK",
+					"HU",
+					"ID",
+					"IL",
+					"IN",
+					"JO",
+					"JP",
+					"KW",
+					"LB",
+					"LI",
+					"MA",
+					"MT",
+					"MY",
+					"OM",
+					"PH",
+					"PS",
+					"PT",
+					"QA",
+					"RO",
+					"SA",
+					"SG",
+					"SK",
+					"TH",
+					"TN",
+					"TR",
+					"TW",
+					"VN",
+					"ZA"
+				],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/2feDIjnD9BrZsfgi5CbEoK"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/2feDIjnD9BrZsfgi5CbEoK",
+				"id": "2feDIjnD9BrZsfgi5CbEoK",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b273e5b0167fc365c869728c66d9",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e02e5b0167fc365c869728c66d9",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00004851e5b0167fc365c869728c66d9",
+						"width": 64
+					}
+				],
+				"name": "Stars",
+				"release_date": "2019-05-03",
+				"release_date_precision": "day",
+				"total_tracks": 2,
+				"type": "album",
+				"uri": "spotify:album:2feDIjnD9BrZsfgi5CbEoK"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/09agIJMxCD2k87ys9Al0f0"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/09agIJMxCD2k87ys9Al0f0",
+					"id": "09agIJMxCD2k87ys9Al0f0",
+					"name": "VIZE",
+					"type": "artist",
+					"uri": "spotify:artist:09agIJMxCD2k87ys9Al0f0"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/3Q1GZN8Q2eH1o9e7umyjL2"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/3Q1GZN8Q2eH1o9e7umyjL2",
+					"id": "3Q1GZN8Q2eH1o9e7umyjL2",
+					"name": "Laniia",
+					"type": "artist",
+					"uri": "spotify:artist:3Q1GZN8Q2eH1o9e7umyjL2"
+				}
+			],
+			"available_markets": [
+				"AD",
+				"AE",
+				"AT",
+				"BH",
+				"CH",
+				"CY",
+				"CZ",
+				"DE",
+				"DZ",
+				"EG",
+				"GR",
+				"HK",
+				"HU",
+				"ID",
+				"IL",
+				"IN",
+				"JO",
+				"JP",
+				"KW",
+				"LB",
+				"LI",
+				"MA",
+				"MT",
+				"MY",
+				"OM",
+				"PH",
+				"PS",
+				"PT",
+				"QA",
+				"RO",
+				"SA",
+				"SG",
+				"SK",
+				"TH",
+				"TN",
+				"TR",
+				"TW",
+				"VN",
+				"ZA"
+			],
+			"disc_number": 1,
+			"duration_ms": 165468,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "DEN061900527"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/5E00xRhYsooyC3MBA2H848"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/5E00xRhYsooyC3MBA2H848",
+			"id": "5E00xRhYsooyC3MBA2H848",
+			"is_local": false,
+			"name": "Stars",
+			"popularity": 77,
+			"preview_url": "https:\/\/p.scdn.co\/mp3-preview\/2b5dbb2aff8da97a6131916c39914b5b5b7f200d?cid=da3567d730834dbe967c280aef0fe049",
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:5E00xRhYsooyC3MBA2H848",
+			"genres": [
+				"german dance"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515420452,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 22422,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/09agIJMxCD2k87ys9Al0f0"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/09agIJMxCD2k87ys9Al0f0",
+						"id": "09agIJMxCD2k87ys9Al0f0",
+						"name": "VIZE",
+						"type": "artist",
+						"uri": "spotify:artist:09agIJMxCD2k87ys9Al0f0"
+					},
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/3Q1GZN8Q2eH1o9e7umyjL2"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/3Q1GZN8Q2eH1o9e7umyjL2",
+						"id": "3Q1GZN8Q2eH1o9e7umyjL2",
+						"name": "Laniia",
+						"type": "artist",
+						"uri": "spotify:artist:3Q1GZN8Q2eH1o9e7umyjL2"
+					}
+				],
+				"available_markets": [
+					"AD",
+					"AE",
+					"AT",
+					"BH",
+					"CH",
+					"CY",
+					"CZ",
+					"DE",
+					"DZ",
+					"EG",
+					"GR",
+					"HK",
+					"HU",
+					"ID",
+					"IL",
+					"IN",
+					"JO",
+					"JP",
+					"KW",
+					"LB",
+					"LI",
+					"MA",
+					"MT",
+					"MY",
+					"OM",
+					"PH",
+					"PS",
+					"PT",
+					"QA",
+					"RO",
+					"SA",
+					"SG",
+					"SK",
+					"TH",
+					"TN",
+					"TR",
+					"TW",
+					"VN",
+					"ZA"
+				],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/2feDIjnD9BrZsfgi5CbEoK"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/2feDIjnD9BrZsfgi5CbEoK",
+				"id": "2feDIjnD9BrZsfgi5CbEoK",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b273e5b0167fc365c869728c66d9",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e02e5b0167fc365c869728c66d9",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00004851e5b0167fc365c869728c66d9",
+						"width": 64
+					}
+				],
+				"name": "Stars",
+				"release_date": "2019-05-03",
+				"release_date_precision": "day",
+				"total_tracks": 2,
+				"type": "album",
+				"uri": "spotify:album:2feDIjnD9BrZsfgi5CbEoK"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/09agIJMxCD2k87ys9Al0f0"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/09agIJMxCD2k87ys9Al0f0",
+					"id": "09agIJMxCD2k87ys9Al0f0",
+					"name": "VIZE",
+					"type": "artist",
+					"uri": "spotify:artist:09agIJMxCD2k87ys9Al0f0"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/3Q1GZN8Q2eH1o9e7umyjL2"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/3Q1GZN8Q2eH1o9e7umyjL2",
+					"id": "3Q1GZN8Q2eH1o9e7umyjL2",
+					"name": "Laniia",
+					"type": "artist",
+					"uri": "spotify:artist:3Q1GZN8Q2eH1o9e7umyjL2"
+				}
+			],
+			"available_markets": [
+				"AD",
+				"AE",
+				"AT",
+				"BH",
+				"CH",
+				"CY",
+				"CZ",
+				"DE",
+				"DZ",
+				"EG",
+				"GR",
+				"HK",
+				"HU",
+				"ID",
+				"IL",
+				"IN",
+				"JO",
+				"JP",
+				"KW",
+				"LB",
+				"LI",
+				"MA",
+				"MT",
+				"MY",
+				"OM",
+				"PH",
+				"PS",
+				"PT",
+				"QA",
+				"RO",
+				"SA",
+				"SG",
+				"SK",
+				"TH",
+				"TN",
+				"TR",
+				"TW",
+				"VN",
+				"ZA"
+			],
+			"disc_number": 1,
+			"duration_ms": 165468,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "DEN061900527"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/5E00xRhYsooyC3MBA2H848"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/5E00xRhYsooyC3MBA2H848",
+			"id": "5E00xRhYsooyC3MBA2H848",
+			"is_local": false,
+			"name": "Stars",
+			"popularity": 77,
+			"preview_url": "https:\/\/p.scdn.co\/mp3-preview\/2b5dbb2aff8da97a6131916c39914b5b5b7f200d?cid=da3567d730834dbe967c280aef0fe049",
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:5E00xRhYsooyC3MBA2H848",
+			"genres": [
+				"german dance"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515468646,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 3546,
+		"item": {
+			"album": {
+				"album_type": "album",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/1MIVXf74SZHmTIp4V4paH4"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/1MIVXf74SZHmTIp4V4paH4",
+						"id": "1MIVXf74SZHmTIp4V4paH4",
+						"name": "Mabel",
+						"type": "artist",
+						"uri": "spotify:artist:1MIVXf74SZHmTIp4V4paH4"
+					}
+				],
+				"available_markets": [
+					"AD",
+					"AE",
+					"AR",
+					"AT",
+					"AU",
+					"BE",
+					"BG",
+					"BH",
+					"BO",
+					"BR",
+					"CA",
+					"CH",
+					"CL",
+					"CO",
+					"CR",
+					"CY",
+					"CZ",
+					"DE",
+					"DK",
+					"DO",
+					"DZ",
+					"EC",
+					"EE",
+					"EG",
+					"ES",
+					"FI",
+					"FR",
+					"GB",
+					"GR",
+					"GT",
+					"HK",
+					"HN",
+					"HU",
+					"ID",
+					"IE",
+					"IL",
+					"IN",
+					"IS",
+					"IT",
+					"JO",
+					"JP",
+					"KW",
+					"LB",
+					"LI",
+					"LT",
+					"LU",
+					"LV",
+					"MA",
+					"MC",
+					"MT",
+					"MX",
+					"MY",
+					"NI",
+					"NL",
+					"NO",
+					"NZ",
+					"OM",
+					"PA",
+					"PE",
+					"PH",
+					"PL",
+					"PS",
+					"PT",
+					"PY",
+					"QA",
+					"RO",
+					"SA",
+					"SE",
+					"SG",
+					"SK",
+					"SV",
+					"TH",
+					"TN",
+					"TR",
+					"TW",
+					"US",
+					"UY",
+					"VN",
+					"ZA"
+				],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/0syM7OUAhV7S6XmOa4nLUZ"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/0syM7OUAhV7S6XmOa4nLUZ",
+				"id": "0syM7OUAhV7S6XmOa4nLUZ",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/5b83ca39a6ce8ba4f4899a5477fa4c35f8e2407b",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/601e693dcc2363e9226994fd632f34b38d3f906d",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/c6c03c8b885d3a1581ee05928e45553743132480",
+						"width": 64
+					}
+				],
+				"name": "Ivy To Roses (Mixtape)",
+				"release_date": "2019-01-18",
+				"release_date_precision": "day",
+				"total_tracks": 15,
+				"type": "album",
+				"uri": "spotify:album:0syM7OUAhV7S6XmOa4nLUZ"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/1MIVXf74SZHmTIp4V4paH4"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/1MIVXf74SZHmTIp4V4paH4",
+					"id": "1MIVXf74SZHmTIp4V4paH4",
+					"name": "Mabel",
+					"type": "artist",
+					"uri": "spotify:artist:1MIVXf74SZHmTIp4V4paH4"
+				}
+			],
+			"available_markets": [
+				"AD",
+				"AE",
+				"AR",
+				"AT",
+				"AU",
+				"BE",
+				"BG",
+				"BH",
+				"BO",
+				"BR",
+				"CA",
+				"CH",
+				"CL",
+				"CO",
+				"CR",
+				"CY",
+				"CZ",
+				"DE",
+				"DK",
+				"DO",
+				"DZ",
+				"EC",
+				"EE",
+				"EG",
+				"ES",
+				"FI",
+				"FR",
+				"GB",
+				"GR",
+				"GT",
+				"HK",
+				"HN",
+				"HU",
+				"ID",
+				"IE",
+				"IL",
+				"IN",
+				"IS",
+				"IT",
+				"JO",
+				"JP",
+				"KW",
+				"LB",
+				"LI",
+				"LT",
+				"LU",
+				"LV",
+				"MA",
+				"MC",
+				"MT",
+				"MX",
+				"MY",
+				"NI",
+				"NL",
+				"NO",
+				"NZ",
+				"OM",
+				"PA",
+				"PE",
+				"PH",
+				"PL",
+				"PS",
+				"PT",
+				"PY",
+				"QA",
+				"RO",
+				"SA",
+				"SE",
+				"SG",
+				"SK",
+				"SV",
+				"TH",
+				"TN",
+				"TR",
+				"TW",
+				"US",
+				"UY",
+				"VN",
+				"ZA"
+			],
+			"disc_number": 1,
+			"duration_ms": 178480,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "GBUM71808052"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/5WHTFyqSii0lmT9R21abT8"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/5WHTFyqSii0lmT9R21abT8",
+			"id": "5WHTFyqSii0lmT9R21abT8",
+			"is_local": false,
+			"name": "Don't Call Me Up",
+			"popularity": 87,
+			"preview_url": "https:\/\/p.scdn.co\/mp3-preview\/84236b3f50f0f4315041a5bc166015df27e8ac73?cid=da3567d730834dbe967c280aef0fe049",
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:5WHTFyqSii0lmT9R21abT8",
+			"genres": [
+				"dance pop",
+				"pop",
+				"post-teen pop",
+				"tropical house",
+				"uk pop"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515646263,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 8306,
+		"item": {
+			"album": {
+				"album_type": "album",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/6QzzeKV0VcnT2vJMYDPuL4"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/6QzzeKV0VcnT2vJMYDPuL4",
+						"id": "6QzzeKV0VcnT2vJMYDPuL4",
+						"name": "Trettmann",
+						"type": "artist",
+						"uri": "spotify:artist:6QzzeKV0VcnT2vJMYDPuL4"
+					},
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/5tHiL8SKSaZGMBUPIiSmX4"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/5tHiL8SKSaZGMBUPIiSmX4",
+						"id": "5tHiL8SKSaZGMBUPIiSmX4",
+						"name": "KitschKrieg",
+						"type": "artist",
+						"uri": "spotify:artist:5tHiL8SKSaZGMBUPIiSmX4"
+					}
+				],
+				"available_markets": [
+					"AD",
+					"AE",
+					"AR",
+					"AT",
+					"AU",
+					"BE",
+					"BG",
+					"BH",
+					"BO",
+					"BR",
+					"CA",
+					"CH",
+					"CL",
+					"CO",
+					"CR",
+					"CY",
+					"CZ",
+					"DE",
+					"DK",
+					"DO",
+					"DZ",
+					"EC",
+					"EE",
+					"EG",
+					"ES",
+					"FI",
+					"FR",
+					"GB",
+					"GR",
+					"GT",
+					"HK",
+					"HN",
+					"HU",
+					"ID",
+					"IE",
+					"IL",
+					"IS",
+					"IT",
+					"JO",
+					"JP",
+					"KW",
+					"LB",
+					"LI",
+					"LT",
+					"LU",
+					"LV",
+					"MA",
+					"MC",
+					"MT",
+					"MX",
+					"MY",
+					"NI",
+					"NL",
+					"NO",
+					"NZ",
+					"OM",
+					"PA",
+					"PE",
+					"PH",
+					"PL",
+					"PS",
+					"PT",
+					"PY",
+					"QA",
+					"RO",
+					"SA",
+					"SE",
+					"SG",
+					"SK",
+					"SV",
+					"TH",
+					"TN",
+					"TR",
+					"TW",
+					"US",
+					"UY",
+					"VN",
+					"ZA"
+				],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/6nNWkAwlHC0yIoKzzl7rnQ"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/6nNWkAwlHC0yIoKzzl7rnQ",
+				"id": "6nNWkAwlHC0yIoKzzl7rnQ",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/a27b2a6321baacba6f2af5b16b511b72257452a4",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/fe73354aa77ea510f3683a1095de3c8be169575d",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/4d43dd1f4d3fcff953fe1910c75703351949fabb",
+						"width": 64
+					}
+				],
+				"name": "Trettmann",
+				"release_date": "2019-09-13",
+				"release_date_precision": "day",
+				"total_tracks": 11,
+				"type": "album",
+				"uri": "spotify:album:6nNWkAwlHC0yIoKzzl7rnQ"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/6QzzeKV0VcnT2vJMYDPuL4"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/6QzzeKV0VcnT2vJMYDPuL4",
+					"id": "6QzzeKV0VcnT2vJMYDPuL4",
+					"name": "Trettmann",
+					"type": "artist",
+					"uri": "spotify:artist:6QzzeKV0VcnT2vJMYDPuL4"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/5tHiL8SKSaZGMBUPIiSmX4"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/5tHiL8SKSaZGMBUPIiSmX4",
+					"id": "5tHiL8SKSaZGMBUPIiSmX4",
+					"name": "KitschKrieg",
+					"type": "artist",
+					"uri": "spotify:artist:5tHiL8SKSaZGMBUPIiSmX4"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/2fUZ5QodNiQntWefUy6Jfh"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/2fUZ5QodNiQntWefUy6Jfh",
+					"id": "2fUZ5QodNiQntWefUy6Jfh",
+					"name": "Alli Neumann",
+					"type": "artist",
+					"uri": "spotify:artist:2fUZ5QodNiQntWefUy6Jfh"
+				}
+			],
+			"available_markets": [
+				"AD",
+				"AE",
+				"AR",
+				"AT",
+				"AU",
+				"BE",
+				"BG",
+				"BH",
+				"BO",
+				"BR",
+				"CA",
+				"CH",
+				"CL",
+				"CO",
+				"CR",
+				"CY",
+				"CZ",
+				"DE",
+				"DK",
+				"DO",
+				"DZ",
+				"EC",
+				"EE",
+				"EG",
+				"ES",
+				"FI",
+				"FR",
+				"GB",
+				"GR",
+				"GT",
+				"HK",
+				"HN",
+				"HU",
+				"ID",
+				"IE",
+				"IL",
+				"IS",
+				"IT",
+				"JO",
+				"JP",
+				"KW",
+				"LB",
+				"LI",
+				"LT",
+				"LU",
+				"LV",
+				"MA",
+				"MC",
+				"MT",
+				"MX",
+				"MY",
+				"NI",
+				"NL",
+				"NO",
+				"NZ",
+				"OM",
+				"PA",
+				"PE",
+				"PH",
+				"PL",
+				"PS",
+				"PT",
+				"PY",
+				"QA",
+				"RO",
+				"SA",
+				"SE",
+				"SG",
+				"SK",
+				"SV",
+				"TH",
+				"TN",
+				"TR",
+				"TW",
+				"US",
+				"UY",
+				"VN",
+				"ZA"
+			],
+			"disc_number": 1,
+			"duration_ms": 203173,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "DELV41900368"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/22ET3BvBsXcGiwxy1uXPbU"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/22ET3BvBsXcGiwxy1uXPbU",
+			"id": "22ET3BvBsXcGiwxy1uXPbU",
+			"is_local": false,
+			"name": "Zeit steht (feat. Alli Neumann)",
+			"popularity": 78,
+			"preview_url": "https:\/\/p.scdn.co\/mp3-preview\/94dfbe1cd8f61c6ab59b96e165bf37b192e822cd?cid=da3567d730834dbe967c280aef0fe049",
+			"track_number": 5,
+			"type": "track",
+			"uri": "spotify:track:22ET3BvBsXcGiwxy1uXPbU",
+			"genres": [
+				"german cloud rap",
+				"german hip hop"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515795364,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 3176,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/23fqKkggKUBHNkbKtXEls4"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/23fqKkggKUBHNkbKtXEls4",
+						"id": "23fqKkggKUBHNkbKtXEls4",
+						"name": "Kygo",
+						"type": "artist",
+						"uri": "spotify:artist:23fqKkggKUBHNkbKtXEls4"
+					},
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/6XpaIBNiVzIetEPCWDvAFP"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/6XpaIBNiVzIetEPCWDvAFP",
+						"id": "6XpaIBNiVzIetEPCWDvAFP",
+						"name": "Whitney Houston",
+						"type": "artist",
+						"uri": "spotify:artist:6XpaIBNiVzIetEPCWDvAFP"
+					}
+				],
+				"available_markets": [
+					"AD",
+					"AE",
+					"AR",
+					"AT",
+					"AU",
+					"BE",
+					"BG",
+					"BH",
+					"BO",
+					"BR",
+					"CA",
+					"CH",
+					"CL",
+					"CO",
+					"CR",
+					"CY",
+					"CZ",
+					"DE",
+					"DK",
+					"DO",
+					"DZ",
+					"EC",
+					"EE",
+					"EG",
+					"ES",
+					"FI",
+					"FR",
+					"GB",
+					"GR",
+					"GT",
+					"HK",
+					"HN",
+					"HU",
+					"ID",
+					"IE",
+					"IL",
+					"IN",
+					"IS",
+					"IT",
+					"JO",
+					"JP",
+					"KW",
+					"LB",
+					"LI",
+					"LT",
+					"LU",
+					"LV",
+					"MA",
+					"MC",
+					"MT",
+					"MX",
+					"MY",
+					"NI",
+					"NL",
+					"NO",
+					"NZ",
+					"OM",
+					"PA",
+					"PE",
+					"PH",
+					"PL",
+					"PS",
+					"PT",
+					"PY",
+					"QA",
+					"RO",
+					"SA",
+					"SE",
+					"SG",
+					"SK",
+					"SV",
+					"TH",
+					"TN",
+					"TR",
+					"TW",
+					"US",
+					"UY",
+					"VN",
+					"ZA"
+				],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/4wquJImu8RtyEuDtIAsfcE"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/4wquJImu8RtyEuDtIAsfcE",
+				"id": "4wquJImu8RtyEuDtIAsfcE",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b2737c8977a0ad3a3a0627be9ed7",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e027c8977a0ad3a3a0627be9ed7",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d000048517c8977a0ad3a3a0627be9ed7",
+						"width": 64
+					}
+				],
+				"name": "Higher Love",
+				"release_date": "2019-06-28",
+				"release_date_precision": "day",
+				"total_tracks": 1,
+				"type": "album",
+				"uri": "spotify:album:4wquJImu8RtyEuDtIAsfcE"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/23fqKkggKUBHNkbKtXEls4"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/23fqKkggKUBHNkbKtXEls4",
+					"id": "23fqKkggKUBHNkbKtXEls4",
+					"name": "Kygo",
+					"type": "artist",
+					"uri": "spotify:artist:23fqKkggKUBHNkbKtXEls4"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/6XpaIBNiVzIetEPCWDvAFP"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/6XpaIBNiVzIetEPCWDvAFP",
+					"id": "6XpaIBNiVzIetEPCWDvAFP",
+					"name": "Whitney Houston",
+					"type": "artist",
+					"uri": "spotify:artist:6XpaIBNiVzIetEPCWDvAFP"
+				}
+			],
+			"available_markets": [
+				"AD",
+				"AE",
+				"AR",
+				"AT",
+				"AU",
+				"BE",
+				"BG",
+				"BH",
+				"BO",
+				"BR",
+				"CA",
+				"CH",
+				"CL",
+				"CO",
+				"CR",
+				"CY",
+				"CZ",
+				"DE",
+				"DK",
+				"DO",
+				"DZ",
+				"EC",
+				"EE",
+				"EG",
+				"ES",
+				"FI",
+				"FR",
+				"GB",
+				"GR",
+				"GT",
+				"HK",
+				"HN",
+				"HU",
+				"ID",
+				"IE",
+				"IL",
+				"IN",
+				"IS",
+				"IT",
+				"JO",
+				"JP",
+				"KW",
+				"LB",
+				"LI",
+				"LT",
+				"LU",
+				"LV",
+				"MA",
+				"MC",
+				"MT",
+				"MX",
+				"MY",
+				"NI",
+				"NL",
+				"NO",
+				"NZ",
+				"OM",
+				"PA",
+				"PE",
+				"PH",
+				"PL",
+				"PS",
+				"PT",
+				"PY",
+				"QA",
+				"RO",
+				"SA",
+				"SE",
+				"SG",
+				"SK",
+				"SV",
+				"TH",
+				"TN",
+				"TR",
+				"TW",
+				"US",
+				"UY",
+				"VN",
+				"ZA"
+			],
+			"disc_number": 1,
+			"duration_ms": 228267,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "USRC11901901"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/6oJ6le65B3SEqPwMRNXWjY"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/6oJ6le65B3SEqPwMRNXWjY",
+			"id": "6oJ6le65B3SEqPwMRNXWjY",
+			"is_local": false,
+			"name": "Higher Love",
+			"popularity": 92,
+			"preview_url": "https:\/\/p.scdn.co\/mp3-preview\/a74efdaa12f708673a14fdf67bfb6ec365d8ebf0?cid=da3567d730834dbe967c280aef0fe049",
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:6oJ6le65B3SEqPwMRNXWjY",
+			"genres": [
+				"edm",
+				"pop",
+				"tropical house"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515858524,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 3054,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/0xRXCcSX89eobfrshSVdyu"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/0xRXCcSX89eobfrshSVdyu",
+						"id": "0xRXCcSX89eobfrshSVdyu",
+						"name": "MEDUZA",
+						"type": "artist",
+						"uri": "spotify:artist:0xRXCcSX89eobfrshSVdyu"
+					}
+				],
+				"available_markets": [],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/0agqVZjOqVtqHkq3pTFPXb"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/0agqVZjOqVtqHkq3pTFPXb",
+				"id": "0agqVZjOqVtqHkq3pTFPXb",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b2733a03f819723487ee3d5b0c36",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e023a03f819723487ee3d5b0c36",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d000048513a03f819723487ee3d5b0c36",
+						"width": 64
+					}
+				],
+				"name": "Piece Of Your Heart",
+				"release_date": "2019-02-01",
+				"release_date_precision": "day",
+				"total_tracks": 1,
+				"type": "album",
+				"uri": "spotify:album:0agqVZjOqVtqHkq3pTFPXb"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/0xRXCcSX89eobfrshSVdyu"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/0xRXCcSX89eobfrshSVdyu",
+					"id": "0xRXCcSX89eobfrshSVdyu",
+					"name": "MEDUZA",
+					"type": "artist",
+					"uri": "spotify:artist:0xRXCcSX89eobfrshSVdyu"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/2nm38smINjms1LtczR0Cei"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/2nm38smINjms1LtczR0Cei",
+					"id": "2nm38smINjms1LtczR0Cei",
+					"name": "Goodboys",
+					"type": "artist",
+					"uri": "spotify:artist:2nm38smINjms1LtczR0Cei"
+				}
+			],
+			"available_markets": [],
+			"disc_number": 1,
+			"duration_ms": 152913,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "DEUM71807719"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/5p1ex0pXv6jSPJ6QbumQpD"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/5p1ex0pXv6jSPJ6QbumQpD",
+			"id": "5p1ex0pXv6jSPJ6QbumQpD",
+			"is_local": false,
+			"name": "Piece Of Your Heart",
+			"popularity": 40,
+			"preview_url": null,
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:5p1ex0pXv6jSPJ6QbumQpD",
+			"genres": [
+				"pop house"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515858524,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 3511,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/0xRXCcSX89eobfrshSVdyu"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/0xRXCcSX89eobfrshSVdyu",
+						"id": "0xRXCcSX89eobfrshSVdyu",
+						"name": "MEDUZA",
+						"type": "artist",
+						"uri": "spotify:artist:0xRXCcSX89eobfrshSVdyu"
+					}
+				],
+				"available_markets": [],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/0agqVZjOqVtqHkq3pTFPXb"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/0agqVZjOqVtqHkq3pTFPXb",
+				"id": "0agqVZjOqVtqHkq3pTFPXb",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b2733a03f819723487ee3d5b0c36",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e023a03f819723487ee3d5b0c36",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d000048513a03f819723487ee3d5b0c36",
+						"width": 64
+					}
+				],
+				"name": "Piece Of Your Heart",
+				"release_date": "2019-02-01",
+				"release_date_precision": "day",
+				"total_tracks": 1,
+				"type": "album",
+				"uri": "spotify:album:0agqVZjOqVtqHkq3pTFPXb"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/0xRXCcSX89eobfrshSVdyu"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/0xRXCcSX89eobfrshSVdyu",
+					"id": "0xRXCcSX89eobfrshSVdyu",
+					"name": "MEDUZA",
+					"type": "artist",
+					"uri": "spotify:artist:0xRXCcSX89eobfrshSVdyu"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/2nm38smINjms1LtczR0Cei"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/2nm38smINjms1LtczR0Cei",
+					"id": "2nm38smINjms1LtczR0Cei",
+					"name": "Goodboys",
+					"type": "artist",
+					"uri": "spotify:artist:2nm38smINjms1LtczR0Cei"
+				}
+			],
+			"available_markets": [],
+			"disc_number": 1,
+			"duration_ms": 152913,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "DEUM71807719"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/5p1ex0pXv6jSPJ6QbumQpD"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/5p1ex0pXv6jSPJ6QbumQpD",
+			"id": "5p1ex0pXv6jSPJ6QbumQpD",
+			"is_local": false,
+			"name": "Piece Of Your Heart",
+			"popularity": 40,
+			"preview_url": null,
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:5p1ex0pXv6jSPJ6QbumQpD",
+			"genres": [
+				"pop house"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515858524,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 3540,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/0xRXCcSX89eobfrshSVdyu"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/0xRXCcSX89eobfrshSVdyu",
+						"id": "0xRXCcSX89eobfrshSVdyu",
+						"name": "MEDUZA",
+						"type": "artist",
+						"uri": "spotify:artist:0xRXCcSX89eobfrshSVdyu"
+					}
+				],
+				"available_markets": [],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/0agqVZjOqVtqHkq3pTFPXb"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/0agqVZjOqVtqHkq3pTFPXb",
+				"id": "0agqVZjOqVtqHkq3pTFPXb",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b2733a03f819723487ee3d5b0c36",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e023a03f819723487ee3d5b0c36",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d000048513a03f819723487ee3d5b0c36",
+						"width": 64
+					}
+				],
+				"name": "Piece Of Your Heart",
+				"release_date": "2019-02-01",
+				"release_date_precision": "day",
+				"total_tracks": 1,
+				"type": "album",
+				"uri": "spotify:album:0agqVZjOqVtqHkq3pTFPXb"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/0xRXCcSX89eobfrshSVdyu"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/0xRXCcSX89eobfrshSVdyu",
+					"id": "0xRXCcSX89eobfrshSVdyu",
+					"name": "MEDUZA",
+					"type": "artist",
+					"uri": "spotify:artist:0xRXCcSX89eobfrshSVdyu"
+				},
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/2nm38smINjms1LtczR0Cei"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/2nm38smINjms1LtczR0Cei",
+					"id": "2nm38smINjms1LtczR0Cei",
+					"name": "Goodboys",
+					"type": "artist",
+					"uri": "spotify:artist:2nm38smINjms1LtczR0Cei"
+				}
+			],
+			"available_markets": [],
+			"disc_number": 1,
+			"duration_ms": 152913,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "DEUM71807719"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/5p1ex0pXv6jSPJ6QbumQpD"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/5p1ex0pXv6jSPJ6QbumQpD",
+			"id": "5p1ex0pXv6jSPJ6QbumQpD",
+			"is_local": false,
+			"name": "Piece Of Your Heart",
+			"popularity": 40,
+			"preview_url": null,
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:5p1ex0pXv6jSPJ6QbumQpD",
+			"genres": [
+				"pop house"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"resuming": true
+			}
+		},
+		"is_playing": true
+	},
+	{
+		"timestamp": 1571515887080,
+		"context": {
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/playlist\/37i9dQZF1DX9EM98aZosoy"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/playlists\/37i9dQZF1DX9EM98aZosoy",
+			"type": "playlist",
+			"uri": "spotify:user:spotify:playlist:37i9dQZF1DX9EM98aZosoy"
+		},
+		"progress_ms": 0,
+		"item": {
+			"album": {
+				"album_type": "single",
+				"artists": [
+					{
+						"external_urls": {
+							"spotify": "https:\/\/open.spotify.com\/artist\/2NjfBq1NflQcKSeiDooVjY"
+						},
+						"href": "https:\/\/api.spotify.com\/v1\/artists\/2NjfBq1NflQcKSeiDooVjY",
+						"id": "2NjfBq1NflQcKSeiDooVjY",
+						"name": "Tones and I",
+						"type": "artist",
+						"uri": "spotify:artist:2NjfBq1NflQcKSeiDooVjY"
+					}
+				],
+				"available_markets": [],
+				"external_urls": {
+					"spotify": "https:\/\/open.spotify.com\/album\/797fOEI7XtMW8HMfL0OFbp"
+				},
+				"href": "https:\/\/api.spotify.com\/v1\/albums\/797fOEI7XtMW8HMfL0OFbp",
+				"id": "797fOEI7XtMW8HMfL0OFbp",
+				"images": [
+					{
+						"height": 640,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d0000b2736d64f8c42adab52686977431",
+						"width": 640
+					},
+					{
+						"height": 300,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d00001e026d64f8c42adab52686977431",
+						"width": 300
+					},
+					{
+						"height": 64,
+						"url": "https:\/\/i.scdn.co\/image\/ab67616d000048516d64f8c42adab52686977431",
+						"width": 64
+					}
+				],
+				"name": "Dance Monkey",
+				"release_date": "2019-08-08",
+				"release_date_precision": "day",
+				"total_tracks": 1,
+				"type": "album",
+				"uri": "spotify:album:797fOEI7XtMW8HMfL0OFbp"
+			},
+			"artists": [
+				{
+					"external_urls": {
+						"spotify": "https:\/\/open.spotify.com\/artist\/2NjfBq1NflQcKSeiDooVjY"
+					},
+					"href": "https:\/\/api.spotify.com\/v1\/artists\/2NjfBq1NflQcKSeiDooVjY",
+					"id": "2NjfBq1NflQcKSeiDooVjY",
+					"name": "Tones and I",
+					"type": "artist",
+					"uri": "spotify:artist:2NjfBq1NflQcKSeiDooVjY"
+				}
+			],
+			"available_markets": [],
+			"disc_number": 1,
+			"duration_ms": 209438,
+			"explicit": false,
+			"external_ids": {
+				"isrc": "QZES71982312"
+			},
+			"external_urls": {
+				"spotify": "https:\/\/open.spotify.com\/track\/3HCfLj84q3qXdArLlA1dV5"
+			},
+			"href": "https:\/\/api.spotify.com\/v1\/tracks\/3HCfLj84q3qXdArLlA1dV5",
+			"id": "3HCfLj84q3qXdArLlA1dV5",
+			"is_local": false,
+			"name": "Dance Monkey",
+			"popularity": 77,
+			"preview_url": null,
+			"track_number": 1,
+			"type": "track",
+			"uri": "spotify:track:3HCfLj84q3qXdArLlA1dV5",
+			"genres": [
+				"australian pop"
+			]
+		},
+		"currently_playing_type": "track",
+		"actions": {
+			"disallows": {
+				"pausing": true,
+				"skipping_prev": true
+			}
+		},
+		"is_playing": false
+	}
+]

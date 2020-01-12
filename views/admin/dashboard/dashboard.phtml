@@ -1,0 +1,118 @@
+<?php
+	$TC->loadData('unit', 0);
+
+	$nScentsInjected = 0;
+	$nEnabledUnits = 0;
+	$nDisabledUnits = 0;
+
+	$control_unit = array();
+
+	foreach($TC->data['unit'][0] as $k => $unit)
+	{
+		$nScentsInjected += $unit['unit_timesSprayed'];
+
+		if((bool)$unit['unit_isHub'])
+		{
+
+			$control_unit = $unit;
+			continue;
+
+		}
+
+		if((bool)$unit['unit_isActivated']) $nEnabledUnits ++;
+		else $nDisabledUnits ++;
+	}
+
+	$creation_date = strtotime(DBDatetoDate($control_unit['unit_createdAt']));
+	$days_since_creation = round((time() - $creation_date) / (60 * 60 * 24));
+
+	$nScentsInjected = round($nScentsInjected / $days_since_creation);
+?>
+
+<?php global $errors_reported, $scents_injected_perDayAvg, $disabled_units, $enabled_units; ?>
+
+<?php $TC->the_header('admin'); ?>
+<?php $TC->the_navbar('admin'); ?>
+
+	<div class="admin-bg"></div>
+
+	<div class="admin-container navToggle"> <!-- .navToggle -->
+		<div class="admin-container-left">
+			<?php $TC->the_sidebar('admin'); ?>
+		</div>
+		<div class="admin-container-right">
+			<div class="content-container">
+				<div class="row">
+
+					<section id="top_layer" class="widget-squares col-md-12 row">
+						<div class="col-md-6 col-lg-6 col-xl-3"><?php $TC->load_widget(
+								'simple_card_widget',
+								array(
+									"icon" => "<i class=\"fas fa-check\"></i>",
+									"value" => $nEnabledUnits,
+									"caption" => $enabled_units[$GLOBALS['lang']]
+								)
+							); ?>
+						</div>
+						<div class="col-md-6 col-lg-6 col-xl-3"><?php $TC->load_widget(
+								'simple_card_widget',
+								array(
+									"icon" => "<i class=\"fas fa-times\"></i>",
+									"icon_color" => "#AB8CE4",
+									"value" => $nDisabledUnits,
+									"caption" => $disabled_units[$GLOBALS['lang']]
+								)
+							); ?>
+						</div>
+						<div class="col-md-6 col-lg-6 col-xl-3"><?php $TC->load_widget(
+								'simple_card_widget',
+								array(
+									"icon" => "<i class=\"fas fa-spray-can\"></i>",
+									"icon_color" => "#03A9F3",
+									"value" => $nScentsInjected,
+									"caption" => $scents_injected_perDayAvg[$GLOBALS['lang']]
+								)
+							); ?>
+						</div>
+						<div class="col-md-6 col-lg-6 col-xl-3"><?php $TC->load_widget(
+								'simple_card_widget',
+								array(
+									"icon" => "<i class=\"fas fa-exclamation-triangle\"></i>",
+									"icon_color" => "#FB9678",
+									"value" => MainController::countFrontendErrors() + @count(@$_SESSION['backend_errors']),
+									"caption" => $errors_reported[$GLOBALS['lang']]
+								)
+							); ?>
+						</div>
+					</section>
+
+					<section id="highlighted_layer" class="widget-squares col-md-12 row">
+						<div class="col-md-12 units-container">
+							<div class="units"><?php
+								$TC->load_widget('carousel_widget', [], false);
+							?></div>
+						</div>
+					</section>
+
+					<section class="widget-squares col-md-12 row">
+						<div class="col-xl-8 col-lg-12" style="padding: 0;">
+							<div class="col-md-12"><?php
+								$TC->load_widget('table_widget', ["item_amount" => 5], false);
+							?></div>
+						</div>
+						<div class="col-xl-4 col-lg-12 col-radar-widgets" style="padding: 0;">
+							<div class="col-xl-12 col-lg-6 col-12 mb-2"><?php
+								$TC->load_widget('radar_widget', ["active_site" => "dashboard"], false);
+							?></div>
+							<div class="col-xl-12 col-lg-6 col-12"><?php
+								$TC->load_widget('radar_widget', ["active_site" => "dashboard"], false);
+							?></div>
+						</div>
+					</section>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+<?php $TC->the_footer('admin'); ?>

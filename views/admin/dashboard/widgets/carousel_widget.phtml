@@ -1,0 +1,234 @@
+<?php
+	/**
+	 * @name: unit Carousel Widget
+	 * @description: A static widget to display a carousel with unit information and the opportunity to add a unit to the db.
+	 * @params: No additional params required.
+	 */
+?>
+
+<?php global $app_activate, $app_deactivate; ?>
+<?php global $yes, $no, $times, $never, $enabled, $disabled; ?>
+<?php global $unit_activate, $unit_is_hub, $unit_is_hub__short, $unit_deactivate, $unit_forceSpray; ?>
+<?php global $add_unit, $form_unitName, $form_unitIsHub, $form_unitPriority, $form_unitNSprayed, $form_unitLastSprayed, $scents_injected_perDayAvg, $form_unitRoom, $form_unitStatus, $form_submit; ?>
+
+<?php $TC->loadData('unit', 0); ?>
+<?php $unit_pics = array_diff(glob(MEDIA_PATH."/uploads/units/unit-*"), [MEDIA_PATH."/uploads/units/unit-fallback.jpg"]); ?>
+<?php $unit_has_pic = function($name) use ($unit_pics) { foreach($unit_pics as $pic) if(strpos($pic, "unit-$name")) return $pic; } ?>
+
+<style>
+	.unit_carousel_widget_prev,
+	.unit_carousel_widget_next { position: absolute; top: calc(50% - 17px); font-size: 1.2em; background: #fff; border-radius: 50%; padding: 5px 8px; color: #000; z-index: 150; cursor: pointer; }
+	.unit_carousel_widget_next { right: 10px; }
+	.unit_carousel_widget_prev { left: 10px; }
+	.unit_carousel_widget { box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1); border-radius: 5px; }
+	.unit-card { border: 0; background-color: /*#24344E*/ #fff; box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1); }
+	.unit-card .card.row { margin: 0 !important; }
+	.unit-card .card-body,
+	.unit-card .card-body-bg { height: 50vh; width: 100%; padding: 0; border-top-left-radius: 0.25rem; border-bottom-left-radius: 0.25rem; }
+	.unit-card .card-body-bg { background-position: center; background-size: cover; background-repeat: no-repeat; }
+	.unit-card .card-body-left { float: left; padding: 0; }
+	.unit-card .card-body-right { color: rgba(0, 0, 0, 0.7); width: 100%; padding: 0 20px; }
+	.unit-card .card-body-right-container { display: flex; justify-content: center; align-items: center; padding: 25px; height: 100%; }
+	.unit-card .unit-inf-icons { position: absolute; bottom: 0; right: 15px; width: 60%; padding-right: 15px; height: 80px; background: rgba(0, 0, 0, .6); border-radius: 2px; color: rgba(255, 255, 255, 0.75); }
+	.unit-card .icon i { font-size: 16px; color: rgba(255, 255, 255, 0.9); padding: 10px; background: transparent; border-radius: 50%; margin-right: 10px; margin-left: 10px; }
+	.unit-card .icon-capacity i { border: 2px solid #00C292; padding: 10px 13px; }
+	.unit-card .icon-employees i { border: 2px solid #03A9F3; }
+	.unit-card .icon-location i { border: 2px solid #FB9678; }
+	.unit-card .icon-purple i { border: 2px solid #AB8CE4; }
+	.unit-card i.fa-times { padding: 8px 10px; }
+	.unit-card .card-body-right-container span { display: inline; }
+	.unit-card .unit-content { width: 100%; }
+	.unit-card .unit-content h1 { font-size: 36px; color: rgb(0, 0, 0); padding-bottom: 20px; }
+	.unit-card .unit-content h3 { padding-bottom: 30px; color: rgba(0, 0, 0, 0.9); font-size: 18px; }
+	.unit-card .unit-content p { line-height: 130%; padding-bottom: 10px; line-height: 100%; }
+	.unit-card .unit-content button { margin-top: 10px; }
+	.unit-card .unit-content .action-area { margin-left: -5px; padding-top: 5px; }
+	.unit-card .unit-content .btn-gradient { margin-top: 20px; display: inline; margin-right: 5px; float: left; }
+	.unit-card .btn-delete { position: absolute; top: 20px; right: 30px; opacity: .5; }
+
+	.unit-card-register .card-body-left { float: left; padding: 0; }
+	.unit-card-register .card-body-left .card-body-upload { cursor: pointer; width: 150px; height: 100px; background: rgba(0, 0, 0, .7); border-radius: 30%; }
+	.unit-card-register .card-body-left .card-body-upload i { font-size: 30px; color: #e2e3e5; }
+	.unit-card-register .card-body-right { float: left; padding: 0 20px; height: -webkit-fill-available; }
+	.unit-card-register .card-body-right .unit-content { width: 100%; height: 100%; float: left; }
+	.unit-card-register form .card { background: transparent; border: 0; box-shadow: none; }
+	.unit-card-register form .form-control { background: var(--input-grey); /*border: 1px solid rgb(29, 48, 78);*/border: 0; color: rgba(0, 0, 0, .7); /*box-shadow: inset 1px 2px 4px rgba(29, 48, 78, 0.1), 0px 0px 8px rgba(29, 48, 78, 0.2);*/ }
+	.unit-card-register form .form-control:active { border: 0 !important; outline: 0 !important; }
+	.unit-card-register form input::placeholder,
+	.unit-card-register form textarea::placeholder { color: rgba(0, 0, 0, 0.45); }
+	.unit-card-register form input[type="number"] { -moz-appearance: textfield; margin: 0; }
+	.unit-card-register form input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+	.unit-card-register form button[type="submit"] { margin-top: 20px; }
+
+	@media only screen and (min-width: 320px) and (max-width: 1103px) {
+		.unit-inf-icons{ display: none; }
+	}
+	@media only screen and (min-width: 320px) and (max-width: 770px) {
+		.card-body-left{ display: none; }
+		.unit-content{ width: fit-content !important; }S
+		.unit-card.unit-card-register .card-body-right-container span{ padding-left: 20px; }
+	}
+</style>
+
+<div class="unit_carousel_widget">
+	<?php if(arrayHasSizedElements($TC->data['unit'][0])) { ?>
+		<?php foreach($TC->data['unit'][0] as $k => $unit) { ?>
+			<div id="unit-<?php echo $k; ?>" class="unit unit-item">
+				<?php $pic = $unit_has_pic(str_replace(" ", "_", $unit['unit_name'])); ?>
+				<?php $pic_p =  deep_explode("\\", $pic); ?>
+				<div class="card unit-card flex-centered">
+					<div class="card-body row">
+
+						<div class="col-md-6 card-body-left">
+							<div class="card-body-title"></div>
+							<?php if($pic !== null) { ?>
+
+								<?php $pic_realpath = $pic_p[count($pic_p) - 1]; ?>
+								<div class="card-body-bg" style="background-image: url('/<?php echo $pic_realpath; ?>');"></div>
+							<?php } else { ?>
+								<div class="card-body-bg" style="background-image: url('<?php echo MEDIA_URI.'/'.$GLOBALS['unit_fallback_img']; ?>');"></div>
+							<?php } ?>
+							<div class="unit-inf-icons flex-centered row">
+								<div class="col-md-4 icon icon-capacity flex-centered">
+									<i class="fas fa-sort" data-toggle="tooltip" data-placement="top" title="<?php echo $form_unitPriority[$GLOBALS['lang']]; ?>"></i> <span><?php echo ((bool)$unit['unit_isHub'] ? $unit_is_hub__short[$GLOBALS['lang']] : $unit['unit_priority']); ?></span>
+								</div>
+								<div class="col-md-4 icon icon-employees flex-centered">
+									<?php
+										$creation_date = strtotime(DBDatetoDate($unit['unit_createdAt']));
+										$days_since_creation = round((time() - $creation_date) / (60 * 60 * 24));
+
+										$nScentsInjected = round($unit['unit_timesSprayed'] / $days_since_creation, 1);
+									?>
+									<i class="fas fa-spray-can" data-toggle="tooltip" data-placement="top" title="<?php echo $scents_injected_perDayAvg[$GLOBALS['lang']]; ?>"></i> <span><?php echo $nScentsInjected ?? 0; ?></span>
+								</div>
+								<div class="col-md-4 icon icon-location flex-centered">
+									<?php if((bool)$unit['unit_isActivated']) { ?>
+										<i class="fas fa-check" data-toggle="tooltip" data-placement="top" title="<?php echo $form_unitStatus[$GLOBALS['lang']]; ?>"></i><span><?php echo $enabled[$GLOBALS['lang']]; ?></span>
+									<?php } else { ?>
+										<i class="fas fa-times" data-toggle="tooltip" data-placement="top" title="<?php echo $form_unitStatus[$GLOBALS['lang']]; ?>"></i><span><?php echo $disabled[$GLOBALS['lang']]; ?></span>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6 card-body-right">
+							<?php if(!(bool)$unit['unit_isHub']) { ?>
+								<a href="?page=Admin&action=deleteUnit&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-red btn-delete"><i class="fas fa-trash"></i></a>
+							<?php } ?>
+							<div class="card-body-right-container">
+								<div class="unit-content">
+									<h1><span><?php echo $unit['unit_name']; ?></span></h1>
+									<h3><?php echo $form_unitRoom[$GLOBALS['lang']]; ?>: <span><?php echo $unit['unit_room']; ?></span></h3>
+									<?php if(!(bool)$unit['unit_isHub']) { ?>
+										<p><?php echo $form_unitNSprayed[$GLOBALS['lang']]; ?>: <span><?php echo ($unit['unit_timesSprayed'] ?? 0)." ".$times[$GLOBALS['lang']]; ?></span></p>
+										<p><?php echo $form_unitLastSprayed[$GLOBALS['lang']]; ?>: <span><?php echo (isSizedString($unit['unit_lastSprayed']) ? DBDatetoDate($unit['unit_lastSprayed']) : $never[$GLOBALS['lang']]); ?></span></p>
+									<?php } else { ?>
+										<p><?php echo $unit_is_hub[$GLOBALS['lang']]; ?></p>
+									<?php } ?>
+									<div class="action-area">
+										<?php if(!(bool)$unit['unit_isHub']) { ?>
+											<?php if(isSizedString($unit['unit_secret'])) { ?>
+												<?php if((bool)$unit['unit_isActivated']) { ?>
+													<a href="?page=Admin&action=forceSpray&unit_id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluegreen" onclick="document.querySelector('#preloader').style.left = '0';"><?php echo $unit_forceSpray[$GLOBALS['lang']]; ?></i></a>
+													<a href="?page=Admin&action=changeStatusUnit&newStatus=0&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluepurple"><?php echo $unit_deactivate[$GLOBALS['lang']]; ?></a>
+												<?php } else { ?>
+													<a href="?page=Admin&action=changeStatusUnit&newStatus=1&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluepurple"><?php echo $unit_activate[$GLOBALS['lang']]; ?></a>
+												<?php } ?>
+											<?php } else { ?>
+												<a href="?page=Admin&action=connectUnit&unit_id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-red">Verbinden</a>
+											<?php } ?>
+										<?php } else { ?>
+											<?php if($TC->data['config']['app_activation'] === "enabled") { ?>
+												<a href="?page=Admin&action=updateMiscSettings&app_activation=disabled" class="btn-gradient btn-gradient-lbluepurple"><?php echo $app_deactivate[$GLOBALS['lang']]; ?></a>
+											<?php } else { ?>
+												<a href="?page=Admin&action=updateMiscSettings&app_activation=enabled" class="btn-gradient btn-gradient-lbluepurple"><?php echo $app_activate[$GLOBALS['lang']]; ?></a>
+											<?php } ?>
+										<?php } ?>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		<?php } ?>
+	<?php } ?>
+
+	<div id="unit-fallback" class="unit unit-item">
+		<div class="card unit-card unit-card-register flex-centered">
+			<div class="card-body">
+
+				<?php renderForm_init("?page=Admin&action=registerUnit", ["file_upload" => true, "wrap_class" => "row"]); ?>
+
+				<div class="col-md-6 card-body-left">
+					<div class="card-body-title"></div>
+					<div class="card-body-bg flex-centered" style="background-image: url('<?php echo MEDIA_URI.'/'.$GLOBALS['unit_fallback_img']; ?>');">
+						<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MAX_UPLOAD_FILESIZE; ?>" />
+						<?php renderForm_upload("img", null, null, array(
+							"container" => true,
+							"wrap_class" => "unit-img-file dnone"));
+						?>
+						<div class="card-body-upload flex-centered" onclick="$(this).prev().find('input').trigger('click');">
+							<i class="fas fa-upload"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-6 card-body-right flex-centered">
+					<div class="card-body-right-container">
+						<div class="unit-content flex-centered">
+							<div class="form_input_container">
+								<h1><span><?php echo $add_unit[$GLOBALS['lang']]; ?></span></h1>
+								<div class="formContainer row">
+									<div class="formDiv col-md-12">
+										<?php renderForm_input("name", null, null, array(
+											"type" => "text",
+											"container" => false,
+											"required" => true,
+											"class" => isset_true($TC->view['unitname_err']['err_status']) ? "input-error" : "",
+											"placeholder" => isset_true($TC->view['unitname_err']['err_status']) ? $TC->view['unitname_err']['err_msg'] : $form_unitName[$GLOBALS['lang']]));
+										?>
+									</div>
+									<div class="formDiv col-md-6">
+										<?php renderForm_select("ishub", null, array(
+											$form_unitIsHub[$GLOBALS['lang']],
+											$yes[$GLOBALS['lang']],
+											$no[$GLOBALS['lang']]
+											), 0, array(
+											"container" => false));
+										?>
+									</div>
+									<div class="formDiv col-md-6">
+										<?php renderForm_input("priority", null, null, array(
+											"type" => "number",
+											"container" => false,
+											"required" => true,
+											"class" => isset_true($TC->view['unitpriority_err']['err_status']) ? "input-error" : "",
+											"placeholder" => isset_true($TC->view['unitpriority_err']['err_status']) ? $TC->view['unitpriority_err']['err_msg'] : $form_unitPriority[$GLOBALS['lang']]));
+										?>
+									</div>
+									<div class="formDiv col-md-12">
+										<?php renderForm_input("room", null, null, array(
+											"type" => "text",
+											"container" => false,
+											"required" => true,
+											"class" => isset_true($TC->view['unitroom_err']['err_status']) ? "input-error" : "",
+											"placeholder" => isset_true($TC->view['unitroom_err']['err_status']) ? $TC->view['unitroom_err']['err_msg'] : $form_unitRoom[$GLOBALS['lang']]));
+										?>
+									</div>
+									<div class="formDiv col-md-12">
+										<button class="btn-gradient btn-gradient-blue" type="submit"><?php echo $form_submit[$GLOBALS['lang']]; ?></button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
+
+			</div>
+		</div>
+	</div>
+</div>

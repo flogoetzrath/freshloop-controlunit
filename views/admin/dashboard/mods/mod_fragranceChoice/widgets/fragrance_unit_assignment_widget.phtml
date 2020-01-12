@@ -1,0 +1,253 @@
+<?php
+	/**
+	 * @name: Fragrance-Unit Assignment Widget
+	 * @description: A widget to manage and index the assignment of fragrances in relation to a given unit both currently and in scope of an event
+	 * @params: array $unit: The current unit untouched from db
+	 *          Int $nFragrancesPerUnit: The numer of fragrances per unit
+	 */
+?>
+
+<?php
+	$widget_id = uniqid();
+
+	$unit = $data['unit'];
+
+	$mod_fchoice = $TC->modules['mod_fragranceChoice'];
+	$mod_data = $mod_fchoice->store;
+
+	$mod_time = $TC->modules['mod_time'];
+	$event_data = $mod_time->store;
+?>
+
+<style>
+	#widget__fragrance_unit_assignment .part-right { height: 100% !important; }
+	#widget__fragrance_unit_assignment .part-right .part-container,
+	#widget__fragrance_unit_assignment .part-right .part-wheel{ display: block; position: relative; float: left; width: 50%; height: 100%; }
+	#widget__fragrance_unit_assignment .wrapper { position: absolute; text-align: center; color: white; border: 1rem solid rgba(0, 0, 0, 0.1); width: 2rem; height: 2rem; padding: 0; border-radius: 50%; margin: auto; top: 0; bottom: 0; left: 0; right: 0; transition: 0.3s all; }
+	#widget__fragrance_unit_assignment .part-wheel:hover .wrapper { padding: 1.5rem; }
+	#widget__fragrance_unit_assignment .elem { cursor: pointer; position: absolute; background: white; color: rgba(0, 0, 0, 0.7); width: auto; height: auto; padding: 0.25rem 0.5rem; line-height: 2rem; text-align: center; border-radius: 5px; -webkit-transform-origin: 50% 50%; transform-origin: 50% 50%; box-shadow: 0; transition: all 0.3s cubic-bezier(0.5, -1, 0.5, 2), background 0.6s; transition-delay: 0s; opacity: 0; }
+	#widget__fragrance_unit_assignment .part-wheel:hover .elem { opacity: 1; background: var(--input-grey); -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset; -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset; box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;}
+	#widget__fragrance_unit_assignment .elem:nth-child(1) { z-index: 7; -webkit-transform: rotate(-38.5714285714deg) translateX(0) rotate(38.5714285714deg); transform: rotate(-38.5714285714deg) translateX(0) rotate(38.5714285714deg); }
+	#widget__fragrance_unit_assignment .elem:nth-child(2) { z-index: 6; -webkit-transform: rotate(12.8571428571deg) translateX(0) rotate(-12.8571428571deg); transform: rotate(12.8571428571deg) translateX(0) rotate(-12.8571428571deg); }
+	#widget__fragrance_unit_assignment .elem:nth-child(3) { z-index: 5; -webkit-transform: rotate(64.2857142857deg) translateX(0) rotate(-64.2857142857deg); transform: rotate(64.2857142857deg) translateX(0) rotate(-64.2857142857deg); }
+	#widget__fragrance_unit_assignment .elem:nth-child(4) { z-index: 4; -webkit-transform: rotate(115.7142857143deg) translateX(0) rotate(-115.7142857143deg); transform: rotate(115.7142857143deg) translateX(5.5rem) rotate(-115.7142857143deg); }
+
+	#widget__fragrance_unit_assignment .part-wheel:hover .elem:nth-child(1) { -webkit-transform: rotate(-60deg) translateX(81px) rotate(60deg); transform: rotate(-60deg) translateX(81px) rotate(60deg); transition-delay: 0s, 0s; }
+	#widget__fragrance_unit_assignment .part-wheel:hover .elem:nth-child(2) { -webkit-transform: rotate(20deg) translateX(50px) rotate(-20deg); transform: rotate(30deg) translateX(50px) rotate(-30deg); transition-delay: 0.04s, 0.08s; }
+
+	.modal-fragranceAssignment .comp-body { margin-bottom: 15px; }
+	.modal-fragranceAssignment .comp-event_selection .comp-header { margin: 20px 0 10px; }
+</style>
+
+<div id="widget__fragrance_unit_assignment" class="widget-<?php echo $widget_id; ?>">
+	<div class="widget_inner">
+		<?php (new TemplateController())->load_widget(
+			'simple_card_widget',
+			array(
+				"icon" => (bool)$unit['unit_isHub'] ? "<i class=\"fas fa-project-diagram\"></i>" : "<i class=\"fas fa-plug\"></i>",
+				"icon_color" => (bool)$unit['unit_isHub'] ? "#26C080" : "#03A9F3",
+				"value" => $unit['unit_name'],
+				"caption" => $unit['unit_room']
+			)
+		); ?>
+	</div>
+</div>
+
+<?php
+	global $execFn;
+
+	global $empty, $form_save, $close, $not_editable;
+	global $fragranceChoice_modName, $fragranceChoice_unassigned;
+	global $fragranceChoice_event_distribution, $fragranceChoice_general_selection;
+	global $fragranceChoice_unit_assignment_err__illegalFragrance, $fragranceChoice_unit_assignment_err__fixedEvent;
+
+	# Determine what fragrance is associated to what position on the current unit
+	$unit_fragrances = array();
+
+	foreach($mod_data as $k => $fragrance)
+		if($fragrance['fragrance_unit'] === $unit['unit_id'])
+			$unit_fragrances[$fragrance['fragrance_position']] = $fragrance;
+
+	# Attach it then to the widget wheel
+	$wheel_data = array();
+
+	for($pos = 1; $pos <= $data['nFragrancesPerUnit']; $pos ++)
+		if(isSizedArray($unit_fragrances[$pos]))
+			$wheel_data[$pos] = $unit_fragrances[$pos]['fragrance_name'];
+		else $wheel_data[$pos] = $empty[$GLOBALS['lang']];
+
+	# Give the opportunity to change fragrances by bringing up a modal with all possible fragrances except the current one to choose from
+	$modals = array();
+
+	# Determine in what events the units is involved
+	$unit_events = array();
+
+	foreach($event_data as $k => $event)
+		if(in_array($unit['unit_id'], deep_explode(",", $event['event_targetUnits'])))
+			array_push($unit_events, $event);
+
+	// Adjust $mod_data to present it in a select field
+	$initialFragrances = array($fragranceChoice_modName[$GLOBALS['lang']]);
+
+	foreach($mod_data as $k => $fragrance)
+		if((bool)$fragrance['fragrance_isGeneralFragrance'] === true)
+			array_push($initialFragrances, $fragrance['fragrance_name']);
+
+	foreach($unit_fragrances as $pos => $fragrance)
+	{
+
+		# Catch renderForm output
+		$event_selection_output = "";
+
+		// General Selection
+		ob_start();
+
+		$select_value = array_search($wheel_data[$pos], $initialFragrances);
+		renderForm_select("pos_fragrance", null, $initialFragrances, $select_value, array("container" => false));
+		$select_type = ob_get_contents();
+		$select_type .= "<input type='hidden' name='pos' value='".$pos."'>";
+		$select_type .= "<input type='hidden' name='unit_id' value='".$unit['unit_id']."'>";
+
+		ob_end_clean();
+
+		// Fragrance-Event Assignment
+		foreach($unit_events as $k => $event)
+		{
+
+			ob_start();
+
+			// Determine if the toggle switch is checkable
+			/* @note: This only applies as a classification for whether the value of the checkbox is positive and is only to be implemented this way because of the context of the renderForm_toggleSwitch component */
+			$checkable = false;
+			$generalF = $mod_fchoice->getGeneralFragranceByAssignedID($fragrance['fragrance_id']);
+
+			if(isSizedInt($event['event_fragrance_id']) && @$event['event_fragrance_id'] === @$generalF['fragrance_id'])
+				$checkable = true;
+
+			// Generate the toggle switch
+			renderForm_toggleSwitch("fragrance_event-{$event['event_id']}_".uniqid(), $event['event_name'], $checkable, array(
+				"container" => false,
+				"standard_css" => true,
+				"disabled" => true,
+ 				"changeable" => $checkable,
+				"changeable_err_msg" => $checkable === false
+					? $fragranceChoice_unit_assignment_err__illegalFragrance[$GLOBALS['lang']]
+					: $fragranceChoice_unit_assignment_err__fixedEvent[$GLOBALS['lang']]
+			));
+
+			$event_selection_output .= ob_get_contents();
+
+			ob_end_clean();
+
+		}
+
+		// Build Modal
+		$modals[$pos] = <<<EOT
+			<div class="modal fade modal-borderless modal-fragranceAssignment" id="unit_fragrance-$pos">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						{$execFn(renderForm_init_ob("?page=Admin&mod=mod_fragranceChoice&action=FragranceUnitAssignmentAction", ["activate_card_wrap" => false]))}
+							<!-- Modal header -->
+							<div class="modal-header">
+								<h4 class="modal-title">{$unit['unit_name']} - {$fragranceChoice_modName[$GLOBALS['lang']]} {$pos}</h4>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+							</div>
+							
+							<!-- Modal body -->
+							<div class="modal-body">
+								<div class="modal-body_container">
+									<div class="comp-general_selection">
+										<div class="comp-header">
+											<h4 class="text-muted">{$fragranceChoice_general_selection[$GLOBALS['lang']]}</h4>
+										</div>
+										<div class="comp-body">
+											{$select_type}
+										</div>
+									</div>
+									<div class="comp-event_selection">
+										<div class="comp-header">
+											<h4 class="text-muted">{$fragranceChoice_event_distribution[$GLOBALS['lang']]} ({$not_editable[$GLOBALS['lang']]})</h4>
+										</div>
+										<div class="comp-body">
+											{$event_selection_output}
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<!-- Modal footer -->
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-gradient btn-gradient-lbluegreen">{$form_save[$GLOBALS['lang']]}</button>
+								<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal">{$close[$GLOBALS['lang']]}</button>
+							</div>
+						{$execFn(renderForm_close_ob("", array("activate_submit_btn" => false)))}
+					</div>
+				</div>
+			</div>
+EOT;
+
+	}
+
+
+	# Widget Wheel Template
+	$widget_wheel = "<div class=\"part-wheel\">";
+	$widget_wheel .= "<div class=\"wrapper\">";
+
+	for($pos = 1; $pos <= $data['nFragrancesPerUnit']; $pos ++)
+		$widget_wheel .= "<div class=\"elem\" id=\"$pos\" data-toggle=\"modal\" data-target=\"#unit_fragrance-$pos\">{$wheel_data[$pos]}</div>";
+
+	$widget_wheel .= "</div>";
+	$widget_wheel .= "</div>";
+
+	$js = <<<EOT
+		<script>
+			$(document).ready(function() 
+			{
+				
+				// Render Widget Wheel
+				widget_id = "$widget_id";
+				widget_wheel = '$widget_wheel';
+				widgetEl = document.querySelector(".widget-" + widget_id);
+			
+				widgetEl.querySelector(".part-right").innerHTML += widget_wheel;
+				
+			});
+		</script>
+EOT;
+
+
+	# Queue delayed component rendering
+	if(!(bool)$unit['unit_isHub'])
+	{
+
+		$GLOBALS['js']['widget__fragrance_unit_assignment-'.$widget_id] = [$js];
+		foreach($modals as $pos => $modal) $GLOBALS['html']['fragrance_unit_assignment-'.$pos] = $modal;
+
+	}
+
+?>
+
+<?php // Correct misplacement of widget wheel elements due to their varying strlen ?>
+<style>
+	<?php
+		$thirdContent = $wheel_data[3];
+		$translateXAddition = 0;
+		if(strlen($thirdContent) > 4) $translateXAddition = strlen($thirdContent) * 2 + 6;
+	?>
+	#widget__fragrance_unit_assignment .part-wheel:hover .elem:nth-child(3) {
+		-webkit-transform: rotate(170deg) translateX(<?php echo (90 + $translateXAddition)."px"; ?>) rotate(-170deg);
+		transform: rotate(165deg) translateX(<?php echo (90 + $translateXAddition)."px"; ?>) rotate(-165deg);
+		transition-delay: 0.08s, 0.16s;
+	}
+
+	<?php
+		$fourthContent = $wheel_data[4];
+		$translateXAddition = 0;
+		if(strlen($thirdContent) > 4) $translateXAddition = strlen($thirdContent) * 2 + 6;
+	?>
+	#widget__fragrance_unit_assignment .part-wheel:hover .elem:nth-child(4) {
+		-webkit-transform: rotate(220deg) translateX(<?php echo (110 + $translateXAddition)."px"; ?>) rotate(-220deg);
+		transform: rotate(220deg) translateX(<?php echo (110 + $translateXAddition)."px"; ?>) rotate(-220deg);
+		transition-delay: 0.12s, 0.24s;
+	}
+</style>

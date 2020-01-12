@@ -1,0 +1,37 @@
+<?php
+	/**
+	 * @name: Simple Card Widet
+	 * @description: A multifunctional widget in the shape of a simple card layout
+	 * @params: String $icon: The highlighted icon
+     *          Int $value: The presented value,
+	 *          String $caption: The caption of $value
+	 * @notice: No standalone php execution in this file possible. Use [[ [^\´]* ]] for php expressions.
+	 */
+?>
+
+<style>
+	#widget_new-customers { height: 100px; width: 100%; background-color: #fff; }
+	#widget_new-customers .card-body,
+	#widget_new-customers .part { display: flex; justify-content: center; align-items: center; }
+	#widget_new-customers .part{ float: left; position: relative; height: auto; }
+	#widget_new-customers .part-left{ width: 30%; font-size: 35px; color: #26C080; }
+	.widget-{{ widget_id }} .part-left i{ color: {{ icon_color }} !important; }
+	#widget_new-customers .part-right{ width: 70%; padding-left: 1.3rem; justify-content: left; color: rgba(0, 0, 0, 0.7); }
+	#widget_new-customers span:first-child { font-size: 20px; display: block; }
+	#widget_new-customers span:last-child { font-size: 14px; display: block; }
+</style>
+
+<div id="widget_new-customers" class="card widget-{{ widget_id }}">
+	<div class="card-body">
+		<div class="part part-left">
+			{{ icon }}
+		</div>
+		<div class="part part-right">
+			<div class="part-container">
+				<span>{{ value }}</span>
+				<span>{{ caption }}</span>
+			</div>
+		</div>
+	</div>
+</div>
+

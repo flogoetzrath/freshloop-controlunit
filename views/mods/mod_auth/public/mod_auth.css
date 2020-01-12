@@ -1,0 +1,155 @@
+@import url("../../../public/css/global.css");
+
+/*------------------------
+      General Style
+-------------------------*/
+
+#footer{
+	display: none;
+}
+.modal-open{
+	padding-right: 0 !important;
+}
+.modal-dialog .card,
+.modal-dialog .modal-content{
+	border: 0 !important;
+}
+.modal-dialog .card-body{
+	padding: 0 !important;
+}
+.modal-body{
+	padding: 1.5rem 1rem;
+}
+.modal-dialog p{
+	font-family: "Montserrat", sans-serif;
+	font-size: 14px;
+	padding-bottom: 1rem;
+}
+.modal-dialog input{
+	font-family: "Montserrat", FontAwesome;
+}
+
+/*------------------------
+   Authentication Style
+-------------------------*/
+
+.auth {
+	position: relative;
+	width: 100vw;
+	height: calc(100vh - var(--navbar-height));
+	margin: 0;
+}
+.auth .card *{
+	display: block;
+}
+.auth h1{
+	font-weight: bold;
+	font-size: 52px;
+	font-family: "Ubuntu", "Lato", sans-serif;
+}
+.layer-login {
+	background-color: #fff;
+	height: 100%;
+	text-align: center;
+}
+.layer-login .card{
+	border: 0 !important;
+	box-shadow: 0 0 0 0 !important;
+}
+.layer-login h1 {
+	color: var(--green);
+	margin-bottom: 10px;
+}
+.layer-login .content {
+	width: 60%;
+}
+.layer-login form {
+	padding-top: 30px;
+}
+.layer-login form input {
+	margin: 15px auto;
+	background: var(--input-grey);
+	font-family: "Montserrat", FontAwesome, sans-serif;
+	border: 0;
+	font-size: 16px;
+	padding: 15px 20px;
+	width: 80%;
+	border-radius: 2px;
+	outline: 0;
+}
+.layer-login form input:focus{
+	background: var(--input-grey);
+	border: 0;
+	box-shadow: 0 0 0 0;
+	outline: 0;
+}
+.layer-login .reset-pw {
+	margin: 30px auto 50px auto;
+	padding-bottom: 10px;
+	border-bottom: 1px solid black;
+	width: fit-content;
+	cursor: pointer;
+}
+.layer-login .reset-pw a{
+	color: #000;
+	text-decoration: none;
+}
+.layer-login .button {
+	color: #fff;
+	background: var(--green) !important;
+	width: 230px !important;
+}
+
+.layer-side {
+	background-image: url("./media/bg.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center right;
+	height: 100%;
+	color: #fff;
+}
+.layer-side * { color: #fff !important; }
+.layer-side .content {
+	width: 65%;
+	margin: 0 auto;
+	text-align: center;
+}
+.layer-side h3 {
+	font-size: 22px !important;
+	font-family: "Montserrat", sans-serif;
+	margin: 50px auto;
+	font-weight: lighter;
+	opacity: 0.95;
+}
+
+.content {
+	height: fit-content;
+	position: relative;
+}
+.auth .button {
+	border: 0 !important;
+	height: auto !important;
+	background: transparent;
+	padding: 18px;
+	margin: 0 auto;
+	box-shadow: 0 0 0 2px #fff inset;
+	text-transform: uppercase;
+	border-radius: 40px;
+	font-size: 14px;
+	color: #fff;
+	width: 60%;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	font-family: "Montserrat", "BlinkMacSystemFont";
+}
+.auth .button:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+	.auth h1{ font-size: 35px !important; }
+	.layer-login form input,
+	.layer-login .button{ width: 100% !important; }
+}

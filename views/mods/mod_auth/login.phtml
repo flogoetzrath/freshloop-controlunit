@@ -1,0 +1,81 @@
+<?php if($TC->modules['mod_auth']->Auth->isLoggedIn()) $TC->redirect("/dashboard", true); ?>
+
+<?php global $form_submit, $form_cancel; ?>
+<?php global $auth_wcb, $auth_login, $auth_email, $auth_emailORpw, $auth_pw, $auth_recover_pw, $auth_recover_pw__text, $auth_register, $auth_login_appname, $auth_register_intro; ?>
+<?php global $unknown_error, $invalid_email, $invalid_password, $unknown_username, $ambiguous_username, $email_or_username_required; ?>
+
+<?php $TC->the_header('mod_auth'); ?>
+<?php $TC->the_navbar(); ?>
+
+	<?php $TC->modules['mod_auth']->buildAuthErrors(); ?>
+
+	<div class="auth row">
+		<div class="col-md-8 layer-login flex-centered">
+			<div class="content">
+				<h1><?php echo $auth_login_appname[$GLOBALS['lang']]; ?></h1>
+				<?php renderForm_init("?mod=mod_auth&action=login"); ?>
+					<?php
+						renderForm_input("email", null, null, array(
+							"type" => "text",
+							"container" => false,
+							"required" => true,
+							"class" => @$TC->modules['mod_auth']->view['email_err']['err_status'] ? "input-error" : "",
+							"placeholder" => @$TC->modules['mod_auth']->view['email_err']['err_status'] ? @$TC->modules['mod_auth']->view['email_err']['err_msg'] : "&#xf0e0  ".$auth_emailORpw[$GLOBALS['lang']])
+						);
+					?>
+					<?php
+						renderForm_input("password", null, null, array(
+							"type" => "password",
+							"container" => false,
+							"required" => true,
+							"class" => @$TC->modules['mod_auth']->view['password_err']['err_status'] ? "input-error" : "",
+							"placeholder" => @$TC->modules['mod_auth']->view['password_err']['err_status'] ? @$TC->modules['mod_auth']->view['password_err']['err_msg'] : "&#xf023   ".$auth_pw[$GLOBALS['lang']])
+						);
+					?>
+					<span class="reset-pw" data-toggle="modal" data-target="#recoverPWModal"><?php echo $auth_recover_pw[$GLOBALS['lang']]; ?></span>
+					<button href="#" class="button" type="submit"><?php echo $auth_login[$GLOBALS['lang']]; ?></button>
+				<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
+			</div>
+		</div>
+		<div class="col-md-4 layer-side flex-centered">
+			<div class="content">
+				<h1><?php echo $auth_wcb[$GLOBALS['lang']]; ?></h1>
+				<h3><?php echo $auth_register_intro[$GLOBALS['lang']]; ?></h3>
+				<a href="/register" class="button"><?php echo $auth_register[$GLOBALS['lang']]; ?></a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="recoverPWModal" tabindex="-1" role="dialog" aria-labelledby="recoverPWModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<?php renderForm_init("?mod=mod_auth&action=recoverPW"); ?>
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title" id="exampleModalLabel"><?php echo $auth_recover_pw[$GLOBALS['lang']]; ?></h3>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p><?php echo $auth_recover_pw__text[$GLOBALS['lang']]; ?></p>
+						<?php
+						renderForm_input("email", null, null, array(
+							"type" => "text",
+							"container" => false,
+							"required" => true,
+							"class" => "",
+							"placeholder" => "&#xf0e0  ".$auth_email[$GLOBALS['lang']])
+						);
+					?>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $form_cancel[$GLOBALS['lang']]; ?></button>
+						<button type="submit" class="btn" style="background:var(--green);color:#fff;"><?php echo $form_submit[$GLOBALS['lang']]; ?></button>
+					</div>
+				</div>
+			<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
+		</div>
+	</div>
+
+<?php $TC->the_footer('mod_auth'); ?>

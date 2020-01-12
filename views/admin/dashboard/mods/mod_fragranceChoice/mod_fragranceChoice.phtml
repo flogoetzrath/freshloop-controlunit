@@ -1,0 +1,85 @@
+<?php global $fragranceChoice_modName, $fragranceChoice_modDescription; ?>
+
+<?php
+	$mod_fragranceChoice = $TC->modules['mod_fragranceChoice'] ?? false;
+
+	$TC->loadData('unit', 0);
+	$unit_data = $TC->data['unit'][0];
+
+	$nUnits = count($unit_data);
+
+	if($nUnits === 1) $col_size = "12";
+	else if($nUnits % 2 === 0 && $nUnits <= 6) $col_size = "6";
+	else if($nUnits % 3 === 0) $col_size = "4";
+	else $col_size = "3";
+?>
+
+<?php $TC->the_header('admin'); ?>
+<?php $TC->the_navbar('admin'); ?>
+
+<div class="admin-bg"></div>
+
+<div class="admin-container navToggle"> <!-- .navToggle -->
+	<div class="admin-container-left">
+				<?php $TC->the_sidebar('admin'); ?>
+			</div>
+	<div class="admin-container-right">
+		<div class="content-container">
+			<div class="row">
+				<?php
+					$mod_header_data = array(
+						"mod_name" => "mod_fragranceChoice",
+						"mod_name_lang" => $fragranceChoice_modName[$GLOBALS['lang']],
+						"mod_description" => $fragranceChoice_modDescription[$GLOBALS['lang']]
+					);
+				?>
+				<?php $TC->the_mod_header($mod_header_data); ?>
+
+				<?php
+					// If module is activated and all dependencies are loaded
+					if($mod_fragranceChoice && @$mod_fragranceChoice->mod_isOperable) {
+				?>
+
+					<section id="highlighted_layer" class="widget-squares col-md-12 row">
+						<div class="col-md-12"><?php
+							$TC->load_widget(array(
+								"mod_name" => "mod_fragranceChoice",
+								"widget_name" => "fragrance_management_widget"
+							), ["unit_data" => $unit_data], false);
+						?></div>
+					</section>
+
+					<section class="widget-squares col-md-12 row row-units">
+						<?php foreach($unit_data as $k => $unit) { ?>
+							<div class="col-md-<?php echo $col_size; ?>"><?php
+								$TC->load_widget(array(
+									"mod_name" => "mod_fragranceChoice",
+									"widget_name" => "fragrance_unit_assignment_widget"
+								), [
+									"unit" => $unit,
+									"nFragrancesPerUnit" => $TC->data['config']['mod_fragranceChoice__fragrances_per_unit']
+								], false);
+							?></div>
+						<?php } ?>
+					</section>
+
+				<?php } else if($mod_fragranceChoice && (bool)@$mod_fragranceChoice->mod_isOperable === false) { ?>
+
+					<section id="highlighted_layer" class="widget-squares col-md-12 row">
+						<div class="col-md-12">
+							<div class="card" style="padding: 0.25rem 1rem;">
+								<?php global $mods_notWorkingCorrectly_dependenciesMissing; ?>
+								<?php $missing_dependencies = @array_map("MainController::getTranslatedModNameByName", $mod_fragranceChoice->mod_missing_dependencies) ?: array(); ?>
+								<?php echo $mods_notWorkingCorrectly_dependenciesMissing[$GLOBALS['lang']].implode(", ", $missing_dependencies); ?>.
+							</div>
+						</div>
+					</section>
+
+				<?php } ?>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php $TC->the_footer('admin'); ?>

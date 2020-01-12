@@ -1,0 +1,134 @@
+<?php
+	/**
+	 * @name: Fragrance Combination Management Widget
+	 * @description: A widget manage the distribution and configuration of fragrance combinations attached to a given event
+	 * @params: No additional params required
+	 */
+?>
+<?php
+	// Get module instance
+	$mod_fcollective = $TC->modules['mod_fragranceCollective'];
+	// Get all events that are registered to have fragrance combinations enabled for them
+	$events = $mod_fcollective->getFragranceCollectiveEnabledModules();
+
+	// Get required fragranceChoice module instance
+	$mod_fchoice = $TC->modules['mod_fragranceChoice'];
+	// Separate stored data of the module
+	$fragrances = $mod_fchoice->getGeneralFragrances();
+?>
+
+<style>
+	#widget__fragrance_combination_management .no-data{ height: 50px; padding-left: 20px; }
+</style>
+
+<div id="widget__fragrance_combination_management" class="widget-<?php echo $widget_id ?>">
+	<div class="table_widget card flex-centered">
+		<div class="widget-container w-100">
+			<div class="widget-header">
+				<?php global $fragranceCollective_fCombinationManagement; ?>
+				<h1><?php echo $fragranceCollective_fCombinationManagement[$GLOBALS['lang']]; ?></h1>
+			</div>
+			<div class="widget-body">
+				<?php global $no_data; ?>
+				<?php if(count($events) >= 1) { ?>
+					<table>
+						<thead>
+							<?php global $time_eventName, $fragranceChoice_assignedFragrances__long; ?>
+							<tr>
+								<th>ID</th>
+								<th><?php echo $time_eventName[$GLOBALS['lang']]; ?></th>
+								<th><?php echo $fragranceChoice_assignedFragrances__long[$GLOBALS['lang']]; ?></th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php foreach($events as $k => $event) { ?>
+							<?php $fragrances_of_event = $mod_fcollective->getFragranceCollectiveByEventID($event['event_id']); ?>
+							<?php
+								if(count($fragrances_of_event) <= 5)
+								{
+
+									$fragrances_of_event_names = array();
+
+									foreach($fragrances_of_event as $k => $fr_id)
+										array_push($fragrances_of_event_names, $mod_fchoice->getFragranceByID($fr_id)['fragrance_name']);
+
+									$fragrances_of_event_names = deep_implode(", ", $fragrances_of_event_names);
+
+								}
+								else
+								{
+
+									$fragrances_of_event_names = count($fragrances_of_event);
+
+								}
+							?>
+							<tr>
+								<td>#<?php echo $event['event_id']; ?></td>
+								<td><?php echo $event['event_name']; ?></td>
+								<td>
+									<a data-toggle="modal" data-target="#assign_fragranceCollective_event_modal-<?php echo $event['event_id']; ?>" onclick="$($(this).data('target')).appendTo('body');" class="assign_fragranceCollective_event_modal-trigger">
+										<i class="fas fa-edit"></i>
+									</a>
+									<?php echo $fragrances_of_event_names ?: $no_data[$GLOBALS['lang']]; ?>
+								</td>
+							</tr>
+
+							<!-- Modal for fragranceManagementAction -->
+							<?php global $form_save, $close; ?>
+							<?php global $time_selectedEvent; ?>
+							<div class="modal fade fragrance_combination_management_modal" id="assign_fragranceCollective_event_modal-<?php echo $event['event_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="tableModalExpanded" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered modal-borderless" role="document">
+									<div class="modal-content">
+										<?php renderForm_init("?page=Admin&mod=mod_fragranceCollective&action=AssignNFragrancesToEvent", ["activate_card_wrap" => false]); ?>
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLongTitle"><?php echo $time_selectedEvent[$GLOBALS['lang']] ?>: <b><?php echo $event['event_name']; ?></b></h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body table_widget">
+											<input type="hidden" name="ref_event_id" value="<?php echo $event['event_id']; ?>">
+											<?php
+												foreach($fragrances as $f_k => $fragrance)
+												{
+
+													// Pack the configuration for the toggle switch
+													$toggle_switch_config = array(
+														"container" => false,
+														"standard_css" => true
+													);
+
+													// Find out, whether the current iteration of fragrances is an active one considering the module store
+													$isFragrancePartOfCollectiveEvent = in_array($fragrance['fragrance_id'], $fragrances_of_event);
+
+													// Apply findings of the status of the current fragrance
+													$switch_isEnabled = isSizedArray($fragrances_of_event) && $isFragrancePartOfCollectiveEvent
+														? true
+														: false;
+
+													// Render the toggle switch
+													renderForm_toggleSwitch("id_".uniqid()."__fragrance-".$fragrance['fragrance_id'], $fragrance['fragrance_name'], $switch_isEnabled, $toggle_switch_config);
+
+												}
+											?>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-gradient btn-gradient-lbluegreen"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+											<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal"><?php echo $close[$GLOBALS['lang']]; ?></button>
+										</div>
+										<?php renderForm_close("", array("activate_submit_btn" => false)) ?>
+									</div>
+								</div>
+							</div>
+						<?php } ?>
+						</tbody>
+					</table>
+				<?php } else { ?>
+					<div class="no-data">
+						<?php echo $no_data[$GLOBALS['lang']]; ?>
+					</div>
+				<?php } ?>
+			</div>
+		</div>
+	</div>
+</div>

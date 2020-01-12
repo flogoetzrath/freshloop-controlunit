@@ -1,0 +1,107 @@
+<?php global $time_modName, $time_modDescription; ?>
+
+<?php $mod_time = $TC->modules['mod_time'] ?? false; ?>
+
+<?php $TC->the_header('admin'); ?>
+<?php $TC->the_navbar('admin'); ?>
+
+	<div class="admin-bg"></div>
+
+	<div class="admin-container navToggle"> <!-- .navToggle -->
+		<div class="admin-container-left">
+				<?php $TC->the_sidebar('admin'); ?>
+			</div>
+		<div class="admin-container-right">
+			<div class="content-container">
+				<div class="row">
+					<?php
+						$mod_header_data = array(
+							"mod_name" => "mod_time",
+							"mod_name_lang" => $time_modName[$GLOBALS['lang']],
+							"mod_description" => $time_modDescription[$GLOBALS['lang']]
+						);
+					?>
+					<?php $TC->the_mod_header($mod_header_data); ?>
+
+					<?php
+						// If Module is activated
+						if($mod_time !== false) {
+					?>
+
+						<section id="top_layer" class="widget-squares col-md-12 row">
+							<?php global $time_nextEvent; ?>
+							<?php $nextEvent = $mod_time->getNextEvent(); ?>
+							<div class="col-md-6 col-lg-4"><?php $TC->load_widget(
+									'simple_card_widget',
+									array(
+										"icon" => "<i class=\"fas fa-clock\"></i>",
+										"value" => $nextEvent['event_name'].", ".substr($nextEvent['event_plannedExecution_time'], 0, 5).' Uhr',
+										"caption" => $time_nextEvent[$GLOBALS['lang']]
+									)
+								); ?>
+							</div>
+							<?php global $time_eventsPlanned; ?>
+							<div class="col-md-6 col-lg-4"><?php $TC->load_widget(
+									'simple_card_widget',
+									array(
+										"icon" => "<i class=\"fas fa-plug\"></i>",
+										"icon_color" => "#AB8CE4",
+										"value" => $mod_time->countPlannedEvents(),
+										"caption" => $time_eventsPlanned[$GLOBALS['lang']]
+									)
+								); ?>
+							</div>
+							<?php global $time_previousEventStatus, $time_noEventExecutedYet, $success, $failure; ?>
+							<?php
+								$lastEvent = $mod_time->getLastEvent();
+
+								if(isSizedArray($lastEvent))
+								{
+
+									$icon = (bool)$lastEvent['event_executed_status'] === true ? "<i class=\"fas fa-check\"></i>" : "<i class=\"fas fa-times\"></i>";
+									$icon_color = (bool)$lastEvent['event_executed_status'] === true ? "#03A9F3" : "#f35353";
+									$value = explode(" ", $lastEvent['event_name'])[0].": ".((bool)$lastEvent['event_executed_status'] === true ? $success[$GLOBALS['lang']] : $failure[$GLOBALS['lang']]);
+
+								}
+								else
+								{
+
+									$icon = "<i class=\"far fa-clock\"></i>";
+									$icon_color = "#fd7e15";
+									$value = $time_noEventExecutedYet[$GLOBALS['lang']];
+
+								}
+							?>
+							<div class="col-md-6 col-lg-4"><?php $TC->load_widget(
+									'simple_card_widget',
+									array(
+										"icon" => $icon,
+										"icon_color" => $icon_color,
+										"value" => $value,
+										"caption" => $time_previousEventStatus[$GLOBALS['lang']]
+									)
+								); ?>
+							</div>
+						</section>
+
+						<section id="highlighted_layer" class="widget-squares col-md-12 row">
+							<div class="col-md-12"><?php
+								$TC->load_widget(array(
+										"mod_name" => "mod_time",
+										"widget_name" => "event_planner_widget"
+								), [], false);
+							?></div>
+						</section>
+
+						<section class="widget-squares col-md-12 row">
+							<div class="col-md-12"></div>
+						</section>
+
+					<?php } ?>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+<?php $TC->the_footer('admin'); ?>

@@ -1,0 +1,186 @@
+<?php if(isSizedString($MC->view['field_config']['element_class'])) { ?>
+	<div class="<?php echo $MC->view['field_config']['element_class']; ?>">
+<?php } ?>
+
+	<?php if(isset_true($MC->view['field_config']['standard_css']) || !isset($MC->view['field_config']['standard_css'])) { ?>
+		<?php $id_class = ".switch-".$MC->view['field_id']; ?>
+		<style>
+			.control-label { display: inline-block; padding-top: 2px; }
+			<?php echo $id_class; ?> { display: inline-block; float: right; height: 34px; position: relative; width: 60px; }
+			<?php echo $id_class; ?> input { display:none; }
+			<?php echo $id_class; ?> .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; }
+			<?php echo $id_class; ?> .slider:before { background-color: #fff; bottom: 4px; content: ""; height: 26px; left: 4px; position: absolute; transition: .4s;  width: 26px; }
+			<?php echo $id_class; ?> input:checked + .slider { background-color: var(--green); }
+			<?php echo $id_class; ?> input:checked + .slider:before { transform: translateX(26px); }
+			<?php echo $id_class; ?>.field_disabled .slider:before,
+			<?php echo $id_class; ?>.field_disabled .slider { opacity: .6 !important; }
+			<?php echo $id_class; ?> .slider.round { border-radius: 34px; }
+			<?php echo $id_class; ?> .slider.round:before { border-radius: 50%; }
+		</style>
+	<?php } ?>
+
+	<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+		<div class="form-group form-group-sm <?php echo @$MC->view['field_config']['wrap_class'] ?: ""; ?>">
+	<?php } ?>
+
+		<label class="col-sm-6 control-label" for="<?php echo $MC->view['field_id']; ?>"><?php echo $MC->view['field_label']; ?></label>
+
+	<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+		<div class="col-sm-6">
+		<div class="field-container">
+	<?php } ?>
+		<label class="switch-<?php echo $MC->view['field_id']; ?> switch-label <?php echo $MC->view['field_config']['switch_class'] ?? "";  ?> <?php if(isset_true($MC->view['field_config']['disabled'])) echo "field_disabled"; ?>" for="checkbox-<?php echo $MC->view['field_id']; ?>">
+			<input
+				class="switch-input"
+				type="checkbox"
+				id="checkbox-<?php echo $MC->view['field_id']; ?>"
+				name="<?php if(!isset_true($MC->view['field_config']['disabled'])) echo $MC->view['field_name']; ?>"
+				<?php if(isset_true($MC->view['field_config']['disabled'])) echo "disabled"; ?>
+				<?php if($MC->view['field_value']) echo "checked"; ?>
+			/>
+			<div class="slider round"></div>
+		</label>
+		<?php if(isset_true($MC->view['field_config']['disabled'])) { ?>
+			<input type="hidden" name="<?php echo $MC->view['field_name']; ?>" value="<?php if($MC->view['field_value']) echo 1; else echo 0; ?>">
+		<?php } else { ?>
+			<input type="hidden" id="checkboxHidden-<?php echo $MC->view['field_id']; ?>" name="<?php echo $MC->view['field_name']; ?>" value="off">
+			<?php
+				$js = <<<EOT
+	
+				id = "{{ field_id }}";
+	
+				/* Create global dataset if necessarry */
+				toggle_switches = typeof toggle_switches !== "undefined" && Array.isArray(toggle_switches)
+					? toggle_switches
+					: [];
+	
+				/* Add current toggle_switch */
+				currentSwitch = {
+					id: id,
+					inputBox: document.querySelector('#checkbox-'+id),
+					hiddenBox: document.querySelector('#checkboxHidden-'+id),
+					wasChecked: {{ field_value }},
+					changeable: {{ changeable }},
+					changeable_err: {{ changeable_err }},
+					is_submitonchange: {{ submit_onchange }},
+					is_clickEventListenerSet: false
+				};
+				toggle_switches.push(currentSwitch);
+	
+				/* Remove hidden input if checkbox is not checked */
+				// onload
+				hideHiddenInputIfNecessary(currentSwitch.inputBox);
+				// onclick
+				setInterval(() => {
+					updateToggleSwitches();
+					document.querySelectorAll(".switch-input").forEach(el => el.onclick = e => {
+						hideHiddenInputIfNecessary(el, e)
+					});
+				}, 100);
+
+				/**
+				* Updates the toggle_switches array
+				* @notice: Useful for postreplacing of elements
+				*/
+				function updateToggleSwitches()
+				{
+					
+					toggle_switches.forEach((item, i) => {
+						toggle_switches[i].inputBox = document.querySelector('#checkbox-'+item.id);
+						toggle_switches[i].hiddenBox = document.querySelector('#checkboxHidden-'+item.id);
+					});
+
+				} // function updateToggleSwitches()
+	
+				/**
+				 * Disabled the corresponding hidden input if needed
+				 *
+				 * @param el    The main input
+				 */
+				function hideHiddenInputIfNecessary(el, event)
+				{
+					
+					toggle_switches.forEach(_switch => { 
+						if(_switch.inputBox === null || _switch.hiddenBox === null) 
+							updateToggleSwitches();
+					});
+
+					if(el === null) return false;
+
+					elID = el.id.replace("checkbox-", "");
+					toggle_switches.forEach((_switch, i) => {
+						if(_switch.id === elID)
+						{
+							
+							if(_switch.changeable === false || _switch.changeable_err)
+							{
+		
+								event.preventDefault();
+
+								if(_switch.changeable_err.length >= 1) return addToastNotification(_switch.changeable_err, "error", 2000);
+								else return false;
+
+							}
+
+							if(_switch.is_submitonchange === true)
+							{
+								if(_switch.is_clickEventListenerSet === false)
+								{
+
+									_switch.inputBox.addEventListener('click', () => { 
+										_switch.hiddenBox.disabled = !!$(el).is(':checked');
+										$(_switch.inputBox).closest("form").submit(); 
+									});
+								
+									// Register switch in array to be equiped with an event listener for click
+									toggle_switches[i].is_clickEventListenerSet = true;
+
+								}
+							}
+
+							_switch.hiddenBox.disabled = !!$(el).is(':checked');
+
+						}
+					});
+	
+				} // function hideHiddenInputIfNecessary()
+
+EOT;
+
+			// Build param data
+			$param_data = array(
+				"field_id" => $MC->view['field_id'],
+				"field_value" => ((bool)$MC->view['field_value'] ? 1 : 0),
+				"changeable" => json_encode(@$MC->view['field_config']['changeable']) ?: true,
+				"changeable_err" => json_encode(@$MC->view['field_config']['changeable_err_msg']) ?: null,
+				"submit_onchange" => json_encode(@$MC->view['field_config']['submit_onchange']) ?: json_encode((bool)0)
+			);
+
+			// Pass js code
+			$GLOBALS['js']['toggle_switch-'.$MC->view['field_id']] = array($js, $param_data);
+
+			?>
+		<?php } ?>
+	<?php if (isSizedString($MC->view['field_config']['help'])) { ?>
+		<?php if ($MC->view['field_config']['rAlign']) { ?>
+			<a href="#" data-wpsg-tip="<?php echo xssproof($MC->view['field_config']['help']); ?>" rel="?field=<?php echo xssproof($MC->view['field_config']['help']); ?>"
+			   class="glyphicon glyphicon glyphicon-question-sign form-control-feedback float-right" aria-hidden="true"></a>
+		<?php } else { ?>
+			<a href="#" data-wpsg-tip="<?php echo xssproof($MC->view['field_config']['help']); ?>" rel="?field=<?php echo xssproof($MC->view['field_config']['help']); ?>"
+			   class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+		<?php } ?>
+	<?php } ?>
+	<?php if($MC->view['field_config']['container']) { ?>
+		</div>
+		</div> <!-- .col-sm-6 -->
+	<?php } # if($MC->view['field_config']['container']; ?>
+
+		<div class="clearfix"></div>
+
+	<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+		</div>
+	<?php } ?>
+
+<?php if(isSizedString($MC->view['field_config']['element_class'])) { ?>
+	</div>
+<?php } ?>

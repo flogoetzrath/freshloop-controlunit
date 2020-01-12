@@ -1,0 +1,34 @@
+		<footer></footer> <!-- footer -->
+
+		</div> <!-- .body-inner-->
+
+		<!-- libraries -->
+		<script src="<?php echo LIBUI_URI.'/jquery/jquery.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/jquery/jquery_ui.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/popper/popper.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/bootstrap/js/bootstrap.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/chartjs/chartjs.bundle.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/slick/js/slick.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/toastr/js/toastr.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/moveit/moveit.js'; ?>"></script>
+
+		<?php if($TC->data['config']['app_dashboard_tutorial'] === "enabled") { ?>
+			<script src="<?php echo LIBUI_URI.'/driverjs/js/driver.min.js'; ?>"></script>
+			<?php AdminController::initTutorial(); ?>
+		<?php } ?>
+
+		<!-- global js -->
+		<script src="<?php echo SCRIPT_URI; ?>/functions.js"></script>
+		<script src="<?php echo SCRIPT_URI; ?>/main.js"></script>
+		<script src="<?php echo SCRIPT_URI; ?>/admin.js"></script>
+
+		<!-- template specific -->
+		<?php if(file_exists(SCRIPT_URI.'/'.$_SESSION['page_type'].'.js')): ?>
+		<script src="<?php echo SCRIPT_URI.'/'.$_SESSION['page_type'].'.js'; ?>">
+		<?php endif; ?>
+
+		<?php $TC->evalAdditionalJS(@$GLOBALS['js']); ?>
+		<?php $TC->renderAdditionalTemplating(@$GLOBALS['html']); ?>
+
+	</body>
+</html>

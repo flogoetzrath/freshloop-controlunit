@@ -1,0 +1,48 @@
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+<div class="form-group form-group-sm <?php echo @$MC->view['field_config']['wrap_class'] ?: ""; ?>">
+<?php } ?>
+
+	<?php if(!is_null($MC->view['field_label'])) { ?>
+	<label class="col-sm-6 control-label" for="<?php echo $MC->view['field_id']; ?>"><?php echo $MC->view['field_label']; ?></label>
+	<?php } ?>
+
+	<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+	<div class="col-sm-6">
+		<div class="field-container">
+	<?php } ?>
+
+			<input
+				type="file"
+				<?php if (isset($MC->view['field_config']['size'])) { ?>
+					size="<?php echo $MC->view['field_config']['size']; ?>"
+				<?php } ?>
+				<?php if (isset($MC->view['field_config']['accept'])) { ?>
+					accept="<?php echo $MC->view['field_config']['accept']; ?>"
+				<?php } ?>
+				<?php if (isset_true($MC->view['field_config']['maxlength'])) { ?>
+					maxLength="<?php echo $MC->view['field_config']['maxlength']; ?>"
+				<?php } ?>
+				class="form-control input-sm"
+				name="<?php echo xssproof($MC->view['field_name']); ?>"
+				value="<?php echo xssproof($MC->view['field_value']); ?>"
+				id="<?php echo $MC->view['field_id']; ?>"
+				placeholder="<?php echo isset($MC->view['field_config']['placeholder']) ? $MC->view['field_config']['placeholder'] : ""; ?>"
+				<?php if (isset_true($MC->view['field_config']['readonly'])) { ?>
+					readonly="readonly"
+				<?php } ?>
+			/>
+
+			<?php if (isSizedString($MC->view['field_config']['help'])) { ?>
+				<a href="#" class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+			<?php } ?>
+
+	<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+		</div>
+	</div>
+	<?php } ?>
+
+	<div class="clearfix"></div>
+
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+</div>
+<?php } ?>

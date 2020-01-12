@@ -1,0 +1,111 @@
+<?php if($TC->modules['mod_auth']->Auth->isLoggedIn()) $TC->redirect("/dashboard", true); ?>
+
+<?php global $auth_wcb, $auth_login_intro, $auth_login, $auth_register, $auth_register_appname, $auth_email, $auth_pw, $auth_pw2, $auth_name, $auth_existing_acc, $pw_mismatch; ?>
+<?php global $unknown_error, $email_exists, $invalid_email, $invalid_password, $duplicate_username; ?>
+
+<?php $TC->the_header('mod_auth'); ?>
+<?php $TC->the_navbar(); ?>
+
+	<?php
+		$this->view['username_err'] = false;
+		$this->view['email_err'] = false;
+		$this->view['password_err'] = false;
+
+		if (isset($_SESSION['frontend_errors']) && isSizedArray($_SESSION['frontend_errors']))
+		{
+			foreach($_SESSION['frontend_errors'] as $identifier => $err)
+			{
+
+				if($identifier === "conf") continue;
+
+				$username_errors = array( $duplicate_username[$GLOBALS['lang']], $unknown_error[$GLOBALS['lang']] );
+				$this->view['username_err'] = $TC->modules['mod_auth']->organiseErrorListing($err, $username_errors);
+
+				$email_errors = array( $email_exists[$GLOBALS['lang']], $invalid_email[$GLOBALS['lang']], $unknown_error[$GLOBALS['lang']] );
+				$this->view['email_err'] = $TC->modules['mod_auth']->organiseErrorListing($err, $email_errors);
+
+				$password_errors = array( $invalid_password[$GLOBALS['lang']], $unknown_error[$GLOBALS['lang']] );
+				$this->view['password_err'] = $TC->modules['mod_auth']->organiseErrorListing($err, $password_errors);
+
+				unset($_SESSION['frontend_errors'][$identifier]);
+				unset($_SESSION['frontend_errors']['conf'][$identifier]);
+
+			}
+		}
+	?>
+
+	<div class="auth row">
+		<div class="col-md-4 layer-side flex-centered">
+			<div class="content">
+				<h1><?php echo $auth_wcb[$GLOBALS['lang']]; ?></h1>
+				<h3><?php echo $auth_login_intro[$GLOBALS['lang']]; ?></h3>
+				<a href="/login" class="button"><?php echo $auth_login[$GLOBALS['lang']]; ?></a>
+			</div>
+		</div>
+		<div class="col-md-8 layer-login flex-centered">
+			<div class="content">
+				<h1><?php echo $auth_register_appname[$GLOBALS['lang']]; ?></h1>
+				<?php renderForm_init("?mod=mod_auth&action=register"); ?>
+					<?php
+						renderForm_input("name", null, null, array(
+							"type" => "text",
+							"container" => false,
+							"required" => false,
+							"class" => $this->view['username_err']['err_status'] ? "input-error" : "",
+							"placeholder" => $this->view['username_err']['err_status'] ? $this->view['username_err']['err_msg'] : "&#xf007  ".$auth_name[$GLOBALS['lang']])
+						);
+					?>
+					<?php
+						renderForm_input("email", null, null, array(
+							"type" => "email",
+							"container" => false,
+							"required" => true,
+							"class" => $this->view['email_err']['err_status'] ? "input-error" : "",
+							"placeholder" => $this->view['email_err']['err_status'] ? $this->view['email_err']['err_msg'] : "&#xf0e0  ".$auth_email[$GLOBALS['lang']])
+						);
+					?>
+					<?php
+						renderForm_input("password", null, null, array(
+							"type" => "password",
+							"container" => false,
+							"required" => true,
+							"class" => $this->view['password_err']['err_status'] ? "input-error pw1" : "pw1",
+							"placeholder" => $this->view['password_err']['err_status'] ? $this->view['password_err']['err_msg'] : "&#xf023   ".$auth_pw[$GLOBALS['lang']])
+						);
+					?>
+					<?php
+						renderForm_input("password2", null, null, array(
+							"type" => "password",
+							"container" => false,
+							"required" => true,
+							"class" => $this->view['password_err']['err_status'] ? "input-error pw2" : "pw2",
+							"placeholder" => $this->view['password_err']['err_status'] ? $this->view['password_err']['err_msg'] : "&#xf023   ".$auth_pw2[$GLOBALS['lang']],
+							"onkeyup" => "validatePasswords()")
+						);
+					?>
+					<span class="reset-pw"><?php echo $auth_existing_acc[$GLOBALS['lang']]; ?></span>
+					<button href="#" class="button" type="submit"><?php echo $auth_register[$GLOBALS['lang']]; ?></button>
+				<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		const password1 = document.querySelector(".pw1");
+		const password2 = document.querySelector(".pw2");
+		const errorMsg = "<?php echo $pw_mismatch[$GLOBALS['lang']]; ?>" || "The passwords do not match.";
+
+		/**
+		 * Validates the passwords
+		 */
+		function validatePasswords()
+		{
+
+			if(password1.value !== password2.value) password2.setCustomValidity(errorMsg);
+			else password2.setCustomValidity("");
+
+		} // function validatePasswords
+	</script>
+
+<?php $TC->the_footer('mod_auth'); ?>
+

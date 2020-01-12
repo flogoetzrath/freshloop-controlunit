@@ -1,0 +1,10 @@
+<?php
+
+	/**
+	 * Logout template to control the course of the logout procedure
+	 */
+
+	$logout_req = $TC->modules['mod_auth']->basicLogOutRequest();
+
+	if($logout_req) $TC->redirect("/home", true);
+	else header('Location: ' . $_SERVER['HTTP_REFERER']);

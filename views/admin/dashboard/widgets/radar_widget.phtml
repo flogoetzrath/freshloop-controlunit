@@ -1,0 +1,168 @@
+<?php
+	/**
+	 * @name: unit Radar Widget
+	 * @description: A widget to show unit statistics in a radar form
+	 * @params: String $active_site: Declares on which site the widget is being used on
+	 */
+?>
+
+<?php global $form_unitPriority, $form_unitNSprayed; ?>
+<?php global $no_data, $configure_unit, $configure_more_units; ?>
+
+<style>
+	#radar_widget{ width: 100%; height: 185px !important; background-color: #fff; overflow: hidden; }
+	#radar_widget canvas{ height: 100%; width: auto; margin-top: 0; height: 160px !important; }
+</style>
+
+<?php
+	if(!isset($this->data['unit'])) $this->loadData('unit', 0);
+	$widget_possible = true;
+
+	/**
+	 * Gets a unit that is not being used on the same site for this widget
+	 *
+	 * @return mixed
+	 */
+	$getunit = function() use($data, $widget_possible)
+	{
+
+		$widget_name = "unit_radar_widget";
+
+		foreach($this->data['unit'][0] as $k => $unit)
+		{
+
+			// Get current iteration
+			$i = array_search($unit, $this->data['unit'][0]);
+
+			// Check whether widget usages array field has been initiated yet
+			if(!isset($unit['widget_usages']))
+			{
+
+				$this->data['unit'][0][$i]['widget_usages'] = array($widget_name => array($data['active_site']));
+				return $unit;
+
+			}
+
+			// Checks whether widget has already been used anywhere yet
+			if(!isset($unit['widget_usages'][$widget_name]))
+			{
+
+				array_push($this->data['unit'][0][$i]['widget_usages'], array($widget_name => array($data['active_site'])));
+				return $unit;
+
+			}
+
+			// Continue if current unit has been used applied to this widget on current site
+			if(isset($widget_name, $this->data['unit'][0][$i]['widget_usages'][$widget_name]))
+				if(in_array($data['active_site'], $this->data['unit'][0][$i]['widget_usages'][$widget_name]))
+					continue;
+
+			// Register usage on current site
+			if(is_array($this->data['unit'][0][$i]['widget_usages'][$widget_name]))
+				array_push($this->data['unit'][0][$i]['widget_usages'][$widget_name], $data['active_site']);
+			else
+				$this->data['unit'][0][$i]['widget_usages'][$widget_name] = array($data['active_site']);
+
+			// Set active unit payload and break out of foreach loop
+			return $unit;
+
+		}
+
+	}; // function getunit()
+
+	if(!isset($this->data['unit'][0]) || empty($this->data['unit'][0]))
+		$widget_possible = false;
+	else $featured_unit = $getunit();
+
+?>
+<?php if($widget_possible && isSizedArray($featured_unit)) { ?>
+
+	<!-- WIDGET CONTENT -->
+
+	<div id="radar_widget" class="unit_radar_widget card flex-centered">
+		<canvas id="unit-radar-chart_<?php echo $featured_unit['unit_id']; ?>"></canvas>
+	</div>
+
+	<?php
+		$js = <<<EOT
+		
+		canvasField = document.querySelector('#unit-radar-chart_{{ unit_id }}');
+		radarChart = new Chart(canvasField, {
+			type: 'radar',
+			data: {
+		        labels: ['{{ priority }}', '{{ timesSprayed }}'],
+		        datasets: [{
+		            label: '{{ unit_name }}',
+		            data: [
+		                {{ unit_priority }}, 
+		                {{ unit_timesSprayed }}
+	                ],
+		            backgroundColor: 'rgba({{ color }}, 0.2)',
+		            borderColor: 'rgba({{ color }}, 1)',
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        maintainAspectRatio: false,
+		        responsive: true,
+			    legend: {
+					position: 'top',
+					labels: {
+						fontColor: 'black'
+					}
+			    },
+		        scale: {
+					ticks: {
+						beginAtZero: true,
+						fontColor: 'rgba(0, 0, 0, 0.4)',
+						showLabelBackdrop: false
+					},
+						pointLabels: {
+						fontColor: 'rgba(0, 0, 0, 0.4)'
+					},
+						gridLines: {
+						color: 'rgba(0, 0, 0, 0.2)'
+					},
+						angleLines: {
+						color: 'rgba(0, 0, 0, 0.4)'
+					}
+			   }
+		    }
+		});
+EOT;
+
+		// Fill random color
+		$colors = array(
+			"38, 192, 128",
+			"66, 134, 244",
+			"3, 169, 243",
+			"251, 150, 120"
+		);
+		$activeColor = $colors[rand(0, count($colors) - 1)];
+		$js = $this->load_content($js, ["color" => $activeColor], false);
+
+		// Fill lang vars
+		$lang = array(
+			"priority" => $form_unitPriority[$GLOBALS['lang']],
+			"timesSprayed" => $form_unitNSprayed[$GLOBALS['lang']]
+		);
+		$js = $this->load_content($js, $lang, false);
+
+		// Pass js code
+		$GLOBALS['js']['radar-chart-'.$featured_unit['unit_id']] = array($js, $featured_unit);
+	?>
+
+	<!-- /WIDGET CONTENT -->
+
+<?php } else { ?>
+
+	<div id="radar_widget" class="unit_radar_widget card flex-centered">
+		<h3><?php echo $no_data[$GLOBALS['lang']]; ?></h3>
+		<?php if($widget_possible && !isSizedArray($featured_unit)) { ?>
+			<p><?php echo $configure_more_units[$GLOBALS['lang']]; ?></p>
+		<?php } else { ?>
+			<p><?php echo $configure_unit[$GLOBALS['lang']]; ?></p>
+		<?php } ?>
+	</div>
+
+<?php } ?>

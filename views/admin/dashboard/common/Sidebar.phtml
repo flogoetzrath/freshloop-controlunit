@@ -1,0 +1,26 @@
+<?php global $dashboard, $admin_dashboard_submenu, $admin_dashboard_mods, $lounge, $admin_dashboard_settings ?>
+
+<div class="sidebar">
+	<ul>
+		<li><span><?php echo $admin_dashboard_submenu[$GLOBALS['lang']]; ?></span></li>
+		<li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i><?php echo $dashboard[$GLOBALS['lang']]; ?></a></li>
+		<li class="admin-dropdown-toggle">
+			<a href="#/" class="admin-dropdown-main">
+				<i class="fas fa-plug"></i>
+				<?php echo $admin_dashboard_mods[$GLOBALS['lang']]; ?>
+				<i class="fas fa-chevron-down admin-dropdown-chevron"></i>
+			</a>
+			<ul class="dropdown" style="display: none;">
+				<?php $mod_lang_names = $TC->getTranslatedModNames(); ?>
+				<?php foreach($mod_lang_names as $mod_name => $mod_lang) { ?>
+					<li class="dropdown-item">
+						<a href="/dashboard/<?php echo $mod_name; ?>">
+							<i class="fas fa-th-large"></i><?php echo $mod_lang; ?>
+						</a>
+					</li>
+				<?php } ?>
+			</ul>
+		</li>
+		<li><a href="/dashboard/settings"><i class="fas fa-cogs"></i><?php echo $admin_dashboard_settings[$GLOBALS['lang']]; ?></a></li>
+	</ul>
+</div>

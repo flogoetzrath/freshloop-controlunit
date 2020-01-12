@@ -1,0 +1,127 @@
+<?php global $form_save; ?>
+
+<?php $TC->the_header('admin'); ?>
+<?php $TC->the_navbar('admin'); ?>
+
+	<div class="admin-bg"></div>
+
+	<div class="admin-container navToggle"> <!-- .navToggle -->
+		<div class="admin-container-left">
+			<?php $TC->the_sidebar('admin'); ?>
+		</div>
+		<div class="admin-container-right site-settings">
+			<div class="content-container">
+				<div class="row" style="margin-right: 0; /*padding: 0 15px;*/">
+
+					<div class="top_layer col-md-12">
+						<section id="settings-profile">
+							<?php $TC->load_widget(array(
+								"mod_name" => "mod_auth",
+								"widget_name" => "profile_settings_widget"
+							), ["mod_auth" => $TC->modules['mod_auth']], false); ?>
+						</section> <!-- #settings-profile -->
+					</div>
+
+					<div class="center_layer col-md-12 row">
+						<div class="col-xl-6 col-lg-12">
+							<section id="settings-mods" class="card">
+								<?php global $settings_mods, $settings_mods__subheading; ?>
+								<div class="section-container card-body">
+									<h1 class="section-header"><?php echo $settings_mods[$GLOBALS['lang']]; ?></h1>
+									<h3 class="section-sub"><?php echo $settings_mods__subheading[$GLOBALS['lang']]; ?></h3>
+									<div class="row" style="padding-top: 10px;">
+										<div class="top_layer__form col-md-12 m-auto">
+											<div class="form-container">
+												<?php renderForm_init("?page=Admin&action=updateModStatuses", ["activate_card_wrap" => false]); ?>
+												<div class="formContainer settings-input-container row">
+													<?php $mod_lang_names = $TC->getTranslatedModNames(); ?>
+													<?php foreach($TC->data['config'] as $setting_name => $setting_val) { ?>
+														<?php if(strpos($setting_name, "mod_") === false || substr_count($setting_name, "_") > 1) continue; ?>
+														<?php $val = $setting_val === "enabled" ? true : false; ?>
+														<div class="formDiv col-md-12">
+															<?php $conf = array("container" => false, "standard_css" => true); ?>
+															<?php if($setting_name === "mod_auth") $conf['disabled'] = true; ?>
+															<?php $lang_name = $mod_lang_names[$setting_name] ?: $setting_name; ?>
+															<?php renderForm_toggleSwitch($setting_name, $lang_name, $val, $conf); ?>
+														</div>
+													<?php } ?>
+													<div class="formDiv formDiv-submit col-md-12" style="margin-top: 22px;">
+														<button class="btn-gradient btn-gradient-blue" type="submit"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+													</div>
+												</div>
+												<?php renderForm_close("", ["activate_submit_btn" => false, "activate_card_wrap" => false]); ?>
+											</div>
+										</div>
+									</div>
+								</div>
+							</section> <!-- #settings-mods -->
+						</div>
+
+						<div class="col-xl-6 col-lg-12">
+							<section id="settings-misc" class="card">
+								<?php global $settings_misc, $settings_misc__subheading; ?>
+								<?php global $settings_app_activation; ?>
+								<?php global $settings_debug_mode; ?>
+								<?php global $settings_interactive_tutorial; ?>
+								<?php global $settings_unit_fallback_img; ?>
+								<?php global $language; ?>
+								<div class="section-container card-body">
+									<h1 class="section-header"><?php echo $settings_misc[$GLOBALS['lang']]; ?></h1>
+									<h3 class="section-sub"><?php echo $settings_misc__subheading[$GLOBALS['lang']]; ?></h3>
+									<div class="row" style="padding-top: 10px;">
+										<div class="top_layer__form col-md-12 m-auto">
+											<div class="form-container">
+												<?php renderForm_init("?page=Admin&action=updateMiscSettings", ["activate_card_wrap" => false]); ?>
+												<div class="formContainer settings-input-container row">
+													<div class="formDiv col-md-12">
+														<?php renderForm_toggleSwitch("app_activation", $settings_app_activation[$GLOBALS['lang']], $TC->data['config']['app_activation'] === "enabled" ? true : false, array(
+															"container" => false,
+															"standard_css" => true
+														)); ?>
+													</div>
+													<div class="formDiv col-md-12">
+														<?php renderForm_toggleSwitch("show_errors", $settings_debug_mode[$GLOBALS['lang']], DEBUG_MODE, array(
+															"container" => false,
+															"standard_css" => true
+														)); ?>
+													</div>
+													<div class="formDiv col-md-12">
+														<?php renderForm_toggleSwitch("app_dashboard_tutorial", $settings_interactive_tutorial[$GLOBALS['lang']], $TC->data['config']['app_dashboard_tutorial'] === "enabled", array(
+															"container" => false,
+															"standard_css" => true
+														)); ?>
+													</div>
+													<div class="formDiv col-md-12">
+														<?php renderForm_input("unit_fallback_img", $settings_unit_fallback_img[$GLOBALS['lang']], $TC->data['config']['unit_fallback_img'], array(
+															"type" => "text",
+															"container" => false,
+															"inline" => true,
+															"required" => true,
+															"class" => "square",
+															"placeholder" => ""));
+														?>
+													</div>
+													<div class="formDiv col-md-12">
+														<?php $langs_supported = array_values($GLOBALS['langs_supported']); ?>
+														<?php array_unshift($langs_supported, $language[$GLOBALS['lang']]); ?>
+														<?php renderForm_select("language", null, $langs_supported, 0, array("container" => false)); ?>
+													</div>
+													<div class="formDiv formDiv-submit col-md-12" style="margin-top: 20px;">
+														<button class="btn-gradient btn-gradient-blue" type="submit"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+													</div>
+												</div>
+												<?php renderForm_close("", ["activate_submit_btn" => false, "activate_card_wrap" => false]); ?>
+											</div>
+										</div>
+									</div>
+								</div>
+							</section> <!-- #settings-misc -->
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+<?php $TC->the_footer('admin'); ?>

@@ -1,0 +1,298 @@
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+<div class="form-group form-group-sm form-select <?php echo @$MC->view['field_config']['wrap_class'] ?: ""; ?>">
+<?php } ?>
+
+	<label class="col-sm-6 control-label" for="<?php echo $MC->view['field_id']; ?>"><?php echo $MC->view['field_label']; ?></label>
+
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+	<div class="col-sm-6">
+		<div class="field-container">
+<?php } ?>
+
+			<select
+				id="<?php echo $MC->view['field_id']; ?>"
+				name="<?php echo $MC->view['field_name']; ?>"
+				class="form-control input-sm <?php echo getStr($MC->view['field_config']['field_class']); ?>" <?php echo $MC->view['atts_select']; ?>
+				<?php if(isset_true($MC->view['field_config']['modal'])) { ?>
+					onmousedown="event.preventDefault()"
+					data-toggle="modal"
+					data-target="#multiselect-modal-<?php echo $MC->view['field_id']; ?>"
+				<?php } ?>
+				<?php if(isset_true($MC->view['field_config']['required'])) { ?>
+					required
+				<?php } ?>
+			>
+
+
+				<?php
+					if (isset_true($MC->view['field_config']['optgroup']))
+					{
+						$arGroup = array();
+						foreach ($MC->view['field_values'] as $k_group => $v_group)
+						{
+
+							$arGroup[$k_group] = $v_group[0];
+							$arValues[$k_group] = $v_group[1];
+
+						}
+					}
+					else
+					{
+
+						$arValues = array($MC->view['field_values']);
+						$arGroup = null;
+
+					}
+					$arValues = open_array($arValues);
+				?>
+
+				<?php foreach($arValues as $k => $v) { ?>
+					<?php if (!is_null($arGroup)) { ?><optgroup label="<?php echo $arGroup[$k]; ?>"><?php } ?>
+					<option <?php
+						if (isSizedArray($MC->view['field_value'])) echo ((in_array($k, $MC->view['field_value'])) ? 'selected="selected"' : '');
+						else
+						{
+
+							if (isset_true($MC->view['field_config']['noKeys']) && $v === $MC->view['field_value']) echo ' selected="selected" ';
+							else echo (($k === $MC->view['field_value']) ? 'selected="selected"':'');
+
+						}
+					?> value="<?php
+
+						if(isset_true($MC->view['field_config']['required']) && (int)$k === 0) echo "";
+						else if (isset_true($MC->view['field_config']['noKeys'])) echo htmlspc($v);
+						else echo htmlspc($k);
+
+					?>"><?php echo htmlspc($v); ?></option>
+					<?php if (!is_null($arGroup)) { ?></optgroup><?php } ?>
+				<?php } ?>
+
+			</select>
+
+			<?php if(isset_true($MC->view['field_config']['modal'])) { ?>
+				<input
+						type="hidden"
+						id="storeInput-<?php echo $MC->view['field_id']; ?>"
+						name="<?php echo $MC->view['field_name']; ?>"
+				>
+				<input
+						type="hidden"
+						id="temp-<?php echo $MC->view['field_id']; ?>"
+						name=""
+				>
+			<?php } ?>
+
+			<?php if($MC->view['field_config']['container']) { ?>
+			</div>
+		</div> <!-- .col-sm-6 -->
+	<?php } # if($MC->view['field_config']['container']; ?>
+
+	<div class="clearfix"></div>
+
+<?php if($MC->view['field_config']['container']) { ?>
+</div>
+<?php } ?>
+
+<!-- Multiselect Modal -->
+<?php if(isset_true($MC->view['field_config']['modal'])) { ?>
+	<style>
+		.multiselect-modal .modal-header,
+		.multiselect-modal .modal-footer { border: 0; }
+		.multiselect-modal .modal-header h1{ font-size: 20px; }
+		.multiselect-modal .modal-body .option{ padding-bottom: 10px; }
+		.multiselect-modal .modal-body .option button{ float: right; }
+	</style>
+
+	<?php
+		global $form_save, $close;
+
+		$generateOptions = function() use($MC) {
+			$context = "";
+
+			// Define fill template
+			$template = <<<HERE
+				<div id="{{ id }}" class="option option-{{ id }} row col-md-12">
+					<div class="col-md-6 option-left">
+						<p>{{ name }}</p>
+					</div>
+					<div class="col-md-6 option-right">
+						<button 
+							type="button" 
+							class="btn-gradient btn-gradient-blue"
+							onclick="selectOption($(this).closest('.option').attr('id'), $('#temp-{{ field_id }}'), $(this))"
+						>
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+				</div>
+HERE;
+
+			// Generate template context
+			foreach($MC->view['field_config']['data'] as $payload)
+			{
+
+				$payload["field_id"] = $MC->view['field_id'];
+
+				$part = (new TemplateController())->load_content($template, $payload, false);
+				$context .= $part;
+
+			}
+
+			if(!isSizedString($context))
+				$context = $MC->view['field_config']['nodata_text'] ?: "No data...";
+
+			return $context;
+		};
+
+		# Only custom template engine to be used within $modal
+		$modal = <<<EOT
+			<div class="modal fade multiselect-modal" id="multiselect-modal-{{ id }}">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+		
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h1 class="modal-title">{{ label }}</h1>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+		
+						<!-- Modal body -->
+						<div class="modal-body">
+							{$generateOptions()}
+						</div>
+		
+						<!-- Modal footer -->
+						<div class="modal-footer">
+							<button 
+								type="button" 
+								class="btn btn-gradient btn-gradient-lbluegreen" 
+								data-dismiss="modal"
+								onclick="evaluateMultiSelectModal($('#storeInput-{{ id }}'), $('#temp-{{ id }}'))"
+							>
+								{{ save }}
+							</button>
+							<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal">{{ close }}</button>
+						</div>
+		
+					</div>
+				</div>
+			</div>
+EOT;
+
+		# Render modal in a delayed manner
+		// Pass Args
+		$modal = (new TemplateController())->load_content($modal, array(
+			"id" => $MC->view['field_id'],
+			"label" => @$MC->view['field_label'] ?: @array_values($MC->view['field_values'])[0],
+			"save" => $form_save[$GLOBALS['lang']],
+			"close" => $close[$GLOBALS['lang']]
+		), false);
+
+		// Put in order for being rendered
+		$GLOBALS['html']['multiselect_modal__template-'.$MC->view['field_id']] = $modal;
+
+		// Assign lang variables
+		global $form_item_added;
+		global $form_item_removed;
+
+		$js = <<<EOT
+			<script>
+				/**
+				* Function to be triggered when option gets toggled
+				* 
+				* @param {int} unitID
+				* @param {jQuery} tempInput
+				* @param {jQuery} btn
+				*/
+				function selectOption(unitID, tempInput, btn) 
+				{
+					
+					let initialVal = tempInput.val();
+					let newVal = "";
+					let isAdded = false;
+					
+					let cleanVal = val => {
+						val = val.replace(",,", ",");
+						val = val.replace(", ", "");
+						val = val.replace(" ,", "");
+						val = val.replace(" , ", "");
+						
+						if(val.charAt(0) === ",") val = val.substr(1);
+						
+						return val;
+					};
+					
+					// Get new value
+					if(!btn.hasClass("added"))
+					{
+						
+						// Button has been added
+						if(initialVal.indexOf(",") > 0 || initialVal.length > 0) 
+							newVal = cleanVal(initialVal + "," + unitID);
+						else newVal = unitID;	
+						
+						isAdded = true;
+						btn.addClass("added");
+						
+						addToastNotification("{$form_item_added[$GLOBALS['lang']]}", "success", 2000);
+					
+					}
+					else
+					{
+					
+						// Button has been removed
+						if(initialVal.indexOf(",") <= 0) newVal = "";
+						else newVal = cleanVal(initialVal.replace(unitID, ""));
+						
+						isAdded = false;
+						btn.removeClass("added");
+						
+						addToastNotification("{$form_item_removed[$GLOBALS['lang']]}", "warning", 2000);
+						
+					}
+					
+					// Store new value in temp-input
+					tempInput.val(newVal);
+					
+					// Manipulate btn
+					let newGradient = isAdded ? "btn-gradient-red" : "btn-gradient-blue";
+					let oldGradient = isAdded ? "btn-gradient-blue" : "btn-gradient-red";
+					
+					let newIcon = isAdded ? "fa-minus" : "fa-plus";
+					let oldIcon = isAdded ? "fa-plus" : "fa-minus";
+					
+					btn.removeClass(oldGradient);
+					btn.addClass(newGradient);
+					
+					btn.children("i")[0].classList.remove(oldIcon);
+					btn.children("i")[0].classList.add(newIcon);
+					
+				} // function selectOption()
+			
+				/**
+				* Function to be triggered when options are saved
+				* 
+				* @param {jQuery} storeInput
+				* @param {jQuery} tempInput
+				*/
+				function evaluateMultiSelectModal(storeInput, tempInput) 
+				{
+					
+					let id = tempInput[0].id.replace("temp-", "");
+					let selectEl = $("#"+id);
+					
+					storeInput.val(tempInput.val());
+					
+					if(storeInput.val() !== "") selectEl.removeAttr('required');
+					else selectEl.prop("required", true);
+					
+				} // function evaluateMultiSelectModal()
+			</script>
+EOT;
+
+		# Provide evaluation script
+		if(!isSizedString($GLOBALS['js']['multiselect_modal__evaluation']))
+			$GLOBALS['js']['multiselect_modal__evaluation'] = [$js];
+
+	?>
+<?php } ?>

@@ -1,0 +1,114 @@
+<?php
+	/**
+	 * @name: Delivery Table Widget
+	 * @description: A widget to show statistics of the first elements of a given number
+	 * @params: Int $item_amount = 5: The amount of items to be shown in the list
+	 *          Int $min_height = 378px: The minimun height given
+	 */
+?>
+
+<?php global $units, $all_units, $unit_is_hub, $show_all, $close; ?>
+<?php global $form_unitName, $form_unitRoom, $form_unitPriority, $form_unitNSprayed; ?>
+
+<?php if(!isSizedInt($data['item_amount'])) $data['item_amount'] = 5;  ?>
+
+<?php
+	if(isSizedInt($data['min_height'])) $min_height = $data['min_height'];
+	else $min_height = 133 + (int)$data['item_amount'] * 49;
+?>
+
+<?php
+	$TC->loadData('unit', 0);
+	$unit_data = $TC->data['unit'][0];
+	if(!empty($unit_data) && isSizedInt($data['item_amount']))
+		$payload = array_slice($unit_data, 0, $data['item_amount'], true);
+	else $payload = $unit_data ?? array();
+?>
+
+<?php $uniqueID = uniqid(); ?>
+
+<style>
+	#delivery_table_widget{ background-color: #fff; padding: 0 !important; border: 0; min-height: <?php echo $min_height; ?> !important; overflow: hidden; justify-content: flex-start; }
+	.delivery_table_widget_wrapper .widget-container{ width: 100%; }
+</style>
+
+<div class="delivery_table_widget_wrapper">
+	<!-- Table Element -->
+	<div id="delivery_table_widget" class="table_widget card flex-centered">
+		<div class="widget-container">
+			<div class="widget-header">
+				<h1><?php echo $units[$GLOBALS['lang']]; ?></h1>
+				<a data-toggle="modal" data-target="#tableModal-<?php echo $uniqueID; ?>" onclick="$($(this).data('target')).appendTo('body');"><?php echo $show_all[$GLOBALS['lang']]; ?></a>
+			</div>
+			<table>
+				<thead>
+				<tr>
+					<th>ID</th>
+					<th><?php echo $form_unitName[$GLOBALS['lang']]; ?></th>
+					<th><?php echo $form_unitRoom[$GLOBALS['lang']]; ?></th>
+					<th><?php echo $form_unitPriority[$GLOBALS['lang']]; ?></th> <!-- or control unit -->
+					<th><?php echo $form_unitNSprayed[$GLOBALS['lang']]; ?> / 24h</th>
+				</tr>
+				</thead>
+				<tbody>
+				<?php foreach($payload as $k => $unit) { ?>
+					<?php
+					$creation_date = strtotime(DBDatetoDate($unit['unit_createdAt']));
+					$days_since_creation = round((time() - $creation_date) / (60 * 60 * 24));
+
+					$nScentsInjected = round($unit['unit_timesSprayed'] / $days_since_creation, 2);
+					?>
+					<tr>
+						<td>#<?php echo $unit['unit_id']; ?></td>
+						<td><?php echo $unit['unit_name']; ?></td>
+						<td><?php echo $unit['unit_room']; ?></td>
+						<td><?php echo ((bool)$unit['unit_isHub'] ? $unit_is_hub[$GLOBALS['lang']] : $unit['unit_priority']); ?></td>
+						<td><?php echo $nScentsInjected ?? 0; ?></td>
+					</tr>
+				<?php } ?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade delivery_table_widget_wrapper" id="tableModal-<?php echo $uniqueID; ?>" tabindex="-1" role="dialog" aria-labelledby="tableModalExpanded" aria-hidden="true">
+		<div class="modal-dialog modal-borderless" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle"><?php echo $all_units[$GLOBALS['lang']]; ?></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body table_widget">
+					<table>
+						<thead>
+						<tr>
+							<th>ID</th>
+							<th><?php echo $form_unitName[$GLOBALS['lang']]; ?></th>
+							<th><?php echo $form_unitRoom[$GLOBALS['lang']]; ?></th>
+							<th><?php echo $form_unitPriority[$GLOBALS['lang']]; ?></th> <!-- or control unit -->
+							<th><?php echo $form_unitNSprayed[$GLOBALS['lang']]; ?></th>
+						</tr>
+						</thead>
+						<tbody>
+						<?php foreach($unit_data as $k => $unit) { ?>
+							<tr>
+								<td>#<?php echo $unit['unit_id']; ?></td>
+								<td><?php echo $unit['unit_name']; ?></td>
+								<td><?php echo $unit['unit_room']; ?></td>
+								<td><?php echo ((bool)$unit['unit_isHub'] ? $unit_is_hub[$GLOBALS['lang']] : $unit['unit_priority']); ?></td>
+								<td><?php echo $unit['unit_timesSprayed'] ?? 0; ?></td>
+							</tr>
+						<?php } ?>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal"><?php echo $close[$GLOBALS['lang']]; ?></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

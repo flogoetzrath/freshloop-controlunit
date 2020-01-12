@@ -1,0 +1,107 @@
+	<?php
+		global $footer_home, $footer_features, $footer_dashboard, $footer_profile,
+               $footer_login, $footer_register, $footer_impress, $footer_contribute;
+	?>
+
+			<footer id="footer" class="footer-global">
+				<div class="footer-inner container">
+
+					<div class="row">
+						<div class="col-md-6 col-md-cards">
+							<ul>
+								<li>
+									<div class="list-item list-container">
+										<div class="list-item-container">
+											<?php echo $footer_home[$GLOBALS['lang']]; ?>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="list-item list-container">
+										<div class="list-item-container">
+											<?php echo $footer_features[$GLOBALS['lang']]; ?>
+										</div>
+									</div>
+								</li>
+
+
+
+								<?php if(!$TC->isActiveMod("mod_auth")) { ?>
+									<div></div>
+								<?php } else if($TC->modules['mod_auth']->Auth->isLoggedIn()) { ?>
+									<li>
+										<div class="list-item list-container">
+											<div class="list-item-container">
+											<?php echo $footer_profile[$GLOBALS['lang']]; ?>
+										</div>
+										</div>
+									</li>
+									<li>
+										<div class="list-item list-container">
+											<div class="list-item-container">
+											<?php echo $footer_dashboard[$GLOBALS['lang']]; ?>
+										</div>
+										</div>
+									</li>
+								<?php } else { ?>
+									<li>
+										<div class="list-item list-container">
+											<div class="list-item-container">
+											<?php echo $footer_login[$GLOBALS['lang']]; ?>
+										</div>
+										</div>
+									</li>
+									<li>
+										<div class="list-item list-container">
+											<div class="list-item-container">
+											<?php echo $footer_register[$GLOBALS['lang']]; ?>
+										</div>
+										</div>
+									</li>
+								<?php } ?>
+
+
+
+								<li>
+									<div class="list-item list-container">
+										<div class="list-item-container">
+											<?php echo $footer_impress[$GLOBALS['lang']]; ?>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-6 col-md-copyright">
+							<ul>
+								<li>
+									<a href="https://github.com/F9lke/restaurant">
+										<i class="fab fa-github"></i>
+										<?php echo $footer_contribute[$GLOBALS['lang']]; ?>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</footer>
+
+		</div> <!-- .body-inner-->
+
+		<!-- libraries -->
+		<script src="<?php echo LIBUI_URI.'/jquery/jquery.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/jquery/jquery_ui.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/popper/popper.min.js'; ?>"></script>
+		<script src="<?php echo LIBUI_URI.'/bootstrap/js/bootstrap.min.js'; ?>"></script>
+
+		<!-- global js -->
+		<script src="<?php echo SCRIPT_URI; ?>/functions.js"></script>
+		<script src="<?php echo SCRIPT_URI; ?>/main.js"></script>
+
+		<!-- core/template specific -->
+		<?php if(file_exists(SCRIPT_URI.'/'.$_SESSION['page_type'].'.js')): ?>
+			<script src="<?php echo SCRIPT_URI.'/'.$_SESSION['page_type'].'.js'; ?>">
+		<?php endif; ?>
+
+	</body>
+</html>

@@ -1,0 +1,159 @@
+<?php if(!isset($MC->view['field_config']['standard_style']) || !$MC->view['field_config']['standard_style']) { ?>
+	<style>
+		.timepicker-container.row{ margin: 0; }
+		.timepicker-container .control-label{ padding-left: 10px; }
+
+		.divTimeSetterContainer {
+			/*box-shadow: 0px 20px 20px -15px rgba(0, 0, 0, 0.5);*/
+			background: var(--input-grey);
+			width: 100%;
+		}
+		.divTimeSetterContainer .timeValueBorder {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			background-color: var(--input-grey);
+			border-radius: 4px;
+		}
+		.divTimeSetterContainer input.timePart {
+			text-align: right;
+			border: none;
+			font-weight: bold;
+			padding: 0;
+			cursor: text;
+			outline: none;
+		}
+		.divTimeSetterContainer input.hours,
+		.divTimeSetterContainer input.minutes {
+			width: 50%;
+			text-align: center;
+			padding: 6px 0;
+		}
+		.divTimeSetterContainer span.hourSymbol,
+		.divTimeSetterContainer span.minuteSymbol { margin: 0 0.5em; }
+		.divTimeSetterContainer span.timeDelimiter {
+			text-align: center;
+			font-weight: bold;
+		}
+		.divTimeSetterContainer .button-time-control {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			width: 2em;
+			cursor: pointer;
+		}
+		.divTimeSetterContainer .button-time-control .updownButton {
+			width: 2em;
+			text-align: center;
+		}
+		.divTimeSetterContainer .button-time-control .updownButton:first-child {
+			border-top-right-radius: 3px;
+			border-bottom: none;
+			/* to remove double line */
+		}
+		.divTimeSetterContainer .button-time-control .updownButton:last-child { border-bottom-right-radius: 3px; }
+		.divTimeSetterContainer .button-time-control .updownButton:hover {
+			background-color: rgba(244,248,247, .7);
+		}
+
+		input[type=number]::-webkit-inner-spin-button,
+		input[type=number]::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+		#btnUp,
+		#btnDown {
+			-webkit-appearance: unset;
+			border-left: 1px solid #000;
+			transition: 0.15s all ease-in-out;
+		}
+
+		.timepicker-<?php echo $MC->view['field_id']; ?> {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+		}
+		.postfix-position { display: none; }
+	</style>
+<?php } ?>
+
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+	<div class="form-group form-group-sm timepicker-container row <?php echo @$MC->view['field_config']['wrap_class'] ?: ""; ?>">
+<?php } ?>
+
+	<label class="col-sm-6 control-label" for="<?php echo $MC->view['field_id']; ?>"><?php echo $MC->view['field_label']; ?></label>
+
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+	<div class="col-sm-6" style="padding-right: 0;">
+	<div class="field-container">
+<?php } ?>
+
+	<input
+		type="hidden"
+		name="<?php echo $MC->view['field_name']; ?>"
+		value="<?php echo $MC->view['field_value'] ?: (new mod_time())->conf['mod_time__default_time']; ?>"
+		id="<?php echo $MC->view['field_id']; ?>"
+	>
+	<div id="timepicker" class="timepicker-<?php echo $MC->view['field_id']; ?>"></div>
+<?php if (isSizedString($MC->view['field_config']['help'])) { ?>
+	<?php if ($MC->view['field_config']['rAlign']) { ?>
+		<a href="#" data-wpsg-tip="<?php echo xssproof($MC->view['field_config']['help']); ?>" rel="?field=<?php echo xssproof($MC->view['field_config']['help']); ?>"
+		   class="glyphicon glyphicon glyphicon-question-sign form-control-feedback float-right" aria-hidden="true"></a>
+	<?php } else { ?>
+		<a href="#" data-wpsg-tip="<?php echo xssproof($MC->view['field_config']['help']); ?>" rel="?field=<?php echo xssproof($MC->view['field_config']['help']); ?>"
+		   class="glyphicon glyphicon glyphicon-question-sign form-control-feedback" aria-hidden="true"></a>
+	<?php } ?>
+<?php } ?>
+<?php if($MC->view['field_config']['container']) { ?>
+	</div>
+	</div> <!-- .col-sm-6 -->
+<?php } # if($MC->view['field_config']['container']; ?>
+
+<?php
+	$js = <<<EOT
+
+	$(".timepicker-{{ id }}").timesetter({
+		hour: {
+			value: 0,
+			min: 0,
+			max: 24,
+			step: 1,
+			symbol: ""
+		},
+		minute: {
+			value: 0,
+			min: 0,
+			max: 60,
+			step: 5,
+			symbol: ""
+		},
+		direction: "increment",
+		inputHourTextbox: null, 
+		inputMinuteTextbox: null, 
+		postfixText: "",
+		numberPaddingChar: '0' 
+	});
+
+	let inputHidden = $("#{{ id }}");
+	let hours = $(".timepicker-{{ id }}").find("#txtHours");
+	let minutes = $(".timepicker-{{ id }}").find("#txtMinutes");
+
+	let applyChangesToInputHidden = () => {
+		let formattedVal = hours.val().toString() + ":" + minutes.val().toString();
+
+		inputHidden.val(formattedVal);
+	};
+
+	hours.on('change', function() { applyChangesToInputHidden(); });
+	minutes.on('change', function() { applyChangesToInputHidden() });
+EOT;
+
+	$GLOBALS['js']['field-'.$MC->view['field_id']] = array($js, ["id" => $MC->view['field_id']]);
+?>
+
+	<div class="clearfix"></div>
+
+<?php if(isset_true($MC->view['field_config']['container'])) { ?>
+	</div>
+<?php } ?>

@@ -1,0 +1,73 @@
+<?php
+	/**
+	 * @name: Modal Confirmation Component
+	 * @description: A component to grant a reusable confirmation modal solution
+	 *
+	 * @params: Int $id: The id of this component
+	 *          String $title: The title of the modal
+	 *          String $msg: The message to be shown in the content field of the modal
+	 *          String $accept_btn: The message to be displayed on the accept button
+	 *          String $accept_url: The redirect url in case of modal acceptance
+	 */
+?>
+
+<style>
+	/* @see: .modal-borderless in global.css */
+</style>
+
+<?php
+global $close;
+
+# Only custom template engine to be used within $modal
+$modal = <<<EOT
+	<div class="modal fade component-modal modal-borderless" id="component-modal-{$data['id']}">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+	
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h1 class="modal-title">{$data['title']}</h1>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+	
+				<!-- Modal body -->
+				<div class="modal-body">
+					<div class="modal-container">
+						{$data['msg']}
+					</div>
+				</div>
+	
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button
+						type="button"
+						class="btn btn-gradient btn-gradient-lbluegreen"
+						data-dismiss="modal"
+						onclick="window.location = '{$data['accept_url']}';"
+					>
+						{$data['accept_btn']}
+					</button>
+					<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal">{$close[$GLOBALS['lang']]}</button>
+				</div>
+	
+			</div>
+		</div>
+	</div>
+EOT;
+
+// Put in order for being rendered
+$GLOBALS['html']['component__modal_confirmation-'.$data['id']] = $modal;
+
+$js = <<<EOT
+	<script>
+		$(".trigger-component_modal-{$data['id']}").on('click', function(){
+			$("#component-modal-{$data['id']}").modal('show');
+		});
+	</script>
+EOT;
+
+// Prepare JS for getting rendered
+$GLOBALS['js']['component__modal_confirmation-'.$data['id']] = array($js);
+
+?>
+

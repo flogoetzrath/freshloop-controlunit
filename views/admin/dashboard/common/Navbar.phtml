@@ -1,0 +1,219 @@
+<!-- Navbar template specifically for the admin area -->
+
+<?php
+	if(!$TC->modules['mod_auth']->Auth->isLoggedIn()) $TC->redirect("/login", true);
+
+	global  $navbar_home,
+	        $navbar_search_placeholder,
+	        $dashboard,                      $navbar_dropdown__header,
+	        $navbar_dropdown__footer,        $auth_logout;
+	global $burgermenu_name;
+	global $errors_thrown__short, $pending_messages__short, $delete_all;
+	global $errors_thrown__open, $pending_messages__open;
+
+	$url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$url = substr($url, 0, strpos($url, '?'));
+?>
+
+<div id="navbar" class="component-navbar admin-navbar">
+	<div class="navbar-section-inner">
+
+		<nav class="navbar">
+			<div class="navbar-inner navbar-inner-admin">
+
+				<!-- Burger -->
+				<div class="navbar-burger burger" style="margin: 0;">
+					<div class="navbar-brand">
+						<a class="navbar-item" href="<?php echo VIEWS_HOME_URI; ?>">
+							<h1><?php echo ucfirst(APP_NAME); ?></h1>
+						</a>
+						<div class="navbar-item ml-5 toggleSidebar">
+							<i class="fa fa-bars"></i>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-burger burger burger-trigger" data-target="navbarBurgerTarget" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" style="float:right;">
+					<svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+					     viewBox="0 0 200 200" style="enable-background:new 0 0 97.6 94;" xml:space="preserve">
+					    <style type="text/css">
+						    .st0{fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+						    .st1{display:none;fill:#ADADAD;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+						    .st2{fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+					    </style>
+						<path id="topline" class="st0" d="M25.9,24.2h23h22c1.6,0,2.3,2,1,3l-46,39"/>
+						<path id="bottom" class="st0" d="M25.9,66.2h23h22c1.6,0,2.3-2,1-3l-46-39"/>
+						<path id="middle" class="st0" d="M25.9,45.2h45h17.5c1.9,0,4-1.7,3.9-3.6C91.9,26.2,87.9,5.2,48.9,5.2c-45,0-44,41-44,41s-3,41,44,41
+                            c49,0,43-48,43-48"/>
+						<circle id="circle" class="st2" cx="48.9" cy="46.2" r="40"/>
+						<circle id="outercircle" class="st0" cx="48.9" cy="46.2" r="44"/>
+                    </svg>
+				</div>
+				<!-- Regular Nav -->
+				<div id="navbarBurgerTarget" class="navbar-menu">
+					<div class="navbar-brand">
+						<a class="navbar-item" href="/dashboard">
+							<h1><?php echo $dashboard[$GLOBALS['lang']]; ?></h1>
+						</a>
+						<div class="navbar-item ml-5 toggleSidebar">
+							<i class="fa fa-bars"></i>
+						</div>
+					</div>
+
+					<div class="navbar-end">
+						<div class="navbar-item">
+							<div class="field is-grouped">
+								<div class="control only-burger">
+									<h1><?php echo $burgermenu_name[$GLOBALS['lang']]; ?></h1>
+								</div>
+								<div class="control">
+									<div class="only-burger" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span><?php echo $pending_messages__open[$GLOBALS['lang']]; ?></span>
+									</div>
+									<div class="dropdown btn-icon-outer for-notification">
+										<button class="btn btn-secondary btn-icon dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<i class="fa fa-bell"></i>
+											<?php $arraySize = MainController::countFrontendMessages(); ?>
+											<?php if($arraySize >= 1) { ?>
+												<span class="count icon-count bg-danger"><?php echo $arraySize; ?></span>
+											<?php } ?>
+										</button>
+										<div class="dropdown-menu" aria-labelledby="notification" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 56px, 0px);">
+											<div class="row" style="width: 100%;">
+												<div class="col-md-10">
+													<p class="dropdown-quickview"><?php echo $arraySize; ?> <?php echo $pending_messages__short[$GLOBALS['lang']]; ?></p>
+												</div>
+												<div class="col-md-2 flex-centered">
+													<?php renderForm_init("?", ["activate_card_wrap" => false]); ?>
+														<?php renderForm_input("action", "", "delFrontendMsg", array(
+															"type" => "hidden",
+															"container" => false,
+															"inline" => false,
+															"required" => true));
+														?>
+														<?php if($arraySize >= 1) { ?>
+															<button type="submit" class="cleanBtn" data-toggle="tooltip" data-placement="bottom" title="<?php echo $delete_all[$GLOBALS['lang']]; ?>">
+																<i class="fas fa-trash dropdown-quickview" style="opacity: .6;"></i>
+															</button>
+														<?php } ?>
+													<?php renderForm_close("", ["activate_submit_btn" => false, "activate_card_wrap" => false]); ?>
+												</div>
+											</div>
+											<?php if($arraySize >= 1) { ?>
+												<?php foreach($_SESSION['frontend_messages'] as $id => $msg) { ?>
+													<?php if(!isSizedString($msg)) continue; ?>
+													<a id="msg-<?php echo $id; ?>" class="dropdown-item media" href="<?php echo $url; ?>?action=delFrontendMsg&amp;id=<?php echo $id; ?>">
+														<p><?php echo $msg; ?></p>
+													</a>
+												<?php } ?>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+								<div class="control control-noleft">
+									<div class="only-burger" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span><?php echo $errors_thrown__open[$GLOBALS['lang']]; ?></span>
+									</div>
+									<div class="dropdown btn-icon-outer for-notification">
+										<button class="btn btn-secondary btn-icon dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<i class="fas fa-exclamation-triangle"></i>
+											<?php $arraySize = MainController::countFrontendErrors(); ?>
+											<?php if($arraySize >= 1) { ?>
+												<span class="count icon-count bg-danger"><?php echo $arraySize; ?></span>
+											<?php } ?>
+										</button>
+										<div class="dropdown-menu" aria-labelledby="notification" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 56px, 0px);">
+											<div class="row" style="width: 100%;">
+												<div class="col-md-10">
+													<p class="dropdown-quickview"><?php echo $arraySize; ?> <?php echo $errors_thrown__short[$GLOBALS['lang']]; ?></p>
+												</div>
+												<div class="col-md-2 flex-centered">
+													<?php renderForm_init("?", ["activate_card_wrap" => false]); ?>
+													<?php renderForm_input("action", "", "delFrontendErr", array(
+														"type" => "hidden",
+														"container" => false,
+														"inline" => false,
+														"required" => true));
+													?>
+													<?php if($arraySize >= 1) { ?>
+														<button type="submit" class="cleanBtn" data-toggle="tooltip" data-placement="bottom" title="<?php echo $delete_all[$GLOBALS['lang']]; ?>">
+															<i class="fas fa-trash dropdown-quickview" style="opacity: .6;"></i>
+														</button>
+													<?php } ?>
+													<?php renderForm_close("", ["activate_submit_btn" => false, "activate_card_wrap" => false]); ?>
+												</div>
+											</div>
+											<?php if($arraySize >= 1) { ?>
+												<?php foreach($_SESSION['frontend_errors'] as $id => $err) { ?>
+													<?php if(!isSizedString($err)) continue; ?>
+													<a id="err-<?php echo $id; ?>" class="dropdown-item media" href="<?php echo $url; ?>?action=delFrontendErr&amp;id=<?php echo $id; ?>">
+														<p><?php echo $err; ?></p>
+													</a>
+												<?php } ?>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+
+								<div class="control">
+									<input type="text" class="navbarsearch-trigger" placeholder="<?php echo $navbar_search_placeholder[$GLOBALS['lang']]; ?>">
+									<div id="searchInput_modal" class="modal">
+										<div class="modal-background"></div>
+										<div class="modal-content">
+											<div class="box">
+												<article>
+													<div class="search_box w-100 position-relative">
+														<input type="text" placeholder="<?php echo $navbar_search_placeholder[$GLOBALS['lang']]; ?>">
+													</div>
+													<div class="result_box w-100 position-relative">
+														<div class="result_area w-100 h-100">
+															<?php global $admin_no_results; ?>
+															<?php echo $admin_no_results[$GLOBALS['lang']]; ?>
+														</div>
+													</div>
+												</article>
+											</div>
+										</div>
+										<button class="modal-close is-large" aria-label="close"></button>
+									</div>
+
+									<div class="lang-dropdown dropdown">
+										<div class="lang-dropdown-inner">
+											<div class="lang-box">
+												<div class="lang-box-inner">
+													<div class="lang-box-content dropdown-toggle" id="dropdownLangMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+														<?php echo strtoupper($GLOBALS['lang_shortcut']); ?>
+													</div>
+													<div class="dropdown-menu" aria-labelledby="dropdownLangMenu">
+														<div class="dropdown-menu-inner">
+															<span class="dropdown-menu-header"><?php echo $navbar_dropdown__header[$GLOBALS['lang']]; ?></span>
+															<div class="row dropdown-langs-supported">
+																<?php foreach($GLOBALS['langs_supported'] as $shortcut => $lang): ?>
+																	<a href="<?php echo $url.'?lang='.$shortcut ?>" class="col-md-6">
+																		<?php echo $lang; ?>
+																	</a>
+																<?php endforeach; ?>
+															</div>
+															<span class="dropdown-menu-footer"><?php echo $navbar_dropdown__footer[$GLOBALS['lang']]; ?></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<p class="control">
+									<a class="button-get-started" href="#">
+										<span><a href="/logout"><?php echo $auth_logout[$GLOBALS['lang']]; ?></a></span>
+									</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</nav>
+
+	</div>
+</div> <!-- #navbar -->

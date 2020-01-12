@@ -1,0 +1,105 @@
+<?php
+	global  $navbar_home,
+	        $navbar_search_placeholder,      $auth_login,
+	        $dashboard,                      $lounge,
+	        $navbar_dropdown__header,        $navbar_dropdown__footer,
+	        $auth_logout;
+
+	$url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$url = substr($url, 0, strpos($url, '?'));
+?>
+
+<div id="navbar" class="component-navbar">
+	<div class="navbar-section-inner">
+
+		<nav class="navbar">
+			<div class="navbar-inner">
+
+				<!-- Burger -->
+				<div class="navbar-burger burger" style="margin: 0;">
+					<div class="navbar-brand">
+						<a class="navbar-item" href="<?php echo VIEWS_HOME_URI; ?>">
+							<h1><?php echo ucfirst(APP_NAME); ?></h1>
+						</a>
+					</div>
+				</div>
+				<div class="navbar-burger burger" data-target="navbarBurgerTarget" onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+				<!-- Regular Nav -->
+				<div id="navbarBurgerTarget" class="navbar-menu">
+					<div class="navbar-brand">
+						<a class="navbar-item" href="<?php echo VIEWS_HOME_URI; ?>">
+							<h1><?php echo ucfirst(APP_NAME); ?></h1>
+						</a>
+					</div>
+					<div class="navbar-start">
+						<a class="navbar-item" href="#">
+							<?php echo $navbar_home[$GLOBALS['lang']]; ?>
+						</a>
+					</div>
+
+					<div class="navbar-end">
+						<div class="navbar-item">
+							<div class="field is-grouped">
+								<?php if(DEBUG_MODE) { ?>
+									<p class="control item-question" data-toggle="tooltip" data-placement="bottom" title="IP: <?php echo $GLOBALS['unit_ip']; ?>">
+								<?php } else { ?>
+									<p class="control item-question" data-toggle="tooltip" data-placement="bottom" title="Version: <?php echo APP_VERSION; ?>">
+								<?php } ?>
+									<i class="fas fa-question-circle"></i>
+								</p>
+								<p class="control">
+									<form action="/home" method="get">
+										<?php //<input type="text" name="searchQuery" placeholder="<?php echo $navbar_search_placeholder[$GLOBALS['lang']]; "> ?>
+										<div class="lang-dropdown dropdown">
+											<div class="lang-dropdown-inner">
+												<div class="lang-box">
+													<div class="lang-box-inner">
+														<div class="lang-box-content dropdown-toggle" id="dropdownLangMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<?php echo strtoupper($GLOBALS['lang_shortcut']); ?>
+														</div>
+														<div class="dropdown-menu" aria-labelledby="dropdownLangMenu">
+															<div class="dropdown-menu-inner">
+																<span class="dropdown-menu-header"><?php echo $navbar_dropdown__header[$GLOBALS['lang']]; ?></span>
+																<div class="row dropdown-langs-supported">
+																	<?php foreach($GLOBALS['langs_supported'] as $shortcut => $lang): ?>
+																		<a href="<?php echo $url.'?lang='.$shortcut ?>" class="col-md-6">
+																			<?php echo $lang; ?>
+																		</a>
+																	<?php endforeach; ?>
+																</div>
+																<span class="dropdown-menu-footer"><?php echo $navbar_dropdown__footer[$GLOBALS['lang']]; ?></span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<?php //<input type="submit" class="form-submit" value=""> ?>
+									</form>
+								</p>
+								<p class="control">
+									<a class="button-get-started" href="#">
+										<?php if(!$TC->modules['mod_auth']->Auth->isLoggedIn()) { ?>
+											<span><a href="/login"><?php echo $auth_login[$GLOBALS['lang']]; ?></span>
+										<?php } else { ?>
+											<span><a href="/logout"><?php echo $auth_logout[$GLOBALS['lang']]; ?></span>
+										<?php } ?>
+										<?php /* } else if($TC->modules['mod_auth']->hasPrivileges('admin_group')) { ?>
+											<span><a href="/dashboard"><?php echo $dashboard[$GLOBALS['lang']]; ?></a></span>
+										<?php } */ ?>
+									</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</nav>
+
+	</div>
+</div> <!-- #navbar -->

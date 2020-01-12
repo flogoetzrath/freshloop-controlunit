@@ -1,0 +1,56 @@
+<?php
+
+	/**
+	 * Template for email verification purposes
+	 * At this point the user has already clicked the link in the email sent
+	 */
+
+	$TC->the_header('mod_auth');
+	$TC->the_navbar('mod_auth');
+
+	if(!isSizedString($_REQUEST['selector']) && !isSizedString($_REQUEST['token']))
+		die('Illegal request');
+
+	global $auth_verify_email, $auth_verify_email__subtext, $admin_back_to_dashboard;
+	global $form_reset, $form_cancel;
+
+	?>
+	<div class="auth row">
+		<div class="col-md-8 layer-login flex-centered m-auto">
+			<div class="content">
+
+	<?php
+
+	try{
+
+		$TC->modules['mod_auth']->Auth->confirmEmail($_REQUEST['selector'], $_REQUEST['token']);
+
+			?><h1><?php echo $auth_verify_email[$GLOBALS['lang']]; ?></h1>
+			  <h3 style="margin: 1em auto; font-weight: normal;"><?php echo $auth_verify_email__subtext[$GLOBALS['lang']]; ?></h3>
+		      <button href="/dashboard" class="button"><?php echo $admin_back_to_dashboard[$GLOBALS['lang']]; ?></button><?php
+
+	}
+	catch (InvalidSelectorTokenPairException $err) {
+		global $invalid_selector_token_pair;
+		echo $invalid_selector_token_pair[$GLOBALS['lang']];
+	}
+	catch (TokenExpiredException $err) {
+		global $token_expired;
+		echo $token_expired[$GLOBALS['lang']];
+	}
+	catch (UserAlreadyExistsException $err) {
+		global $user_already_exists;
+		echo $user_already_exists[$GLOBALS['lang']];
+	}
+	catch (TooManyRequestsException $err) {
+		global $too_many_requests;
+		echo $too_many_requests[$GLOBALS['lang']];
+	}
+
+	?>
+			</div>
+		</div>
+	</div>
+	<?php
+
+	$TC->the_footer('mod_auth');

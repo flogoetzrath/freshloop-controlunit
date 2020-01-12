@@ -1,0 +1,54 @@
+<?php
+	/**
+	 * @name: Profile Settings Widget
+	 * @description: A widget to modify account settings
+	 * @params: array $mod_auth: A loaded instance of mod_auth
+	 */
+?>
+
+<?php
+	$widget_id = uniqid();
+
+	$username = $data['mod_auth']->Auth->getUsername() ?? "";
+	$email = $data['mod_auth']->Auth->getEmail() ?? "";
+
+	$data['mod_auth']->buildAuthErrors();
+?>
+
+<div id="widget__profile_settings" class="widget-<?php echo $widget_id; ?> card">
+	<?php global $settings_acc, $settings_acc__subheading; ?>
+	<?php global $form_save; ?>
+	<div class="section-container card-body col-md-12">
+		<h1 class="section-header"><?php echo $settings_acc[$GLOBALS['lang']]; ?></h1>
+		<h3 class="section-sub"><?php echo $settings_acc__subheading[$GLOBALS['lang']]; ?></h3>
+		<div class="row" style="padding-top: 10px;">
+			<div class="top_layer__form col-md-12 m-auto">
+				<div class="form-container">
+					<?php renderForm_init("?page=Admin&action=updateAccSettings", ["activate_card_wrap" => false]); ?>
+					<div class="formContainer settings-input-container row">
+						<div class="formDiv col-md-5 col-12">
+							<?php renderForm_input("name", "Name", $username, array(
+								"type" => "text",
+								"container" => false,
+								"required" => true,
+								"class" => "settings-input"))
+							?>
+						</div>
+						<div class="formDiv col-md-5 col-12">
+							<?php renderForm_input("email", "Email", $email, array(
+								"type" => "email",
+								"container" => false,
+								"required" => true,
+								"class" => @$TC->modules['mod_auth']->view['email_err']['err_status'] ? "input-error settings-input" : "settings-input"));
+							?>
+						</div>
+						<div class="formDiv formDiv-submit col-md-2 col-12">
+							<button class="btn-gradient btn-gradient-blue" type="submit"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+						</div>
+					</div>
+					<?php renderForm_close("", ["activate_submit_btn" => false, "activate_card_wrap" => false]); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<div id="flash-area">
+	<div class="error-area">
+		<?php
+			if (isSizedArray($_SESSION['frontend_errors'])) {
+				foreach($_SESSION['frontend_errors'] as $identifier => $err) {
+					?>
+
+					<?php if($identifier === "conf") continue; ?>
+
+					<div class="alert alert-danger <?php echo (!isValidMd5($identifier) ? $identifier : null); ?>" role="alert">
+						<strong>
+							<?php
+								if(isSizedArray($_SESSION['frontend_errors']['conf'][$identifier]) && isset($_SESSION['frontend_errors']['conf'][$identifier]['title']))
+									echo $_SESSION['frontend_errors']['conf'][$identifier]['title'];
+							?>
+						</strong>
+						<?php echo $err; ?>
+					</div>
+
+					<?php $TC->deleteFrontendError($identifier); ?>
+
+					<?php
+				}
+			}
+		?>
+	</div>
+	<div class="message-area">
+		<?php
+			if (isSizedArray($_SESSION['frontend_messages'])) {
+				foreach($_SESSION['frontend_messages'] as $identifier => $err) {
+					?>
+
+					<?php if($identifier === "conf") continue; ?>
+
+					<div class="alert alert-warning <?php echo (!isValidMd5($identifier) ? $identifier : null); ?>" role="alert">
+						<strong>
+							<?php
+								if(isSizedArray($_SESSION['frontend_messages']['conf'][$identifier]) && isset($_SESSION['frontend_messages']['conf'][$identifier]['title']))
+									echo $_SESSION['frontend_messages']['conf'][$identifier]['title'];
+							?>
+						</strong>
+						<?php echo $err; ?>
+					</div>
+
+					<?php $TC->deleteFrontendMessage($identifier); ?>
+
+					<?php
+				}
+			}
+		?>
+	</div>
+</div> <!-- #flash-area -->

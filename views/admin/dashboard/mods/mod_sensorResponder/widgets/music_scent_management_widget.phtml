@@ -1,0 +1,326 @@
+<?php
+	/**
+	 * @name: Music Scent Management Widget
+	 * @description: A widget to assign special scent actions when encountering a defined title or genre in a defined time interval
+	 * @params: No additional params required
+	 */
+?>
+
+<?php global $name, $delete, $minutes; ?>
+<?php global $music_genre, $scent, $sensorResponder_minimumIntervalTime, $sensorResponder_lastExecuted; ?>
+<?php global $unit_ids, $event_deleteConfirmation_heading, $event_deleteConfirmation_text; ?>
+<?php global $time_noEvent_addData; ?>
+
+<?php
+	// Get module instance
+	$mod_sensorResponder = $TC->modules['mod_sensorResponder'];
+?>
+
+<?php // Only process widget further if it has a valid data supply ?>
+<?php if($mod_sensorResponder->SpotifyIntegration->isSpotifyConnected()) { ?>
+
+	<?php
+		// Generate random and unique widget id
+		$widget_id = uniqid();
+
+		// Get the unit data
+		$TC->loadData('unit', 0);
+		$unit_data = $TC->data['unit'][0];
+
+		// Get the music events
+		$events = $mod_sensorResponder->getMusicRelatedEvents();
+		// Get the supported genres
+		$genres = $mod_sensorResponder->SpotifyIntegration->getRegisteredGenres() ?: array();
+	?>
+
+	<style>
+		#event_planner_widget .widget_inner{ position: relative; width: 100%; height: 100%; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_table_area__container{ transition: 0.15s all ease-in-out; position: absolute; height: 100%; }
+		#event_planner_widget .widget_inner .widget_table_area .btn-del{ margin-right: 5px !important; cursor: pointer; }
+		#event_planner_widget .widget_inner .widget_table_area .btn-del i{ color: var(--red) !important; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area__container{ animation: 0.7s actionAreaExpand ease-in-out; transition: 0.15s all ease-in-out; width: 100%; border-left: 0 !important; background: #fff; }
+		#event_planner_widget .widget_inner.slide-toggled .expand-action-area:before{ animation: 0.7s adjustExpandActionArea ease-in-out; background: #fff; color: #000; box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1); }
+		#event_planner_widget .widget_inner.slide-toggled .expand-action-area i{ animation: 0.7s adjustExpandActionAreaChevron ease-in-out; color: #000; transform: scale(-1, 1); margin-left: 5px; }
+		#event_planner_widget .widget_inner.slide-toggled .vertical_hint__action_area{ display: none; height: 0; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area{ display: flex !important; animation: 0.7s actionAreaExpandContent ease-in-out; color: #000; height: 100%; width: 100%; padding: 20px; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner{ position: relative; width: 100%; height: fit-content; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .action_area_header{ padding-bottom: 20px; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .action_area_header button,
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .action_area_header h1{ display: inline; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .action_area_header button{ float: right; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .form-control{ border: 0; background: transparent; }
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .form-control input[type="text"],
+		#event_planner_widget .widget_inner.slide-toggled .widget_action_area .action_area__inner .form-control select{ background: var(--input-grey); color: rgba(0,0,0,0.7); }
+		#event_planner_widget .widget_table_area__container{ position: relative; float: left; width: 95%; min-height: 270px; }
+		#event_planner_widget .widget_action_area__container{ position: relative; float: left; width: 5%; background-image: linear-gradient(to right, #4481eb, #3f86ed); box-shadow: 0 1px 15px 0 rgba(65, 132, 234, 0.75); color: #fff; font-weight: bolder; border-left: 1px solid gray; }
+		#event_planner_widget .widget_action_area__container .expand-action-area{ position: absolute; top: calc(50% - 10px); left: -20px; cursor: pointer; }
+		#event_planner_widget .widget_action_area__container .expand-action-area:before{ content: ""; z-index: -1; position: absolute; top: -15px; left: -5px; width: 25px; height: 50px; background: #4481eb; border-bottom-left-radius: 50px; border-top-left-radius: 50px; border-left: 1px solid gray; }
+		#event_planner_widget .widget_action_area__container .expand-action-area i{ font-size: 20px; color: #fff; }
+		#event_planner_widget .vertical_hint__action_area{ transform: rotate(90deg); transform-origin: top left; font-family: "Montserrat", sans-serif; text-shadow: -2px 3px 16px rgba(0, 0, 0, 0.3); position: absolute; z-index: 999; color: #fff; font-weight: 700; left: 70%; }
+
+		@media only screen and (min-width: 320px) and (max-width: 917px) {
+			#event_planner_widget .vertical_hint__action_area{
+				display: none !important;
+				height: 0 !important;
+			}
+		}
+
+		@keyframes actionAreaExpand {
+			0%{
+				width: 5%;
+				float: right;
+				background: #4481eb;
+			}
+			10%{
+				width: 40%;
+				float: right;
+			}
+			20%{
+				width: 70%;
+				float: right;
+			}
+			30%{
+				width: 100%;
+				float: right;
+				border-left: 0;
+			}
+			100%{
+				transition: 0.5s all ease-in-out;
+				background: #fff;
+			}
+		}
+		@keyframes actionAreaExpandContent {
+			0%{ opacity: 0; }
+			50%{ opacity: .3; }
+			70%{ opacity: .7; }
+			90%{ opacity: .9; }
+			100%{ opacity: 1; }
+		}
+		@keyframes adjustExpandActionArea {
+			0%{ background: #4481eb; }
+			100%{
+				transition: 0.5s all ease-in-out;
+				background: #fff;
+				color: #000;
+				box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+			}
+		}
+		@keyframes adjustExpandActionAreaChevron {
+			0%{ color: #fff; }
+			100%{
+				color: #000;
+				transform: scale(-1, 1);
+				margin-left: 5px;
+			}
+		}
+	</style>
+
+	<div id="widget__music_scent_management" class="widget-<?php echo $widget_id ?>">
+		<div class="card">
+			<div id="event_planner_widget" class="table_widget">
+				<div id="event_planner_widget__inner" class="widget_inner">
+					<?php global $sensorResponder_musicEvent__add; ?>
+					<div class="widget_table_area__container">
+						<div class="widget_table_area">
+							<div class="widget-header">
+								<h1>Musikevents</h1>
+							</div>
+							<table>
+								<thead>
+								<tr>
+									<th>ID</th>
+									<th><?php echo $music_genre[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $name[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $unit_ids[$GLOBALS['lang']]; ?></th>
+									<th><?php echo $scent[$GLOBALS['lang']]; ?> ID</th>
+									<th><?php echo $sensorResponder_minimumIntervalTime[$GLOBALS['lang']]; ?> (<?php echo $minutes[$GLOBALS['lang']]; ?>)</th>
+									<th><?php echo $sensorResponder_lastExecuted[$GLOBALS['lang']]; ?></th>
+								</tr>
+								</thead>
+								<tbody>
+								<?php $sizedDatasets = 0; ?>
+								<?php foreach($events as $genre_name => $mevent_datasets) { ?>
+									<?php foreach($mevent_datasets as $mevent_dataset) { ?>
+										<?php
+											if(isSizedArray($mevent_dataset)) $sizedDatasets ++;
+											else continue;
+										?>
+										<tr>
+											<td>#<?php echo $mevent_dataset['mevent_id']; ?></td>
+											<td><?php echo ucfirst($genre_name); ?></td>
+											<td>
+												<?php $component_id = uniqid(); ?>
+												<button type="button" class="no-btn btn-del trigger-component_modal-<?php echo $component_id; ?>">
+													<i class="fas fa-times"></i>
+												</button>
+												<?php $TC->load_component("modal_confirmation", [
+													"id" => $component_id,
+													"title" => $event_deleteConfirmation_heading[$GLOBALS['lang']],
+													"msg" => $event_deleteConfirmation_text[$GLOBALS['lang']],
+													"accept_btn" => $delete[$GLOBALS['lang']],
+													"accept_url" => "?page=Admin&mod=mod_sensorResponder&action=DeleteMEvent&mevent_id=".$mevent_dataset['mevent_id']], false); ?>
+												<?php echo ucfirst($mevent_dataset['mevent_name']); ?>
+											</td>
+											<td><?php echo $mevent_dataset['mevent_targetUnits']; ?></td>
+											<td><?php echo $mevent_dataset['mevent_fragrance_id'] ?: "-"; ?></td>
+											<td><?php echo ($mevent_dataset['mevent_minIntervalTime'] / 60); ?></td>
+											<td><?php echo DBDatetoDate($mevent_dataset['mevent_executedAt']) ?: "-"; ?></td>
+										</tr>
+									<?php } ?>
+								<?php } ?>
+								<?php if($sizedDatasets === 0) { ?>
+									<div class="widget-header" style="border-top: 1px solid darkgray;">
+										<h3><?php echo $time_noEvent_addData[$GLOBALS['lang']]; ?></h3>
+									</div>
+								<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="widget_action_area__container">
+						<?php global $sensorResponder_musicEvent__add; ?>
+						<div class="vertical_hint__action_area flex-centered"><?php echo $sensorResponder_musicEvent__add[$GLOBALS['lang']]; ?></div>
+						<div class="expand-action-area"><i class="fas fa-chevron-left"></i></div>
+						<div class="widget_action_area flex-centered" style="display: none;">
+							<div class="action_area__inner">
+								<?php renderForm_init("?page=Admin&mod=mod_sensorResponder&action=AddMEvent", ["activate_card_wrap" => false]); ?>
+
+								<div class="action_area_header">
+									<h1 class="page-header" style="font-weight: 200;">
+										<?php echo $sensorResponder_musicEvent__add[$GLOBALS['lang']]; ?>
+									</h1>
+									<button class="btn-gradient btn-gradient-blue" type="submit">
+										<?php global $form_save; ?>
+										<?php echo $form_save[$GLOBALS['lang']]; ?>
+									</button>
+								</div>
+
+								<div class="formContainer row">
+									<div class="formDiv form-control col-md-6">
+										<?php global $form_eventName; ?>
+										<?php renderForm_input("mevent_name", null, null, array(
+											"type" => "text",
+											"container" => false,
+											"required" => true,
+											"class" => isset_true($TC->view['meventname_err']['err_status']) ? "input-error" : "",
+											"placeholder" => isset_true($TC->view['meventname_err']['err_status']) ? $TC->view['meventname_err']['err_msg'] : $form_eventName[$GLOBALS['lang']]));
+										?>
+									</div>
+									<div class="formDiv form-control col-md-6">
+										<?php global $sensorResponder_selection__hookGenre, $sensorResponder_spotifyError_authError; ?>
+										<?php
+											$genres_modalReady = array();
+
+											foreach($genres as $k => $genre)
+												array_push($genres_modalReady, array(
+													"id" => $k,
+													"name" => $genre
+												));
+										?>
+										<?php renderForm_select("mevent_hookGenres", null, array($sensorResponder_selection__hookGenre[$GLOBALS['lang']]), 0, array(
+											"container" => false,
+											"required" => true,
+											"multiple" => true,
+											"modal" => true,
+											"nodata_text" => $sensorResponder_spotifyError_authError[$GLOBALS['lang']],
+											"data" => $genres_modalReady)); ?>
+									</div>
+									<div class="formDiv form-control col-md-6">
+										<?php
+											global $form_selectUnits, $event_noSchedulableUnits;
+											$select_units = array($form_selectUnits[$GLOBALS['lang']]);
+											$modal_data = array();
+
+											foreach($unit_data as $i => $unit)
+											{
+
+												$name = "[#".$unit['unit_id']."] ".$unit['unit_name'];
+
+												array_push($select_units, $name);
+
+												if((bool)$unit['unit_isActivated'] === true && (bool)$unit['unit_isHub'] !== true)
+													array_push($modal_data, ["id" => $unit['unit_id'], "name" => $name]);
+
+											}
+										?>
+										<?php renderForm_select("mevent_targetUnits", null, $select_units, 0, array(
+											"container" => false,
+											"required" => true,
+											"multiple" => true,
+											"modal" => true,
+											"nodata_text" => $event_noSchedulableUnits[$GLOBALS['lang']],
+											"data" => $modal_data)); ?>
+									</div>
+									<div class="formDiv form-control col-md-6">
+										<?php renderForm_timepicker("mevent_minIntervalTime", $sensorResponder_minimumIntervalTime[$GLOBALS['lang']]." (h:min)", "", ["container" => true]); ?>
+									</div>
+								</div> <!-- .formContainer -->
+
+								<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+		</div>
+	</div>
+
+
+	<script>
+		let qs = document.querySelector.bind(document);
+
+		/* UI Calculation */
+		let tableAreaCont = qs(".widget_table_area__container");
+		let actionAreaCont = qs(".widget_action_area__container");
+		let actionAreaHint = qs(".vertical_hint__action_area");
+
+		let adjustAreaHeight = () => {
+			actionAreaCont.style.height = tableAreaCont.offsetHeight;
+
+			actionAreaHint.style.width = actionAreaCont.style.height;
+		};
+
+		/* Add Event Visual Appeal Functionality */
+		let actionAreaSlided = false;
+		let slideBackTriggerClasses = ["expand-action-area", "fa-chevron-left", "vertical_hint__action_area"];
+
+		let addEvent_sliding = e => {
+
+			let isValidSlideBackTrigger = classes => {
+				let ret = false;
+
+				Array.from(classes).forEach(className => {
+
+					if(slideBackTriggerClasses.includes(className))
+						ret = true;
+
+				});
+
+				return ret;
+			};
+
+			if(
+				actionAreaSlided &&
+				!isValidSlideBackTrigger(e.srcElement.classList)
+			) return false;
+
+			actionAreaSlided = !actionAreaSlided;
+			qs('#event_planner_widget__inner').classList.toggle("slide-toggled");
+		};
+
+		/* Event Binding */
+		// Onload
+		adjustAreaHeight();
+
+		// Onresize
+		window.addEventListener("resize", adjustAreaHeight);
+
+		// Onclick
+		actionAreaCont.addEventListener("click", addEvent_sliding);
+		actionAreaHint.addEventListener("click", addEvent_sliding);
+	</script>
+
+<?php } // $mod_sensorResponder->SpotifyIntegration->isSpotifyConnected() ?>

@@ -1,0 +1,7 @@
+<?php
+
+	$this->loadActiveModules();
+
+	if(!$this->modules['mod_auth']->Auth->isLoggedIn())
+		$TC->redirect('/login', true);
+	else $TC->redirect('/dashboard', true);
