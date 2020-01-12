@@ -30,7 +30,7 @@ Since there is no auto-installation functionality, it is essential to manually c
 root > lib > sql > freshloop.sql
 ```
 
-In interests of not comitting all libraries, additional ones, that are positioned in the following location, are part of the project. They have to be downloaded and inserted to their intended destination. See built with for a list of the dependencies needed.
+In interests of not committing all libraries, additional ones, that are positioned in the following location, are part of the project. They have to be downloaded and inserted to their intended destination. See built with for a list of the dependencies needed.
 
 ```
 root > lib > ui > *
