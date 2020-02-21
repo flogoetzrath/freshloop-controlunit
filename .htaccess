@@ -8,3 +8,5 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+)$ vars.php [QSA,L]
 
 AddDefaultCharset utf-8
+
+Options -Indexes
