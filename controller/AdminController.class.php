@@ -256,7 +256,7 @@
 			$api_macaddr = $this->getMacAddressByIP($connectableUnit);
 			$api_port = $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $api_macaddr);
 
-			if(!isSized($api_port) || (int)$api_port === 1) $api_port = 5000;
+			if(!isSized($api_port) || (int)$api_port === 1) $api_port = DEF_API_PORT;
 
 			$API = new APIController();
 			$b = true;
@@ -518,7 +518,7 @@
 			# Extract important information regarding the api request
 			$dest_ip = trim($this->getIPByMacAddress($unit['unit_macaddress']));
 			$dest_route = $sprayAtPosition !== 1 ? "/api/actions/sprayAtPosition" : "/api/actions/spray";
-			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']);
+			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']) ?: DEF_API_PORT;
 			$dest = $dest_ip.":".$dest_port.$dest_route;
 
 			$auth_jwt = $unit['unit_secret'];

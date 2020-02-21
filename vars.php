@@ -62,6 +62,7 @@
 
 	define("APP_ACTIVATION", $config['app_activation'] === "enabled");
 	define('ALLOW_CRONJOBS', $config['allow_cronjobs'] === "enabled");
+	define('DEF_API_PORT', (int)$config['default_api_port']);
 	define('DEBUG_MODE', $config['show_errors'] === "enabled");
 	define('LANG', $GLOBALS['lang']);
 
