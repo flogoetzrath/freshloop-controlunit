@@ -228,16 +228,24 @@
 			foreach($results as $k => $unit)
 			{
 
-				if($connectableUnit !== false) continue;
+				if($connectableUnit !== false || !filter_var($unit, FILTER_VALIDATE_IP)) continue;
 
-				if(!in_array($unit, $alreadyConnectedUnits))
-					$connectableUnit = $unit;
+				$currentMac = $this->getMacAddressByIP($unit);
+				$isConnectableUnit = true;
+
+				foreach($alreadyConnectedUnits as $k => $conn_unit)
+					if($conn_unit['unit_macaddress'] === $currentMac)
+						$isConnectableUnit = false;
+
+				if($isConnectableUnit) $connectableUnit = $unit;
 
 			}
 
 			// If no IP Addresses could be filtered
 			if(!isSizedArray($results) || $connectableUnit === false)
 			{
+
+				if(DEBUG_MODE) die(debug($results));
 
 				global $unit_connection_failure__noExecutingUnitsDetected;
 				return $this->addFrontendError($unit_connection_failure__noExecutingUnitsDetected[$GLOBALS['lang']]);
@@ -247,6 +255,8 @@
 			// Init Authorizing proccess
 			$api_macaddr = $this->getMacAddressByIP($connectableUnit);
 			$api_port = $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $api_macaddr);
+
+			if(!isSized($api_port) || (int)$api_port === 1) $api_port = 5000;
 
 			$API = new APIController();
 			$b = true;
@@ -278,8 +288,8 @@
 			{
 
 				$updateMapping = array(
-					"macaddress" => $api_macaddr,
-					"secret" => $response->token
+					"unit_macaddress" => $api_macaddr,
+					"unit_secret" => $response->token
 				);
 
 				$this->callModelFunc('unit', 'updateUnit', $unit_id, $updateMapping)
@@ -387,7 +397,7 @@
 		public function hasAnyUnitNotBeenConnectedYet()
 		{
 
-			return (bool)isSizedArray($this->getUnconnectedUnit());
+			return (bool)@isSizedArray($this->getUnconnectedUnit());
 
 		} // public function hasAnyUnitNotBeenConnectedYet()
 
