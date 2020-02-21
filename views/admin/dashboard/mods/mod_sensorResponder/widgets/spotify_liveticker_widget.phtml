@@ -217,6 +217,18 @@
 	</div>
 </div>
 
+<!-- UI Tweak to adjust the positioning of the toggle switch -->
+<script>
+	let toggle_switch = document.querySelector(".liveticker_settings__inner .switch-label");
+
+	if(toggle_switch)
+	{
+
+		toggle_switch.style.marginTop = (toggle_switch.parentElement.offsetHeight / 2) - (toggle_switch.offsetHeight / 2);
+
+	}
+</script>
+
 <!-- Refresh Liveticker via AJAX -->
 <?php
 	// Get config values if they are not read yet
