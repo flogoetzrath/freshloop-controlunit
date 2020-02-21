@@ -3,16 +3,24 @@
 	class SpotifyIntegration extends APIController
 	{
 
-		const CLIENT_ID = "da3567d730834dbe967c280aef0fe049";
-		const CLIENT_SECRET = "fe1ff0d8e2674b408e4abd3979c80353";
+		const SPOTIFY_CREDS_PATH = MODS_PATH.'/mod_sensorResponder/spotifyCreds.ini';
+
 		const REDIRECT_URI = "http://hub/dashboard/mod_sensorResponder?page=Admin&mod=mod_sensorResponder&action=SpotifyAuthorizationCallback";
 		const AUTHORIZE_URI = "https://accounts.spotify.com/authorize";
 		const TOKENENDPOINT_URI = "https://accounts.spotify.com/api/token";
+
+		private $client_id;
+		private $client_secret;
 
 		public function __construct()
 		{
 
 			parent::__construct();
+
+			// Load the spotify web api credentials
+			$credentials_data = parse_ini_file(static::SPOTIFY_CREDS_PATH);
+			$this->client_id = $credentials_data['client_id'];
+			$this->client_secret = $credentials_data['client_secret'];
 
 		} // public function __construct()
 
@@ -34,7 +42,7 @@
 			$this->redirect(
 				static::AUTHORIZE_URI.
 				'?response_type=code'.
-				'&client_id='.static::CLIENT_ID.
+				'&client_id='.$this->client_id.
 				'&scope='.$permissionScope.
 				'&redirect_uri='.urlencode(self::REDIRECT_URI),
 				false,
@@ -74,8 +82,8 @@
 				"grant_type" => "authorization_code",   // According to the OAuth 2.0 specifications
 				"code" => $payload['code'],
 				"redirect_uri" => static::REDIRECT_URI, // Used for validation only
-				"client_id" => static::CLIENT_ID,
-				"client_secret" => static::CLIENT_SECRET
+				"client_id" => $this->client_id,
+				"client_secret" => $this->client_secret
 			]));
 
 			// Error Handling
@@ -123,8 +131,8 @@
 			$res = json_decode($this->issueAPIReq("POST", static::TOKENENDPOINT_URI, [
 				"grant_type" => "refresh_token",
 				"refresh_token" => $this->data['config']['mod_sensorResponder__spotifyRefreshToken'],
-				"client_id" => static::CLIENT_ID,
-				"client_secret" => static::CLIENT_SECRET
+				"client_id" => $this->client_id,
+				"client_secret" => $this->client_secret
 			]));
 
 			// Error Handling

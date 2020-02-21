@@ -332,3 +332,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Spotify Credentials
+mods/mod_sensorResponder/spotifyCreds.ini
