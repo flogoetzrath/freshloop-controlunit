@@ -149,7 +149,14 @@
 																		$toggle_switch_config["changeable"] = false;
 																		$toggle_switch_config["changeable_err_msg"] = $fragranceChoice_eventManagedByExternalModule[$GLOBALS['lang']];
 
-																	} else $toggle_switch_config["changeable"] = true;
+																	}
+																	else
+																	{
+
+																		$toggle_switch_config["changeable"] = true;
+																		$toggle_switch_config["changeable_err_msg"] = null;
+
+																	}
 
 																	$switch_isEnabled = !is_null($event['event_fragrance_id']) && $event['event_fragrance_id'] === $fragrance['fragrance_id']
 																		? true

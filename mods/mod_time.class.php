@@ -216,7 +216,7 @@
 				// Build the api url
 				$dest_ip = trim($this->getIPByMacAddress($unit['unit_macaddress']));
 				$dest_route = "/api/actions/sprayAtPosition";
-				$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']);
+				$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']) ?: DEF_API_PORT;
 				$dest = $dest_ip.":".$dest_port.$dest_route;
 
 				// Get the position of the demanded fragrance on the unit
@@ -405,7 +405,8 @@
 				"event_targetUnits" => $payload['units_csv'],
 				"event_loop" => $payload['loop'] === "on" ? true : false,
 				"event_plannedExecution_time" => $payload['time'],
-				"event_plannedExecution_date" => dateToDBDate($payload['date'])
+				"event_plannedExecution_date" => dateToDBDate($payload['date']),
+				"event_executedAt" => null
 			));
 
 			# End with status report

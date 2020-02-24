@@ -2,7 +2,7 @@
 	/**
 	 * @name: struct_mod
 	 * @description: Module Foundation
-	 * @author: Florian Götzrath <info@floriangoetzrath.de>
+	 * @author: Florian GÃ¶tzrath <info@floriangoetzrath.de>
 	 */
 
 	class struct_mod extends MainController
