@@ -31,6 +31,8 @@
 		foreach($this->data['unit'][0] as $k => $unit)
 		{
 
+			if((bool)$unit['unit_isHub']) continue;
+
 			// Get current iteration
 			$i = array_search($unit, $this->data['unit'][0]);
 
