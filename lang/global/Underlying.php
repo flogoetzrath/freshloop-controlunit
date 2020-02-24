@@ -18,3 +18,10 @@
 		"German" => "Deaktiviere die App"
 
 	);
+
+	$app_is_deactivated = array(
+
+		"English" => "The application has been deactivated.",
+		"German" => "Die Applikation wurde deaktiviert."
+
+	);

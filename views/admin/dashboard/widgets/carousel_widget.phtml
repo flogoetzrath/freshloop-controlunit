@@ -6,7 +6,7 @@
 	 */
 ?>
 
-<?php global $app_activate, $app_deactivate; ?>
+<?php global $app_activate, $app_deactivate, $app_is_deactivated; ?>
 <?php global $yes, $no, $times, $never, $enabled, $disabled; ?>
 <?php global $unit_activate, $unit_is_hub, $unit_is_hub__short, $unit_deactivate, $unit_forceSpray; ?>
 <?php global $add_unit, $form_unitName, $form_unitIsHub, $form_unitPriority, $form_unitNSprayed, $form_unitLastSprayed, $scents_injected_perDayAvg, $form_unitRoom, $form_unitStatus, $form_submit; ?>
@@ -127,15 +127,19 @@
 									<?php } ?>
 									<div class="action-area">
 										<?php if(!(bool)$unit['unit_isHub']) { ?>
-											<?php if(isSizedString($unit['unit_secret'])) { ?>
-												<?php if((bool)$unit['unit_isActivated']) { ?>
-													<a href="?page=Admin&action=forceSpray&unit_id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluegreen" onclick="document.querySelector('#preloader').style.left = '0';"><?php echo $unit_forceSpray[$GLOBALS['lang']]; ?></i></a>
-													<a href="?page=Admin&action=changeStatusUnit&newStatus=0&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluepurple"><?php echo $unit_deactivate[$GLOBALS['lang']]; ?></a>
+											<?php if(APP_ACTIVATION) { ?>
+												<?php if(isSizedString($unit['unit_secret'])) { ?>
+													<?php if((bool)$unit['unit_isActivated']) { ?>
+														<a href="?page=Admin&action=forceSpray&unit_id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluegreen" onclick="document.querySelector('#preloader').style.left = '0';"><?php echo $unit_forceSpray[$GLOBALS['lang']]; ?></i></a>
+														<a href="?page=Admin&action=changeStatusUnit&newStatus=0&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluepurple"><?php echo $unit_deactivate[$GLOBALS['lang']]; ?></a>
+													<?php } else { ?>
+														<a href="?page=Admin&action=changeStatusUnit&newStatus=1&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluepurple"><?php echo $unit_activate[$GLOBALS['lang']]; ?></a>
+													<?php } ?>
 												<?php } else { ?>
-													<a href="?page=Admin&action=changeStatusUnit&newStatus=1&id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-lbluepurple"><?php echo $unit_activate[$GLOBALS['lang']]; ?></a>
+													<a href="?page=Admin&action=connectUnit&unit_id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-red">Verbinden</a>
 												<?php } ?>
 											<?php } else { ?>
-												<a href="?page=Admin&action=connectUnit&unit_id=<?php echo $unit['unit_id']; ?>" class="btn-gradient btn-gradient-red">Verbinden</a>
+												<span class="text-muted"><?php echo $app_is_deactivated[$GLOBALS['lang']]; ?></span>
 											<?php } ?>
 										<?php } else { ?>
 											<?php if($TC->data['config']['app_activation'] === "enabled") { ?>
