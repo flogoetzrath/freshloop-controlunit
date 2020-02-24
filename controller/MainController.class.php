@@ -1069,7 +1069,15 @@
 		public function getIPByMacAddress($mac_address): String
 		{
 
-			return shell_exec("nmap -sP 192.168.178.0/24 >/dev/null && arp -an | grep $mac_address | awk '{print $2}' | sed 's/[()]//g'") ?: "";
+			$hostnameI = shell_exec("hostname -I");
+
+			$ip = explode(" ", $hostnameI)[0];
+			$ipParts = explode(".", $ip);
+			$obsoletePart = $ipParts[count($ipParts) - 1];
+
+			$relevantIP = str_replace($obsoletePart, "", $ip);
+
+			return shell_exec("nmap -sP $relevantIP.0/24 >/dev/null && arp -an | grep $mac_address | awk '{print $2}' | sed 's/[()]//g'") ?: "";
 
 		} // public function getIPByMacAddress()
 
