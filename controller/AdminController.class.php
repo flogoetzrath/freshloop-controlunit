@@ -73,7 +73,7 @@
 
 				# Delete unit
 				case "deleteUnit":
-					$this->deleteUnit($_REQUEST);
+					$this->deleteUnit(xssproof($_REQUEST));
 					break;
 
 				# Spray at the first position
@@ -465,11 +465,6 @@
 			// If no id has been set
 			if(!isSizedInt($payload['id'])) return false;
 
-			// Delete unit
-			if($this->callModelFunc('unit', 'deleteUnit', $payload['id']))
-				$this->addFrontendMessage($unit_deletion_success[$GLOBALS['lang']]);
-			else return $this->addFrontendError($unit_deletion_failure[$GLOBALS['lang']]);
-
 			// Delete img associated
 			$this->loadData('unit', $payload['id']);
 			foreach($this->data['unit'] as $id => $unit_data)
@@ -477,10 +472,32 @@
 					if(isSizedString($unit_data['unit_img']))
 					{
 
-						// FIXME: This path of the code doesnt execute properly
 						unlink(realpath(MEDIA_PATH."/uploads/units/".$unit_data['unit_img']));
 
 					}
+
+			// Delete unit
+			if($this->callModelFunc('unit', 'deleteUnit', $payload['id']))
+				$this->addFrontendMessage($unit_deletion_success[$GLOBALS['lang']]);
+			else return $this->addFrontendError($unit_deletion_failure[$GLOBALS['lang']]);
+
+
+			// Send an api request to terminate connection related tokens
+			$unit = $this->data['unit'][$payload['id']];
+
+			if((bool)$unit['unit_isActivated'] === false) return false;
+
+			// Extract important information regarding the api request
+			$dest_ip = trim($this->getIPByMacAddress($unit['unit_macaddress']));
+			$dest_route = "/api/auth/terminate";
+			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']) ?: DEF_API_PORT;
+			$dest = $dest_ip.":".$dest_port.$dest_route;
+
+			$auth_jwt = $unit['unit_secret'];
+
+			// Make the api call
+			$API = new APIController();
+			$API->issueAPIReq("DELETE", $dest, [], ["Authorization" => $auth_jwt]);
 
 		} // public function deleteUnit()
 

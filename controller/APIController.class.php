@@ -125,6 +125,10 @@
 					curl_setopt($curl, CURLOPT_PUT, true);
 					break;
 
+				case "DELETE":
+					curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+					break;
+
 				default:
 					if (isSizedArray($bodyData)) $dest = sprintf("%s?%s", $dest, http_build_query($bodyData));
 			}
