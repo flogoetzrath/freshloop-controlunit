@@ -224,6 +224,14 @@ EOT;
 		foreach($modals as $pos => $modal) $GLOBALS['html']['fragrance_unit_assignment-'.$pos] = $modal;
 
 	}
+	else
+	{
+
+		$GLOBALS['js']['widget__fragrance_unit_assignment-'.$widget_id] = [
+				"<script>document.querySelector('.widget-' + '$widget_id').parentElement.style.zIndex = '1';</script>"
+		];
+
+	}
 
 ?>
 
