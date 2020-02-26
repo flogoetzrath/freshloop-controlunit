@@ -313,19 +313,22 @@
 		public function startListeningForEvents()
 		{
 
+			// Initialize the crontab manager if this has not been done before
+			if(is_null($this->CronManager)) $this->CronManager = new ssh2_crontab_manager();
+
 			// Check if the cron job has already been added
 			$this->readConfig();
 
-			if($this->data['config']['mod_time__checkTimeEventExecutionNeedsCron'] === "enabled")
+			if(
+				$this->data['config']['mod_time__checkTimeEventExecutionNeedsCron'] === "enabled" &&
+				isSizedArray($this->CronManager->cronjob_exists("checkTimeEventExecutionNeeds"))
+			)
 			{
 
 				// Cancel the execution of the function
 				return false;
 
 			}
-
-			// Initialize the crontab manager if this has not been done before
-			if(is_null($this->CronManager)) $this->CronManager = new ssh2_crontab_manager();
 
 			// Restart the cronjob in case he is already issued
 			if(isSizedArray($this->CronManager->cronjob_exists("checkTimeEventExecutionNeeds")))

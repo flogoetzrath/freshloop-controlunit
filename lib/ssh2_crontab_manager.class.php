@@ -154,7 +154,7 @@
 		} // public function append_cronjob()
 
 		/**
-		 * Filters for a regex cronjob name and returns the full cron command if registered
+		 * Filters for a cronjob name and returns the full cron command if registered
 		 *
 		 * @param null $cron_jobs
 		 *
@@ -163,20 +163,26 @@
 		public function cronjob_exists($cron_jobs = null)
 		{
 
-			if (is_null($cron_jobs))
-				$this->error_message("Nothing to remove!  Please specify a cron job or an array of cron jobs.");
+			if (is_null($cron_jobs)) return false;
 
 			$this->write_to_file();
 
 			$cron_array = file($this->cron_file, FILE_IGNORE_NEW_LINES);
 
-			if (empty($cron_array))
-				$this->remove_file()->error_message("Nothing to remove!  The cronTab is already empty.");
+			if (empty($cron_array)) return false;
 
 			if (is_array($cron_jobs))
+			{
+
 				foreach ($cron_jobs as $cron_regex)
-					$cron_array = preg_grep($cron_regex, $cron_array, PREG_GREP_INVERT);
-			else $cron_array = preg_grep($cron_jobs, $cron_array, PREG_GREP_INVERT);
+					//$cron_array = preg_grep($cron_regex, $cron_array, PREG_GREP_INVERT);
+					if(strpos($cron_array, $cron_regex) !== false)
+						array_push($cron_array, $cron_regex);
+
+			}
+			else $cron_array = strpos($cron_array, $cron_jobs) !== false ? $cron_jobs : array();
+			//else $cron_array = preg_grep($cron_jobs, $cron_array, PREG_GREP_INVERT);
+
 
 			return $cron_array ?: false;
 
