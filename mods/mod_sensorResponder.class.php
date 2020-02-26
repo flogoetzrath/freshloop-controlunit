@@ -364,7 +364,6 @@
 			{
 
 				// Struct an array in the format of the mod_time standards
-				$mevent['event_type'] = array_flip(mod_time::EVENT_TYPES)["solo_spray"];
 				foreach($mevent as $k => $v)
 				{
 
@@ -372,6 +371,10 @@
 					$mevent[str_replace("mevent", "event", $k)] = $v;
 
 				}
+
+				$mevent['event_type'] = strpos($mevent['event_targetUnits'], ",") !== false
+					? array_flip(mod_time::EVENT_TYPES)["group_concurrent_spray"]
+					: array_flip(mod_time::EVENT_TYPES)["solo_spray"];
 
 				// Init Spray request to all targetUnits with the mevent_fragrance_id
 				(new mod_time())->executeEvent($mevent, "mod_sensorresponder", "m");
