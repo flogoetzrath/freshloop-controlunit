@@ -93,6 +93,7 @@
 
 			// Remove the current handle from the curl store
 			unset($this->curl_handle_store[0]);
+			$this->curl_handle_store = array_values($this->curl_handle_store);
 
 			if(!isSizedArray($this->curl_handle_store)) return $earlier_responses;
 			else return $this->issueConsecutiveReqs($delay, $earlier_responses);

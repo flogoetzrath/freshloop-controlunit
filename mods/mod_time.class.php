@@ -279,7 +279,7 @@
 			}
 
 			// If the requests are thought to go off at the same time
-			if($event_data['event_type'] !== 2) $responses = $API->issueRapidReqs();
+			if((int)$event_data['event_type'] !== 2) $responses = $API->issueRapidReqs();
 			else $responses = $API->issueConsecutiveReqs((int)$this->conf['mod_time__defaultConsecutiveSprayDelay']);
 
 			// Search for errors in the responses
