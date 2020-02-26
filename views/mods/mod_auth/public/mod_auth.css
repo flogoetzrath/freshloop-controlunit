@@ -153,3 +153,11 @@
 	.layer-login form input,
 	.layer-login .button{ width: 100% !important; }
 }
+
+@media (min-height: 600px) and (max-height: 650px) {
+	.auth > div:last-child.layer-login {
+		height: 100% !important;
+		overflow-y: scroll !important;
+	}
+	.auth > div:last-child.layer-login .content { padding: 25% 0 20px !important; }
+}

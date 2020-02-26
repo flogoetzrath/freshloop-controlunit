@@ -139,7 +139,8 @@
 		{
 
 			if (is_null($cron_jobs))
-				$this->error_message("Nothing to append! Please specify a cron job or an array of cron jobs.");
+				if(DEBUG_MODE) $this->error_message("Nothing to append! Please specify a cron job or an array of cron jobs.");
+				else return false;
 
 			$append_cronfile = "echo '";
 			$append_cronfile .= (is_array($cron_jobs)) ? implode("\n", $cron_jobs) : $cron_jobs;
@@ -199,14 +200,20 @@
 		{
 
 			if (is_null($cron_jobs))
-				$this->error_message("Nothing to remove!  Please specify a cron job or an array of cron jobs.");
+				if(DEBUG_MODE) $this->error_message("Nothing to remove!  Please specify a cron job or an array of cron jobs.");
+				else return false;
 
 			$this->write_to_file();
 
 			$cron_array = file($this->cron_file, FILE_IGNORE_NEW_LINES);
 
 			if (empty($cron_array))
-				$this->remove_file()->error_message("Nothing to remove!  The cronTab is already empty.");
+			{
+				$this->remove_file();
+
+				if(DEBUG_MODE) $this->error_message("Nothing to remove!  The cronTab is already empty.");
+				else return false;
+			}
 
 			$original_count = count($cron_array);
 			$cron_array = $this->cronjob_exists($cron_jobs);

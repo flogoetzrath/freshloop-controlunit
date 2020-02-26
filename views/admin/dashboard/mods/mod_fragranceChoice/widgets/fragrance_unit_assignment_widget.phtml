@@ -194,7 +194,7 @@ EOT;
 	$widget_wheel .= "<div class=\"wrapper\">";
 
 	for($pos = 1; $pos <= $data['nFragrancesPerUnit']; $pos ++)
-		$widget_wheel .= "<div class=\"elem\" id=\"$pos\" data-toggle=\"modal\" data-target=\"#unit_fragrance-$pos\">{$wheel_data[$pos]}</div>";
+		$widget_wheel .= "<div class=\"elem noselect\" id=\"$pos\" data-toggle=\"modal\" data-target=\"#unit_fragrance-$pos\">{$wheel_data[$pos]}</div>";
 
 	$widget_wheel .= "</div>";
 	$widget_wheel .= "</div>";
