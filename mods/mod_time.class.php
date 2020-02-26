@@ -321,7 +321,7 @@
 
 			if(
 				$this->data['config']['mod_time__checkTimeEventExecutionNeedsCron'] === "enabled" &&
-				isSizedArray($this->CronManager->cronjob_exists("checkTimeEventExecutionNeeds"))
+				isSizedString($this->CronManager->cronjob_exists("checkTimeEventExecutionNeeds"))
 			)
 			{
 
