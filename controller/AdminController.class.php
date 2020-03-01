@@ -254,7 +254,7 @@
 
 			// Init Authorizing proccess
 			$api_macaddr = $this->getMacAddressByIP($connectableUnit);
-			$api_port = $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $api_macaddr);
+			$api_port = $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $api_macaddr)['uupi_port'] ?: DEF_API_PORT;
 
 			if(!isSized($api_port) || (int)$api_port === 1) $api_port = DEF_API_PORT;
 
@@ -490,7 +490,7 @@
 			// Extract important information regarding the api request
 			$dest_ip = trim($this->getIPByMacAddress($unit['unit_macaddress']));
 			$dest_route = "/api/auth/terminate";
-			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']) ?: DEF_API_PORT;
+			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress'])['uupi_port'] ?: DEF_API_PORT;
 			$dest = $dest_ip.":".$dest_port.$dest_route;
 
 			$auth_jwt = $unit['unit_secret'];
@@ -535,7 +535,7 @@
 			# Extract important information regarding the api request
 			$dest_ip = trim($this->getIPByMacAddress($unit['unit_macaddress']));
 			$dest_route = $sprayAtPosition !== 1 ? "/api/actions/sprayAtPosition" : "/api/actions/spray";
-			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']) ?: DEF_API_PORT;
+			$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress'])['uupi_port'] ?: DEF_API_PORT;
 			$dest = $dest_ip.":".$dest_port.$dest_route;
 
 			$auth_jwt = $unit['unit_secret'];

@@ -216,7 +216,7 @@
 				// Build the api url
 				$dest_ip = trim($this->getIPByMacAddress($unit['unit_macaddress']));
 				$dest_route = "/api/actions/sprayAtPosition";
-				$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress']) ?: DEF_API_PORT;
+				$dest_port = $unit['unit_api_port'] ?: $this->callModelFunc("unit", "getUnknownUnitsPortInfo", $unit['unit_macaddress'])['uupi_port'] ?: DEF_API_PORT;
 				$dest = $dest_ip.":".$dest_port.$dest_route;
 
 				// Get the position of the demanded fragrance on the unit
