@@ -430,10 +430,19 @@
 			// Format and distribute default content
 			foreach(explode("\n", $sampleRaw) as $k => $line)
 				if($line[0] !== ";" && !empty(trim($line)))
-					array_push($sampleArr, $line);
+				{
+
+					$lineParts = explode("=", $line);
+					$sampleArr[$lineParts[0]] = trim($lineParts[1]);
+
+				}
 
 			// Create config file and write to it
-			return $this->writeConfFile($sampleArr);
+			$this->writeConfFile($sampleArr);
+
+			// Change the permission of the config file so that it can be written to
+			return chmod(CONFIG_PATH.'/config.ini', 0777);
+
 
 		} // public function buildConfig()
 
