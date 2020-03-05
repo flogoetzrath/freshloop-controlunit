@@ -829,10 +829,15 @@
 			if(!file_exists($tutorialStorePath) && !file_exists($tutorialSampleStorePath)) return false;
 
 			// If no tutorial store is present, create one based on the sample store
-			if(!file_exists($tutorialStorePath)) file_put_contents(
-				$tutorialStorePath,
-				file_get_contents($tutorialSampleStorePath)
-			);
+			if(!file_exists($tutorialStorePath))
+			{
+				file_put_contents(
+					$tutorialStorePath,
+					file_get_contents($tutorialSampleStorePath)
+				);
+
+				chmod($tutorialStorePath, 0777);
+			}
 
 			$tutorialStoreContent = json_decode(file_get_contents($tutorialStorePath));
 
