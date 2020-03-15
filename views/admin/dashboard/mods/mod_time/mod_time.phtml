@@ -35,7 +35,7 @@
 									'simple_card_widget',
 									array(
 										"icon" => "<i class=\"fas fa-clock\"></i>",
-										"value" => $nextEvent['event_name'].", ".substr($nextEvent['event_plannedExecution_time'], 0, 5).' Uhr',
+										"value" => $nextEvent['event_name'].", ".substr($nextEvent['event_plannedExecution_time'], 0, 5).'<span class="only-xl"> Uhr</span>',
 										"caption" => $time_nextEvent[$GLOBALS['lang']]
 									)
 								); ?>
@@ -54,6 +54,7 @@
 							<?php global $time_previousEventStatus, $time_noEventExecutedYet, $success, $failure; ?>
 							<?php
 								$lastEvent = $mod_time->getLastEvent();
+								$styleAddition = "";
 
 								if(isSizedArray($lastEvent))
 								{
@@ -61,6 +62,8 @@
 									$icon = (bool)$lastEvent['event_executed_status'] === true ? "<i class=\"fas fa-check\"></i>" : "<i class=\"fas fa-times\"></i>";
 									$icon_color = (bool)$lastEvent['event_executed_status'] === true ? "#03A9F3" : "#f35353";
 									$value = explode(" ", $lastEvent['event_name'])[0].": ".((bool)$lastEvent['event_executed_status'] === true ? $success[$GLOBALS['lang']] : $failure[$GLOBALS['lang']]);
+
+									$styleAddition = (bool)$lastEvent['event_executed_status'] === false ? "margin-top: 0" : "";
 
 								}
 								else
@@ -72,13 +75,13 @@
 
 								}
 							?>
-							<div class="col-md-6 col-lg-4"><?php $TC->load_widget(
+							<div class="col-md-6 col-lg-4" style="<?php echo $styleAddition; ?>"><?php $TC->load_widget(
 									'simple_card_widget',
 									array(
 										"icon" => $icon,
 										"icon_color" => $icon_color,
 										"value" => $value,
-										"caption" => $time_previousEventStatus[$GLOBALS['lang']]
+										"caption" => "<span class='only-xxl'>".$time_previousEventStatus[$GLOBALS['lang']]."</span>"
 									)
 								); ?>
 							</div>

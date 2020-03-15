@@ -6,6 +6,16 @@
 
 .modal-backdrop { z-index: 999999 !important; }
 .only-burger { display: none; }
+.only-xl { font-size: inherit !important; font-family: inherit !important; display: inline !important; }
+.only-xxl { font-size: inherit !important; font-family: inherit !important; display: inline !important; }
+
+@media only screen and (min-width: 320px) and (max-width: 1140px) {
+	.only-xl { display: none !important; }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 1350px) {
+	.only-xxl { display: none !important; }
+}
 
 /*--------------------
    Navbar Classes
