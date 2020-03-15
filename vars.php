@@ -4,14 +4,14 @@
 	    Description: A fully featured, centrally controlled air freshener system
 	    Author: Florian Götzrath <info@floriangoetzrath.de>
 	    Author URI: http://floriangoetzrath.de
-	    Version: 0.1.8
+	    Version: 1.0.0
 	*/
 
 	session_start();
 
 	define('APP_NAME', 'freshloop');
 	define('APP_STATUS', 'development');
-	define('APP_VERSION', '0.5.3');
+	define('APP_VERSION', '1.0.0');
 
 	define('APP_AUTHOR', 'Florian Götzrath');
 	define('APP_AUTHOR_URI', 'https://floriangoetzrath.de/');
