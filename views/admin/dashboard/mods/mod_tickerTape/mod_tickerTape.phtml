@@ -1,0 +1,51 @@
+<?php global $tickerTape_modName, $tickerTape_modDescription; ?>
+
+<?php $mod_tickerTape = $TC->modules['mod_tickerTape'] ?? false; ?>
+
+<?php $TC->the_header('admin'); ?>
+<?php $TC->the_navbar('admin'); ?>
+
+<div class="admin-bg"></div>
+
+<div class="admin-container navToggle"> <!-- .navToggle -->
+	<div class="admin-container-left">
+		<?php $TC->the_sidebar('admin'); ?>
+	</div>
+	<div class="admin-container-right">
+		<div class="content-container">
+			<div class="row">
+				<?php
+					$mod_header_data = array(
+						"mod_name" => "mod_tickerTape",
+						"mod_name_lang" => $tickerTape_modName[$GLOBALS['lang']],
+						"mod_description" => $tickerTape_modDescription[$GLOBALS['lang']]
+					);
+				?>
+				<?php $TC->the_mod_header($mod_header_data); ?>
+
+				<?php
+					// If Module is activated
+					if($mod_tickerTape !== false) {
+				?>
+
+					<section id="top_layer" class="widget-squares col-md-12 row">
+						<div class="col-md-12"><?php
+							$TC->load_widget(array(
+								"mod_name" => "mod_tickerTape",
+								"widget_name" => "timeline_widget"
+							), [], false);
+						?></div>
+					</section>
+
+					<section id="highlighted_layer" class="widget-squares col-md-12 row">
+						<div class="col-md-12"></div>
+					</section>
+
+				<?php } ?>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php $TC->the_footer('admin'); ?>

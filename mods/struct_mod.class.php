@@ -62,7 +62,8 @@
 		public function __call($method, $args)
 		{
 
-			_methodCalled($method, $args);
+			if(function_exists("_methodCalled")) _methodCalled($method, $args);
+			else return false;
 			
 			$actualMethod = "_$method";
 			call_user_func_array(array($this, $actualMethod), $args);

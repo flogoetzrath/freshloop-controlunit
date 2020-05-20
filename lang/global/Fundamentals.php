@@ -35,6 +35,13 @@
 
 	);
 
+	$actions = array(
+
+		"English" => "Actions",
+		"German" => "Aktionen"
+
+	);
+
 	$enabled = array(
 
 		"English" => "Enabled",
@@ -63,6 +70,13 @@
 
 	);
 
+	$totalTimeInMinutes = array(
+
+		"English" => "Total time in minutes",
+		"German" => "Gesamtzeit in Minuten"
+
+	);
+
 	$never = array(
 
 		"English" => "never",
@@ -74,6 +88,13 @@
 
 		"English" => "Language",
 		"German" => "Sprache"
+
+	);
+
+	$title = array(
+
+		"English" => "Title",
+		"German" => "Titel"
 
 	);
 

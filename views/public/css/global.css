@@ -92,6 +92,9 @@ html body p {
 .visible {
 	visibility: visible;
 }
+.no-transition {
+	transition: 0s !important;
+}
 .transition {
 	transition: 0.3s all linear;
 }
