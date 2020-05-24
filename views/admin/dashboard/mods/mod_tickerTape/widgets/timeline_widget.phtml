@@ -13,6 +13,13 @@
 	$mod_tickerTape = $TC->modules['mod_tickerTape'];
 	// Get module data
 	$mod_data = $mod_tickerTape->store;
+
+	// Load unit data
+	$TC->loadData('unit', 0);
+	$units = $TC->data['unit'][0];
+
+	// Init row counting
+	$nTimelineBodyRows = 0;
 ?>
 
 <style>
@@ -20,12 +27,12 @@
 	#widget__timeline .inner-container { width: 100%; position: relative; height: 100%; }
 
 	#widget__timeline #timeline_create,
-	#widget__timeline #timeline_edit { position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; transition: 0.35s all ease-in-out; }
+	#widget__timeline #timeline_edit { position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; transition: 0.25s all ease-in-out; }
 	#widget__timeline #timeline_create { cursor: pointer; z-index: 200; background: #fff; }
 	#widget__timeline #timeline_create .title-box h1 { font-size: 30px; }
 	#widget__timeline #timeline_create .title-box .create-icon { text-align: center; padding-top: 20px; font-size: 30px; }
 
-	#widget__timeline #timeline_edit #timeline-controls { width: 250px; z-index: 200; transition: 0.25s all ease-in-out; position: absolute; top: 0; left: 0; bottom: 0; box-shadow: 0 0 10px rgba(0,0,0,0.30); }
+	#widget__timeline #timeline_edit #timeline-controls { width: 250px; z-index: 200; transition: 0.25s all ease-in-out; background: #fff; position: absolute; top: 0; left: 0; bottom: 0; box-shadow: 0 0 10px rgba(0,0,0,0.30); }
 	#widget__timeline #timeline_edit #timeline-controls.minimized { width: 100px; }
 	#widget__timeline #timeline_edit #timeline-controls .vertical_hint__timeline_controls { transform: rotate(270deg); transform-origin: top left; font-family: "Montserrat", sans-serif; position: absolute; z-index: 999; font-weight: 700; left: 32%; top: 65%; font-size: 20px; }
 	#widget__timeline #timeline_edit #timeline-controls .timeline-controls-main { margin-left: unset; margin-right: unset; }
@@ -37,6 +44,14 @@
 	#widget__timeline #timeline_edit #timeline-controls input.form-control ~ span { position: absolute; right: 45px; top: 12px; }
 	#widget__timeline #timeline_edit #timeline-controls .form-control-btn-col { background: transparent; }
 	#widget__timeline #timeline_edit #timeline-controls .form-control-btn-col button { margin: 0 auto;}
+
+	#widget__timeline #timeline_edit #timeline .timeline-inner { overflow-x: scroll; overflow-y: hidden; }
+	#widget__timeline #timeline_edit #timeline .timeline-header,
+	#widget__timeline #timeline_edit #timeline .timeline-body { height: 70px; width: 100%; margin-left: 100px; }
+	#widget__timeline #timeline_edit #timeline .timeline-col { width: 75px; display: inline-block; padding: 10px; border-right: 1px solid #ededf5; border-bottom: 1px solid #ededf5; transition: 0.1s all ease-in-out; }
+	#widget__timeline #timeline_edit #timeline .timeline-body .timeline-col:hover { background: #e8e8f0; cursor: pointer; }
+	#widget__timeline #timeline_edit #timeline .timeline-col span { display: block; text-align: center; }
+	#widget__timeline #timeline_edit #timeline .timeline-col span:last-child { margin-top: -5px; }
 </style>
 
 <!-- Widget -->
@@ -91,7 +106,7 @@
 							</div>
 							<div class="formDiv form-control form-control-btn-col col-md-12 no-label">
 								<?php global $delete; ?>
-								<button id="tickerTapeCancel" class="btn-gradient btn-gradient-red"><?php echo $delete[$GLOBALS['lang']]; ?></button>
+								<button type="button" id="tickerTapeCancel" class="btn-gradient btn-gradient-red"><?php echo $delete[$GLOBALS['lang']]; ?></button>
 							</div>
 						</div>
 						<div class="timeline-controls-expandable">
@@ -100,7 +115,25 @@
 						</div>
 					</div>
 					<div id="timeline" class="inner-container">
-
+						<div class="timeline-inner inner-container">
+							<div class="timeline-header">
+								<div class="timeline-col inner-container flex-centered">
+									<span class="nbmr-indicator">1</span>
+									<span class="timeunit-indicator text-muted">Min</span>
+								</div>
+							</div>
+							<div class="timeline-body">
+								<div class="timeline-body-container inner-container">
+									<?php foreach($units as $unit) { ?>
+										<?php if((bool)$unit['unit_isHub']) continue; ?>
+										<?php $nTimelineBodyRows++; ?>
+										<div class="timeline-row inner-container">
+											<div class="timeline-col inner-container"></div>
+										</div>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
 					</div>
 
 				<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
@@ -111,31 +144,55 @@
 </div>
 
 <script>
+	// Init the data store
+	let timelineDataStore = {
+		nMinutes: null,
+		rows: {}
+	};
+	const initialTimlineDataStore = Object.assign({}, timelineDataStore);
+
+	// Declare fundamental variables
+	let timelineSec = document.querySelector("#timeline");
 	let timelineCreateSec = document.querySelector("#timeline_create");
 	let timelineEditSec = document.querySelector("#timeline_edit");
+
+	const initialTimelineMarkup = timelineSec.outerHTML;
+	const nTimelineBodyRows = parseInt("<?php echo $nTimelineBodyRows; ?>");
 
 	// Create new ticker tape
 	timelineCreateSec.onclick = e => {
 		e.preventDefault();
 
-		timelineCreateSec.style.left = "-50000px";
+		timelineCreateSec.style.left = `-${parseInt(timelineCreateSec.offsetWidth)}px`;
 	};
 
 	/* Timeline controls */
 
 	// Totaltime indicator
-	const toggleTotalTimeIndicator = e => {
+	const onTotalTimeIndicatorChange = e => {
+		buildTimeline(parseInt(e.target.value));
 		e.target.nextElementSibling.nextElementSibling.style.display = (e.target.value.toString().trim().length > 0 ? "block" : "none");
 	};
 
-	timelineEditSec.querySelector("input[name='totaltime']").onkeyup = e => toggleTotalTimeIndicator(e);
-	timelineEditSec.querySelector("input[name='totaltime']").onchange = e => toggleTotalTimeIndicator(e);
+	timelineEditSec.querySelector("input[name='totaltime']").onkeyup = e => onTotalTimeIndicatorChange(e);
+	timelineEditSec.querySelector("input[name='totaltime']").onchange = e => onTotalTimeIndicatorChange(e);
 
-	// Cancel current ticker tape
-	timelineEditSec.querySelector("#tickerTapeCancel").click = () => {
-		// TODO: Clear all inputs and reslide in #timeline_create from left to right
+	// Cancel current ticker tape and discard all changes
+	timelineEditSec.querySelector("button#tickerTapeCancel").onclick = () => {
+		timelineDataStore = initialTimlineDataStore;
+
+		document.querySelector("#timeline").outerHTML = initialTimelineMarkup;
+		timelineEditSec.querySelector("input[name='totaltime']").value = "";
+
+		onTotalTimeIndicatorChange({
+			target: timelineEditSec.querySelector("input[name='totaltime']")
+		});
+
+		timelineCreateSec.style.left = "0px";
+		buildTimeline(30);
 	};
 
+	// Expandable onclick
 	timelineEditSec.querySelector(".timeline-controls-expandable").onclick = e => {
 		let controlContainer = document.querySelector("#widget__timeline #timeline-controls");
 		let verticalHint = document.querySelector(".timeline-controls-minimized");
@@ -152,4 +209,64 @@
 			child.classList.toggle("dnone");
 		});
 	};
+
+	/* UI calculation */
+	const timelineHeader = timelineEditSec.querySelector(".timeline-header");
+	const timelineBody = timelineEditSec.querySelector(".timeline-body");
+
+	timelineBody.style.height = (parseInt(timelineSec.offsetHeight) - parseInt(timelineHeader.offsetHeight)) + "px";
+
+	/* Timeline generation */
+	const buildTimeline = nMinutes => { console.log('called');
+		if(isNaN(nMinutes)) return false;
+
+		const headSec = timelineHeader;
+		const headCol = headSec.querySelector(".timeline-col");
+
+		const bodySec = timelineBody;
+		const bodyRow = bodySec.querySelector(".timeline-row");
+		const bodyCol = bodyRow.querySelector(".timeline-col");
+
+		headSec.style.width = bodySec.style.width = headCol.offsetWidth * nMinutes + "px";
+
+		headSec.innerHTML = "";
+		bodySec.firstElementChild.innerHTML = "";
+		bodyRow.innerHTML = "";
+
+		bodyRow.classList.remove(...(bodyRow.classList));
+		bodyRow.classList.add("timeline-row");
+		bodyRow.classList.add("inner-container");
+
+		// Add a column to the timeline head for each minute requested
+		for(let i = 1; i <= nMinutes; i++) {
+			let lastTimeUnit = headCol.querySelector("span.timeunit-indicator").innerHTML;
+
+			headCol.querySelector("span.nbmr-indicator").innerHTML = (i > 60 ? (i / 60).toFixed(2) : i).toString();
+			headCol.querySelector("span.timeunit-indicator").innerHTML = lastTimeUnit === "Min" && i > 60 || lastTimeUnit === "H" ? "H" : "Min";
+
+			headSec.innerHTML += headCol.outerHTML;
+		}
+
+		// Add a row for each valid unit registered
+		for(let i = 0; i < nTimelineBodyRows; i++) {
+			bodySec.firstElementChild.innerHTML += bodyRow.outerHTML;
+		}
+
+		// Add a column to each row for each minute
+		bodySec.querySelectorAll(".timeline-row").forEach((rowNode, rowNmbr) => {
+			rowNode.classList.add(`row-${rowNmbr}`);
+			rowNode.style.height = (parseInt(timelineBody.offsetHeight) / nTimelineBodyRows) + "px";
+
+			for(let i = 1; i <= nMinutes; i++) {
+				let newCol = document.createElement("div");
+				newCol.innerHTML = bodyCol.outerHTML;
+				newCol.firstElementChild.classList.add(`col-${i}`);
+
+				rowNode.innerHTML += newCol.innerHTML;
+			}
+		});
+	};
+
+	// Generate sample set onload
+	buildTimeline(30);
 </script>
