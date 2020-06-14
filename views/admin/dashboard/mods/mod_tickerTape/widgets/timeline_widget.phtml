@@ -14,6 +14,9 @@
 	// Get module data
 	$mod_data = $mod_tickerTape->store;
 
+	// Get module fragrance choice instance
+	$mod_fchoice = $TC->modules['mod_fragranceChoice'];
+
 	// Load unit data
 	$TC->loadData('unit', 0);
 	$units = $TC->data['unit'][0];
@@ -45,17 +48,24 @@
 	#widget__timeline #timeline_edit #timeline-controls .form-control-btn-col { background: transparent; }
 	#widget__timeline #timeline_edit #timeline-controls .form-control-btn-col button { margin: 0 auto;}
 
-	#widget__timeline #timeline_edit #timeline .timeline-inner { overflow-x: scroll; overflow-y: hidden; }
+	#widget__timeline #timeline_edit #timeline .timeline-inner { /*overflow-x: scroll; overflow-y: hidden;*/ overflow: hidden; }
+	#widget__timeline #timeline_edit #timeline .timeline-inner .timeline-body-scrollbar { width: 100%; height: 12px; background: #fafafa; border-top: 1px solid lightgray; position: absolute; bottom: 0; left: 100px; right: 0; z-index: 9999; border-radius: 5px; }
+	#widget__timeline #timeline_edit #timeline .timeline-inner .timeline-body-scrollbar .tracker { margin: 4px; width: 30px; height: 4px; background: #c1c1c1; border-radius: 10px; transition: 0.1s all linear; }
 	#widget__timeline #timeline_edit #timeline .timeline-header,
 	#widget__timeline #timeline_edit #timeline .timeline-body { height: 70px; width: 100%; margin-left: 100px; }
 	#widget__timeline #timeline_edit #timeline .timeline-col { width: 75px; display: inline-block; padding: 10px; border-right: 1px solid #ededf5; border-bottom: 1px solid #ededf5; transition: 0.1s all ease-in-out; }
-	#widget__timeline #timeline_edit #timeline .timeline-body .timeline-col:hover { background: #e8e8f0; cursor: pointer; }
+	#widget__timeline #timeline_edit #timeline .timeline-body .timeline-col:hover { cursor: pointer; }
+	#widget__timeline #timeline_edit #timeline .timeline-body .timeline-col .timeline-col-inner { transition: 0.1s all ease-in; }
+	#widget__timeline #timeline_edit #timeline .timeline-body .timeline-col.highlighted .timeline-col-inner { background: #e8e8f0; width: calc(100% - 20px); height: calc(100% - 20px); top: 10px; left: 10px; position: absolute; border-radius: 5px; }
 	#widget__timeline #timeline_edit #timeline .timeline-col span { display: block; text-align: center; }
 	#widget__timeline #timeline_edit #timeline .timeline-col span:last-child { margin-top: -5px; }
+
+	.addTickerEventModal input { width: 50% !important; float: right !important; }
+	.addTickerEventModal input ~ .clearfix { padding-bottom: 5px; }
 </style>
 
 <!-- Widget -->
-<div id="widget__timeline" class="widget-<?php echo $widget_id ?>">
+<div id="widget__timeline" class="widget-<?php echo $widget_id; ?>">
 	<div class="card" style="margin:0;overflow:hidden;">
 		<div class="timeline-inner">
 			<div id="timeline_create" class="inner-container flex-centered">
@@ -115,7 +125,11 @@
 						</div>
 					</div>
 					<div id="timeline" class="inner-container">
+						<div class="timeline-id"></div>
 						<div class="timeline-inner inner-container">
+							<div class="timeline-body-scrollbar">
+								<div class="tracker"></div>
+							</div>
 							<div class="timeline-header">
 								<div class="timeline-col inner-container flex-centered">
 									<span class="nbmr-indicator">1</span>
@@ -128,12 +142,74 @@
 										<?php if((bool)$unit['unit_isHub']) continue; ?>
 										<?php $nTimelineBodyRows++; ?>
 										<div class="timeline-row inner-container">
-											<div class="timeline-col inner-container"></div>
+											<div class="timeline-col inner-container" onmouseenter="onTimelineColumnHighlight(this)" onmouseleave="onTimelineColumnHighlight(this)">
+												<div
+													class="timeline-col-inner"
+													data-toggle="modal"
+													data-target="#addTickerEventModal-<?php echo $widget_id; ?>"
+													onclick="$($(this).data('target')).appendTo('body'); $(this).addClass('active-timeline-col');"
+												></div>
+											</div>
 										</div>
 									<?php } ?>
 								</div>
 							</div>
 						</div>
+					</div>
+
+				<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<?php global $tutorial_time_addEvent_headline, $form_save, $close; ?>
+	<div class="modal fade inner-container addTickerEventModal" id="addTickerEventModal-<?php echo $widget_id; ?>" tabindex="-1" role="dialog" aria-labelledby="addTickerEventModal" aria-hidden="true">
+		<div class="modal-dialog modal-borderless" role="document">
+			<div class="modal-content">
+
+				<?php renderForm_init("?page=Admin&mod=mod_tickerTape&action=AddTickerTapeEvent", ["activate_card_wrap" => false]); ?>
+
+					<?php renderForm_input("ref_tickertape_id", "", -1, array(
+						"type" => "hidden",
+						"container" => false,
+						"inline" => false,
+						"required" => true));
+					?>
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLongTitle"><?php echo $tutorial_time_addEvent_headline[$GLOBALS['lang']]; ?></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body table_widget">
+						<?php renderForm_input("tevent_title", $title[$GLOBALS['lang']], null, array(
+							"type" => "text",
+							"container" => false,
+							"required" => true,
+							"class" => isset_true($TC->view['tevent_title_err']['err_status']) ? "input-error" : "",
+							"placeholder" => isset_true($TC->view['tevent_title_err']['err_status']) ? $TC->view['tevent_titlename_err']['err_msg'] : ""));
+						?>
+						<?php renderForm_input("active-timeline-col", "Startminute", -1, array(
+							"type" => "number",
+							"container" => false,
+							"inline" => false,
+							"readonly" => true,
+							"required" => true));
+						?>
+						<?php renderForm_input("tevent_end_timeline_col_nmbr", "Endminute", null, array(
+							"type" => "number",
+							"container" => false,
+							"required" => true,
+							"class" => isset_true($TC->view['tevent_end_timeline_col_nmbr_err']['err_status']) ? "input-error" : "",
+							"placeholder" => ""));
+						?>
+					</div>
+					<div class="modal-footer">
+						<button class="btn-gradient btn-gradient-lbluegreen" type="submit"><?php echo $form_save[$GLOBALS['lang']]; ?></button>
+						<button type="button" class="btn btn-gradient btn-gradient-red" data-dismiss="modal"><?php echo $close[$GLOBALS['lang']]; ?></button>
 					</div>
 
 				<?php renderForm_close("", array("activate_submit_btn" => false)); ?>
@@ -152,9 +228,11 @@
 	const initialTimlineDataStore = Object.assign({}, timelineDataStore);
 
 	// Declare fundamental variables
-	let timelineSec = document.querySelector("#timeline");
-	let timelineCreateSec = document.querySelector("#timeline_create");
-	let timelineEditSec = document.querySelector("#timeline_edit");
+	const timelineSec = document.querySelector("#timeline");
+	const timelineID = timelineSec.querySelector(".timeline-id");
+	const timelineInner = timelineSec.querySelector(".timeline-inner");
+	const timelineCreateSec = document.querySelector("#timeline_create");
+	const timelineEditSec = document.querySelector("#timeline_edit");
 
 	const initialTimelineMarkup = timelineSec.outerHTML;
 	const nTimelineBodyRows = parseInt("<?php echo $nTimelineBodyRows; ?>");
@@ -164,6 +242,7 @@
 		e.preventDefault();
 
 		timelineCreateSec.style.left = `-${parseInt(timelineCreateSec.offsetWidth)}px`;
+		timelineID.setAttribute("id", Math.random().toString(36).substring(2, 15));
 	};
 
 	/* Timeline controls */
@@ -210,14 +289,84 @@
 		});
 	};
 
+	// Timline column hover
+	const onTimelineColumnHighlight = targetEl => {
+		targetEl.classList.toggle("highlighted");
+	};
+
 	/* UI calculation */
 	const timelineHeader = timelineEditSec.querySelector(".timeline-header");
 	const timelineBody = timelineEditSec.querySelector(".timeline-body");
 
 	timelineBody.style.height = (parseInt(timelineSec.offsetHeight) - parseInt(timelineHeader.offsetHeight)) + "px";
 
+	/* Custom scrollbar */
+	const scrollbarContainer = timelineSec.querySelector(".timeline-body-scrollbar");
+	const scrollbarTracker = scrollbarContainer.querySelector(".tracker");
+
+	let widthPercent = 0;
+
+	/**
+	 * Manipulates the tacker part of the scrollbar to enable its functionality
+	 */ 
+	const adjustScrollbarTracker = () => {
+
+		widthPercent = (parseInt(timelineBody.style.width) / parseInt(timelineSec.offsetWidth));
+
+		scrollbarTracker.style.width = (
+			parseInt(scrollbarContainer.offsetWidth) / widthPercent + "px"
+		);
+
+		scrollbarContainer.style.width = timelineBody.offsetWidth;
+
+	}; // inline function adjustScrollbarTracker()
+
+	// Calculate width of tracker onresize
+	window.addEventListener("resize", adjustScrollbarTracker);
+
+	// Handle the dragging of the scrollbar
+	let isDragging = false;
+	let offsetX = 0;
+
+	scrollbarTracker.addEventListener("mousedown", e => {
+		isDragging = true;
+		offsetX = e.screenX;
+	});
+
+	window.addEventListener("mouseup", () => {
+		isDragging = false;
+	});
+
+	window.addEventListener("mousemove", e => {
+		e.preventDefault();
+
+		if(!isDragging) return false;
+
+		let maxScroll = parseInt(timelineBody.style.width);
+		let mouseDeltaX = e.screenX - offsetX;
+		let deltaX = mouseDeltaX;
+
+		offsetX = e.screenX;
+		let scrollLeft = parseInt(timelineInner.scrollLeft) + (deltaX / widthPercent);
+
+		if(scrollLeft < 0) scrollLeft = 0;
+		if(scrollLeft > maxScroll) scrollLeft = maxScroll;
+
+		timelineInner.scrollLeft = scrollLeft;
+		scrollbarTracker.style.marginLeft = ((parseInt(scrollbarTracker.style.marginLeft) || 0) + scrollLeft) / maxScroll + "px";
+	});
+
 	/* Timeline generation */
-	const buildTimeline = nMinutes => { console.log('called');
+
+	/**
+	 * Generates timeline cells and initiates dependant functions
+	 *
+	 * @param {Number} nMinutes     The amount of minutes the timline has to support
+	 *
+	 * @returns {boolean|void}
+	 */
+	const buildTimeline = nMinutes => {
+
 		if(isNaN(nMinutes)) return false;
 
 		const headSec = timelineHeader;
@@ -226,6 +375,8 @@
 		const bodySec = timelineBody;
 		const bodyRow = bodySec.querySelector(".timeline-row");
 		const bodyCol = bodyRow.querySelector(".timeline-col");
+
+		timelineDataStore.nMinutes = nMinutes;
 
 		headSec.style.width = bodySec.style.width = headCol.offsetWidth * nMinutes + "px";
 
@@ -265,8 +416,71 @@
 				rowNode.innerHTML += newCol.innerHTML;
 			}
 		});
-	};
+
+		// Recalculate the scrollbar
+		adjustScrollbarTracker();
+
+	}; // inline function buildTimeline()
 
 	// Generate sample set onload
 	buildTimeline(30);
+
+	/* Build addTickerEventModal */
+	const modalEl = document.querySelector('#addTickerEventModal-<?php echo $widget_id; ?>');
+	let modalIsVisible = false;
+	let activeTimelineColNmbr = -1;
+
+	/**
+	 * Prepares modal dependant actions
+	 *
+	 * @returns {boolean}
+	 */
+	const buildAddTickerEventModal = () => {
+
+		// Cancel redundant call
+		if(
+			modalEl.style.display === "block" && modalIsVisible
+			||
+			modalEl.style.display !== "block" && !modalIsVisible
+		) return false;
+
+		// Update current state
+		modalIsVisible = (modalEl.style.display === "block");
+
+		// Update the hidden identifiers
+		modalEl.querySelector("input[name='ref_tickertape_id']").value = timelineID.id;
+		modalEl.querySelector("input[name='active-timeline-col']").value = activeTimelineColNmbr = modalIsVisible
+			? parseInt(document.querySelector(".active-timeline-col").parentElement.classList[2].split("-")[1])
+			: -1;
+
+		// Manipulate the modal form
+		document.querySelector("input[name='tevent_end_timeline_col_nmbr']").setAttribute("min", (activeTimelineColNmbr === -1 ? 0 : activeTimelineColNmbr));
+		document.querySelector("input[name='tevent_end_timeline_col_nmbr']").setAttribute("max", timelineDataStore.nMinutes);
+
+		// If the modal has been faded out, revoke the active-timeline-col class
+		if(!modalIsVisible && activeTimelineColNmbr === -1) {
+			document.querySelector(".active-timeline-col").classList.remove("active-timeline-col");
+		}
+
+		// Cast events
+		modalEl.querySelector("form").onsubmit = e => e.preventDefault();
+
+	}; // inline function buildAddTickerEventModal()
+
+	/**
+	 * Handler for the form submit
+	 *
+	 * @param {MouseEvent|TouchEvent} e     The triggerevent
+	 */
+	const onModalFormSubmit = e => {
+
+		e.preventDefault();
+
+		// TODO: Write data to timelineDataStore
+
+	}; // inline function onModalFormSubmit()
+
+	// Init the build-modal-function call when the modal is about to be faded in
+	const addTickerEventModalObserver = new MutationObserver(buildAddTickerEventModal);
+	addTickerEventModalObserver.observe(modalEl, { attributes: true, attributeFilter: ['style'] });
 </script>

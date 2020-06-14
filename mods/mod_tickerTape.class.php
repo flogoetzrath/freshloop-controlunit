@@ -47,9 +47,13 @@
 
 			$data = isSizedArray( $data ) ? $data : $_REQUEST;
 
-			// Starts automated song log capturing
+			// Creates a new Ticker Tape
 			if(isSizedString($data['action']) && $data['action'] === "AddTickerTape")
 				$this->addTickerTape($data);
+
+			// Attaches an event to a specific ticker tape
+			if(isSizedString($data['action']) && $data['action'] === "AddTickerTapeEvent")
+				$this->addTickerTapeEvent($data);
 
 		} // final public function dispatch()
 
@@ -63,7 +67,23 @@
 
 			// TODO
 
+			// If ticker tape already exists, update it with current values
+
 		} // final public function addTickerTape()
+
+		/**
+		 * Attaches an event to a specific ticker tape
+		 *
+		 * @param array $payload    Dataset with the reference ticker tape id and the data for the event
+		 */
+		final public function addTickerTapeEvent(array $payload)
+		{
+
+			die(debug($payload));
+
+			// TODO
+
+		} // final public function addTickerTapeEvent()
 
 
 	} // class mod_tickerTape

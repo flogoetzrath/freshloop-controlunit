@@ -510,7 +510,50 @@
 
 			return $this->getFragrancesOfType('assigned');
 
-		} // private function getAssignedFragrances()
+		} // public function getAssignedFragrances()
+
+		/**
+		 * Returns all general fragrance types, that have active assigned fragrances
+		 *
+		 * @return array
+		 * @throws DatabaseError
+		 * @throws ReflectionException
+		 */
+		public final function getAssignedGeneralFragrances()
+		{
+
+			$returnArr = [];
+			$assigned_fr = $this->getFragrancesOfType('assigned');
+
+			// Push the corresponding general fragrance id if this type has not already been added
+			foreach($assigned_fr as $fragrance)
+			{
+
+				$isFrUniqueInReturnArr = true;
+
+				foreach($returnArr as $returnVal)
+				{
+
+					if($returnVal['fragrance_name'] === $fragrance['fragrance_name'])
+						$isFrUniqueInReturnArr = false;
+
+				}
+
+				if($isFrUniqueInReturnArr)
+				{
+
+					array_push(
+						$returnArr,
+						$this->getGeneralFragranceByAssignedID($fragrance['fragrance_id'])
+					);
+
+				}
+
+			}
+
+			return $returnArr;
+
+		} // public final function getAssignedGeneralFragrances()
 
 		/**
 		 * Returns an array of all fragrances that are children of the general fragrance with the id $generalFragranceID supplied
