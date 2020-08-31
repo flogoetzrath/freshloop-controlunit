@@ -56,7 +56,7 @@
 
 
 		/**
-		 * Sets a specifc user as target by id
+		 * Loads a specific item
 		 *
 		 * @param $id
 		 */
@@ -69,13 +69,14 @@
 
 
 		/**
-		 * Checks if a specifc user
+		 * Checks if an item is already loaded to either this models instance or a given controller instance
 		 *
 		 * @param $key
+		 * @param $controllerInstance
 		 *
 		 * @return bool
 		 */
-		public function isLoaded($key)
+		public function isLoaded($key, $controllerInstance)
 		{
 
 			return isSizedInt($this->data[$key]);

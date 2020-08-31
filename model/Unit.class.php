@@ -46,6 +46,36 @@
 		} // public function loadAll()
 
 		/**
+		 * Checks whether a particular unit has already been loaded to a given controller instance
+		 *
+		 * @param $id
+		 * @param $controllerInstance
+		 *
+		 * @return bool
+		 */
+		public function isLoaded($id, $controllerInstance): bool
+		{
+
+			// If no unit has been loaded at all
+			if(!isSizedArray($controllerInstance->data["unit"])) return false;
+
+			// Filter for the searched unit id
+			$returnVal = false;
+
+			foreach($controllerInstance->data['unit'][0] as $unit)
+			{
+
+				if($returnVal) continue;
+
+				if($unit['unit_id'] === $id) $returnVal = true;
+
+			}
+
+			return $returnVal;
+
+		} // public function isLoaded()
+
+		/**
 		 * Registers a new unitE
 		 *
 		 * @param array $payload
