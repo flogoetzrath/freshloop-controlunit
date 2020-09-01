@@ -597,7 +597,7 @@
 		modalEl.querySelector("input[name='ref_tickertape_id']").value = timelineID.id;
 		modalEl.querySelector("input[name='active-timeline-col']").value = activeTimelineColNmbr = modalIsVisible
 			? parseInt(document.querySelector(".active-timeline-col").parentElement.classList[2].split("-")[1])
-			: (timelineDataObj != null ? timelineDataObj.startCol : -1);
+			: (timelineDataObj != null && !isMutationRecordCall ? timelineDataObj.startCol : -1);
 
 		if(isEditCall) modalEl.querySelector("input[name='ref_tickerbadge_id']").value = timelineDataObj.id;
 
@@ -728,12 +728,16 @@
 	const removeModalValues = () => {
 
 		const titleEl = document.querySelector("input[name='tevent_title']");
+		const startTimeEl = document.querySelector("input[name='active-timeline-col']");
 		const endTimeEl = document.querySelector("input[name='tevent_end_timeline_col_nmbr']");
+		const unitIdEl = document.querySelector("input[name='tevent_unit_id']");
 
 		titleEl.value = "";
+		startTimeEl.value = "";
 		endTimeEl.value = "";
 		endTimeEl.removeAttribute("min");
 		endTimeEl.removeAttribute("max");
+		unitIdEl.value = "";
 
 	}; // inline function removeModalValues()
 
