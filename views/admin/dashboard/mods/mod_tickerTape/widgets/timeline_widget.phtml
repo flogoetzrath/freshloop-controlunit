@@ -78,7 +78,7 @@
 
 	#widget__timeline #timeline_edit #timeline .timeline-inner { /*overflow-x: scroll; overflow-y: hidden;*/ overflow: hidden; }
 	#widget__timeline #timeline_edit #timeline .timeline-inner .timeline-body-scrollbar { width: 100%; height: 12px; background: #fafafa; border-top: 1px solid lightgray; position: absolute; bottom: 0; left: 100px; right: 0; z-index: 9999; border-radius: 5px; }
-	#widget__timeline #timeline_edit #timeline .timeline-inner .timeline-body-scrollbar .tracker { margin: 4px; width: 30px; height: 4px; background: #c1c1c1; border-radius: 10px; transition: 0.1s all linear; }
+	#widget__timeline #timeline_edit #timeline .timeline-inner .timeline-body-scrollbar .tracker { margin: 4px; width: 30px; height: 4px; background: #c1c1c1; border-radius: 10px; }
 	#widget__timeline #timeline_edit #timeline .timeline-header,
 	#widget__timeline #timeline_edit #timeline .timeline-body { height: 70px; width: 100%; margin-left: 100px; }
 	#widget__timeline #timeline_edit #timeline .timeline-col { width: 75px; display: inline-block; padding: 10px; border-right: 1px solid #ededf5; border-bottom: 1px solid #ededf5; transition: 0.1s all ease-in-out; }
@@ -369,10 +369,10 @@
 	 */
 	const adjustScrollbarTracker = () => {
 
-		widthPercent = (parseInt(timelineBody.style.width) / parseInt(timelineSec.offsetWidth));
+		widthPercent = (parseInt(timelineSec.offsetWidth) / parseInt(timelineBody.style.width));
 
 		scrollbarTracker.style.width = (
-			parseInt(scrollbarContainer.offsetWidth) / widthPercent + "px"
+			parseInt(scrollbarContainer.offsetWidth) * widthPercent + "px"
 		);
 
 		scrollbarContainer.style.width = timelineBody.offsetWidth;
@@ -385,14 +385,18 @@
 	// Handle the dragging of the scrollbar
 	let isDragging = false;
 	let offsetX = 0;
+	let trackerClientXOffset = 0;
+	let trackerClientRectLeft = 0;
 
 	scrollbarTracker.addEventListener("mousedown", e => {
 		isDragging = true;
-		offsetX = e.screenX;
+		offsetX = e.clientX;
 	});
 
 	window.addEventListener("mouseup", () => {
 		isDragging = false;
+		trackerClientXOffset = 0;
+		trackerClientRectLeft = 0;
 	});
 
 	window.addEventListener("mousemove", e => {
@@ -401,17 +405,29 @@
 		if(!isDragging) return false;
 
 		let maxScroll = parseInt(timelineBody.style.width);
-		let mouseDeltaX = e.screenX - offsetX;
+		let mouseDeltaX = e.clientX - offsetX;
 		let deltaX = mouseDeltaX;
 
-		offsetX = e.screenX;
+		offsetX = e.clientX;
 		let scrollLeft = parseInt(timelineInner.scrollLeft) + (deltaX / widthPercent);
 
 		if(scrollLeft < 0) scrollLeft = 0;
 		if(scrollLeft > maxScroll) scrollLeft = maxScroll;
 
 		timelineInner.scrollLeft = scrollLeft;
-		scrollbarTracker.style.marginLeft = ((parseInt(scrollbarTracker.style.marginLeft) || 0) + scrollLeft) / maxScroll + "px";
+
+		if(trackerClientRectLeft === 0) {
+			trackerClientRectLeft = Math.abs(scrollbarContainer.getBoundingClientRect().left);
+			trackerClientXOffset = Math.abs(e.clientX - scrollbarTracker.getBoundingClientRect().left + scrollLeft);
+		}
+
+		let marginLeft = (e.clientX - trackerClientRectLeft) + scrollLeft - trackerClientXOffset;
+
+		scrollbarTracker.style.marginLeft = (
+			marginLeft + scrollbarTracker.offsetWidth >= scrollbarContainer.offsetWidth
+				? scrollbarContainer.offsetWidth - scrollbarTracker.offsetWidth
+				: marginLeft
+		) + "px";
 	});
 
 	/* Timeline generation */
