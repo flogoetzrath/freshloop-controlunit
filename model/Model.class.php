@@ -3,6 +3,7 @@
 	class Model {
 
 		protected $db = false;
+		protected $tables;
 
 		var $id = false;
 		var $data = false;
@@ -15,6 +16,12 @@
 
 			$this->db = $GLOBALS['db'];
 			$this->data = array();
+
+			$this->tables = $this->db->select("SHOW TABLES");
+			array_walk( $this->tables, function($item, $key) {
+					$this->tables[$key] = end($item);
+				}
+			);
 
 		} // public function __construct()
 

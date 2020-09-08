@@ -451,6 +451,7 @@
 		const bodyCol = bodyRow.querySelector(".timeline-col");
 
 		timelineDataStore.nMinutes = nMinutes;
+		timelineEditSec.querySelector("input[name='totaltime']").value = nMinutes;
 
 		headSec.style.width = bodySec.style.width = headCol.offsetWidth * nMinutes + "px";
 

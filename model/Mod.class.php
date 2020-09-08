@@ -39,22 +39,50 @@
 
 			parent::__construct();
 
+			// Struct a valid module name
 			if(strpos($mod_name, "mod_") === false)
 				$mod_name = "mod_" . $mod_name;
 
-			try{
-				$result = $this->db->select(
-					'SELECT * FROM '.strtolower($mod_name)
-				) ?? array();
+			// Filter all module relevant tables
+			$tableNames = [];
+
+			array_walk($this->tables, function($tblName) use($mod_name, &$tableNames)
+			{
+				if(strpos(strtolower($tblName), strtolower($mod_name)) !== false)
+				{
+
+					array_push($tableNames, $tblName);
+
+				}
+			});
+
+			if(!in_array(strtolower($mod_name), $tableNames))
+			{
+
+				array_push($tableNames, $mod_name);
+
 			}
-			catch(ModulePDOException $e) {
-				// Base table $mod_name most likely not found
-				return false;
+
+			// Query all filtered tables
+			foreach($tableNames as $tblName)
+			{
+				try{
+					$response = $this->db->select(
+						'SELECT * FROM ' . strtolower($tblName)
+					) ?? array();
+
+					if(count($tableNames) > 1) $result[$tblName] = $response;
+					else $result = $response;
+				}
+				catch(ModulePDOException $e) {
+					// Base table $mod_name most likely not found
+					continue;
+				}
 			}
 
 			return $this->data = array(
 				"mod_name" => $mod_name,
-				"data" => $result
+				"data" => $result ?? []
 			);
 
 		} // public function loadSpecificModule()
