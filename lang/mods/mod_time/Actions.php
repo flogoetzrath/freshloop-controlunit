@@ -1,14 +1,16 @@
 <?php
-	/**
-	 * User: Flo
-	 * Date: 06.06.2019
-	 * Time: 20:42
-	 */
 
 	$time_addEvent__success = array(
 
 		"English" => "The event has been successfully created and saved.",
 		"German" => "Das Event wurde erfolgreich erstellt und gespeichert."
+
+	);
+
+	$time_updateEvent__success = array(
+
+		"English" => "The event has been successfully updated.",
+		"German" => "Das Event wurde erfolgreich aktualisiert."
 
 	);
 
