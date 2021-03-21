@@ -26,6 +26,13 @@
 
 	);
 
+	$edit = array(
+
+		"English" => "Edit",
+		"German" => "Bearbeiten"
+
+	);
+
 	$delete = array(
 
 		"English" => "Delete",

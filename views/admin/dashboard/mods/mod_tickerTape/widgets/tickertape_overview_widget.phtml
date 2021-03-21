@@ -1,0 +1,94 @@
+<?php
+	/**
+	 * @name: Ticker-Tape-Overview Widget
+	 * @description: A widget to showcase a registered ticker tape and to initialize an edit action
+	 * @params: array $tickerTape: The data of the ticker tape to be displayed
+	 */
+?>
+<?php
+	// Generate random and unique widget id
+	$widget_id = uniqid();
+?>
+
+<style>
+	#widget__tt_overview .widget_inner { width: 100%; height: auto; min-height: 300px; }
+	#widget__tt_overview .widget_inner a.tt_overview_edit_btn { margin: 10px 5px 0 0; display: block; color: #212529; font-size: 15px; text-align: center; border: 1px solid gray; border-radius: 3px; padding: 2px 15px; text-decoration: none; }
+</style>
+
+<!-- Widget -->
+<div id="widget__tt_overview" class="widget-<?php echo $widget_id; ?>">
+	<div class="widget_inner">
+		<?php global $minutes, $edit, $delete; ?>
+		<?php (new TemplateController())->load_widget(
+		'simple_card_widget',
+			array(
+				"icon" => "<i class=\"fas fa-stream\"></i>",
+				"icon_color" => json_decode($data['tickerTape']['tt_timelineDataStoreJSON'])->rows->{0}[0]->bgColor,
+				"value" => $data['tickerTape']['tt_name'],
+				"caption" => $data['tickerTape']['tt_totalTime'] . " " . $minutes[$GLOBALS['lang']]
+			)
+		); ?>
+	</div>
+</div>
+
+<?php
+
+	# Edit Button Template Addition
+	$btnMarkup = '<span class="row">';
+	$btnMarkup .=   '<div class="col-md-6 d-inline-block mq-p-0">';
+	$btnMarkup .=       '<a href="#" class="tt_overview_edit_btn">';
+	$btnMarkup .=           $edit[$GLOBALS['lang']];
+	$btnMarkup .=       '</a>';
+	$btnMarkup .=   '</div>';
+	$btnMarkup .=   '<div class="col-md-6 d-inline-block mq-p-0">';
+	$btnMarkup .=       '<a href="?page=Admin&mod=mod_tickerTape&action=DelTickerTape&tt_id=' . $data['tickerTape']['tt_id'] . '" class="tt_overview_edit_btn">';
+	$btnMarkup .=           $delete[$GLOBALS['lang']];
+	$btnMarkup .=       '</a>';
+	$btnMarkup .=   '</div>';
+	$btnMarkup .= '</span>';
+
+	$js = <<<EOT
+		<script>
+			$(document).ready(function() 
+			{
+				
+				// Render Widget Wheel
+				widget_id = "$widget_id";
+				btn = '$btnMarkup';
+				widgetEl = document.querySelector(".widget-" + widget_id);
+			
+				widgetEl.querySelector("#widget_simple-card").style.height = "unset";
+				widgetEl.querySelector(".part-right > .part-container").style.width = "100%";
+				widgetEl.querySelector(".part-right > .part-container").innerHTML += btn;
+				
+				// If the viewport width is below a threshold, change the padding-value of the button columns
+				if(document.querySelector("body").offsetWidth <= 1800) 
+				{
+						
+					widgetEl.querySelectorAll(".mq-p-0").forEach(el => el.classList.add("p-0"));
+					
+				}
+				
+				// Initialize the edit action of a ticker tape
+				widgetEl.querySelector(".tt_overview_edit_btn").onclick = () => {
+					let targetTimelineDataStore = ({$data['tickerTape']['tt_timelineDataStoreJSON']});
+					
+					// Apply the last state of the ticker tape to the current timeline
+					timelineDataStore = targetTimelineDataStore;
+					
+					timelineEditSec.querySelector("input[name='title']").value = ("{$data['tickerTape']['tt_name']}");
+					timelineEditSec.querySelector("input[name='totaltime']").value = ({$data['tickerTape']['tt_totalTime']});
+					timelineEditSec.querySelector("input[name='timelineDataStoreJSON']").value = JSON.stringify(timelineDataStore);
+					
+					//buildTimeline(parseInt({$data['tickerTape']['tt_totalTime']}));
+					applyTimelineVisuals();
+					initTickerTape((new MouseEvent(null)), ("{$data['tickerTape']['tt_id']}" || null));
+				};
+				
+			});
+		</script>
+EOT;
+
+	// Queue the script for jit-evaluation
+	$GLOBALS['js']['widget_tt_overview-'.$widget_id] = [$js];
+?>

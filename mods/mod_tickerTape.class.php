@@ -52,9 +52,13 @@
 
 			$data = isSizedArray( $data ) ? $data : $_REQUEST;
 
-			// Creates a new Ticker Tape
+			// Creates a new ticker tape
 			if(isSizedString($data['action']) && $data['action'] === "AddTickerTape")
-				$this->addTickerTape(xssproof($data));
+				$this->addUpdateTickerTape(xssproof($data));
+
+			// Deletes an existing ticker tape
+			if(isSizedString($data['action']) && $data['action'] === "DelTickerTape")
+				$this->deleteTickerTape(@xssproof($data['tt_id']));
 
 			// Attaches an event to a specific ticker tape
 			if(isSizedString($data['action']) && $data['action'] === "AddTickerTapeEvent")
@@ -63,13 +67,13 @@
 		} // final public function dispatch()
 
 		/**
-		 * Creates a new ticker tape
+		 * Creates a new ticker tape or updates an existing one
 		 *
 		 * @param array $payload Dataset concerning the submitted ticker tape
 		 *
 		 * @return mixed|void
 		 */
-		final public function addTickerTape(array $payload)
+		final public function addUpdateTickerTape(array $payload)
 		{
 
 			// Check for missing input
@@ -99,7 +103,7 @@
 			{
 				foreach($this->store[strtolower(static::ACTIVE_MOD) . static::TICKERTAPE_DB_SUFFIX] as $tickerTape)
 				{
-					if($tickerTape['tt_id'] === $payload['timelineDataStore']->rows->{0}[0]->tickerTapeRefID)
+					if((string)$tickerTape['tt_id'] === (string)$payload['timelineDataStore']->rows->{0}[0]->tickerTapeRefID)
 					{
 
 						$existingTickerTapeData = $tickerTape;
@@ -116,7 +120,7 @@
 				// TODO
 
 				// Query the DB
-				$action = $this->callModelFunc("mod", "updateDataForSpecificModule", static::ACTIVE_MOD, array(
+				$action = $this->callModelFunc("mod", "updateDataForSpecificModule", static::ACTIVE_MOD . static::TICKERTAPE_DB_SUFFIX, array(
 					"tt_name" => $payload['title'],
 					"tt_totalTime" => $payload['totaltime'],
 					"tt_timelineDataStoreJSON" => $payload['timelineDataStoreJSON']
@@ -143,6 +147,7 @@
 
 				// Query the DB
 				$action = $this->callModelFunc("mod", "saveDataForSpecificModule", static::ACTIVE_MOD . static::TICKERTAPE_DB_SUFFIX, array(
+					"tt_id" => $payload['timelineDataStore']->rows->{0}[0]->tickerTapeRefID,
 					"tt_name" => $payload['title'],
 					"tt_totalTime" => $payload['totaltime'],
 					"tt_timelineDataStoreJSON" => $payload['timelineDataStoreJSON']
@@ -165,21 +170,137 @@
 		} // final public function addTickerTape()
 
 		/**
-		 * Attaches an event to a specific ticker tape
+		 * Deletes a ticker tape from the database
 		 *
-		 * @param array $teventData     Dataset with the reference ticker tape id and the data for the event
+		 * @param Int $tickerTapeID     The identifier of the ticker tape to be deleted
 		 */
-		final public function addTickerTapeEvent(array $teventData)
+		final public function deleteTickerTape($tickerTapeID)
 		{
 
-			//debug($teventData);
-			//die();
+			// Ensure the db connection has been established
+			$this->init();
 
-			// TODO
+			// Check if the ticker tape exists
+			$doesTTExist = false;
+
+			foreach($this->store[strtolower(static::ACTIVE_MOD . static::TICKERTAPE_DB_SUFFIX)] as $tickerTape)
+				if((int)$tickerTapeID === (int)$tickerTape['tt_id'])
+					$doesTTExist = true;
+
+			// Call Model
+			$action = $this->callModelFunc("mod", "deleteDataOfSpecificModule", static::ACTIVE_MOD . static::TICKERTAPE_DB_SUFFIX, array(
+				"tt_id" => $tickerTapeID
+			));
+
+			// End with status report
+			global $tickerTape_delete__failure_ttNotExisting;
+			global $tickerTape_delete__success, $tickerTape_delete__failure;
+
+			if($action) $this->addFrontendMessage($tickerTape_delete__success[$GLOBALS['lang']]);
+			else if(!$doesTTExist) $this->addFrontendError($tickerTape_delete__failure_ttNotExisting[$GLOBALS['lang']]);
+			else $this->addFrontendError($tickerTape_delete__failure[$GLOBALS['lang']]);
+
+			// Refresh the page so the GET params in the url void
+			$this->refresh();
+
+		} // final public funciton deleteTickerTape()
+
+		/**
+		 * Attaches an event to a specific ticker tape
+		 *
+		 * @param array $teventData             Dataset containing the reference ticker tape id and the data for the event
+		 * @param bool  $isIndependentCall      Determines, whether the method is called directly or is being part of a chain call
+		 */
+		final public function addTickerTapeEvent(array $teventData, bool $isIndependentCall = false)
+		{
+
+			// Ensure the db connection has been established
+			$this->init();
+
+			// Check if the event already exists
+			$doesTTEvtExist = false;
+
+			foreach($this->store[strtolower(static::ACTIVE_MOD . static::TEVENTS_DB_SUFFIX)] as $tEvt)
+				if((int)$teventData['id'] === (int)$tEvt['ttevt_id'])
+					$doesTTEvtExist = true;
+
+			if(!$doesTTEvtExist)
+			{
+
+				// Call Model
+				$action = $this->callModelFunc("mod", "saveDataForSpecificModule", static::ACTIVE_MOD . static::TEVENTS_DB_SUFFIX, array(
+					"ttevt_id" => abs((int)$teventData['id']),
+					"ttevt_name" => (string)$teventData['title'],
+					"ttevt_fragranceID" => (int)$teventData['fragranceID'],
+					"ttevt_unitID" => (int)$teventData['unitID'],
+					"ttevt_tickerTapeRefID" => (string)$teventData['tickerTapeRefID'],
+					"ttevt_startMin" => (int)$teventData['startCol'],
+					"ttevt_endMin" => (int)$teventData['endCol']
+				));
+
+			}
+
+			// If frontend output is expected
+			if($isIndependentCall)
+			{
+
+				// End with status report
+				global $tickerTapeEvt_add__failure_duplicate;
+				global $tickerTapeEvt_add__success, $tickerTapeEvt_add__failure;
+
+				if($doesTTEvtExist) $this->addFrontendError($tickerTapeEvt_add__failure_duplicate[$GLOBALS['lang']]);
+				else if($action) $this->addFrontendMessage($tickerTapeEvt_add__success[$GLOBALS['lang']]);
+				else $this->addFrontendError($tickerTapeEvt_add__failure[$GLOBALS['lang']]);
+
+				// Refresh the page so the GET params in the url void
+				$this->refresh();
+
+			}
 
 		} // final public function addTickerTapeEvent()
 
-		final public function removeTickerTapeEvent() {  } // final public function removeTickerTapeEvent()
+		/**
+		 * Deletes a ticker tape event from the database
+		 *
+		 * @param int  $evt_id              The identifier of the ticker tape event that is to be deleted
+		 * @param bool $isIndependentCall   Determines, whether the method is called directly or is being part of a chain call
+		 */
+		final public function removeTickerTapeEvent(int $evt_id, bool $isIndependentCall = false)
+		{
+
+			// Ensure the db connection has been established
+			$this->init();
+
+			// Check if the ticker tape exists
+			$doesTTEvtExist = false;
+
+			foreach($this->store[strtolower(static::ACTIVE_MOD . static::TEVENTS_DB_SUFFIX)] as $tEvt)
+				if($evt_id === (int)$tEvt['tt_id'])
+					$doesTTEvtExist = true;
+
+			// Call Model
+			$action = $this->callModelFunc("mod", "deleteDataOfSpecificModule", static::ACTIVE_MOD . static::TEVENTS_DB_SUFFIX, array(
+				"tt_id" => $evt_id
+			));
+
+			// If frontend output is expected
+			if($isIndependentCall)
+			{
+
+				// End with status report
+				global $tickerTapeEvt_add__failure_notExisting;
+				global $tickerTapeEvt_remove__success, $tickerTapeEvt_remove__failure;
+
+				if($action) $this->addFrontendMessage($tickerTapeEvt_remove__success[$GLOBALS['lang']]);
+				else if(!$doesTTEvtExist) $this->addFrontendError($tickerTapeEvt_add__failure_notExisting[$GLOBALS['lang']]);
+				else $this->addFrontendError($tickerTapeEvt_remove__failure[$GLOBALS['lang']]);
+
+				// Refresh the page so the GET params in the url void
+				$this->refresh();
+
+			}
+
+		} // final public function removeTickerTapeEvent()
 
 
 	} // class mod_tickerTape

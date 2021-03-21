@@ -295,12 +295,18 @@
 	const unitFragranceMapping = JSON.parse('<?php echo json_encode($unitFragranceMapping); ?>');
 
 	// Create new ticker tape
-	timelineCreateSec.onclick = e => {
+	const initTickerTape = (e, timelineIDVal = Math.random().toString(36).substring(2, 15)) => {
 		e.preventDefault();
 
 		timelineCreateSec.style.left = `-${parseInt(timelineCreateSec.offsetWidth)}px`;
-		timelineID.setAttribute("id", Math.random().toString(36).substring(2, 15));
+		timelineID.setAttribute("id", timelineIDVal);
+
+		$('html, body').animate({
+			scrollTop: $(timelineSec).offset().top
+		}, 800);
 	};
+
+	timelineCreateSec.onclick = initTickerTape;
 
 	/* Timeline controls */
 
@@ -804,7 +810,7 @@
 				timelineBody.firstElementChild.insertAdjacentElement("beforeend", tickerBadgeEl);
 
 				// Cast the onclick event for the opportunity to edit the entry
-				tickerBadgeEl.onclick = e => onTickerBadgeEdit(dataObj);
+				tickerBadgeEl.onclick = e => onTickerBadgeEdit(e, dataObj);
 			});
 		});
 
@@ -821,8 +827,29 @@
 	 *
 	 * @param {Object} teventDataObj
 	 */
-	const onTickerBadgeEdit = teventDataObj => {
+	const onTickerBadgeEdit = (e, teventDataObj) => {
 
+		// Get a target column
+		let targetCol;
+
+		Object.values(timelineDataStore.rows).forEach((rowArr, i) => {
+			if(i !== teventDataObj.row) return;
+
+			targetCol = timelineEditSec
+				.querySelector(`.row-${i}`)
+				.querySelector(`.col-${teventDataObj.startCol}`)
+				.firstElementChild;
+		});
+
+		if(targetCol instanceof HTMLElement) {
+			// Flag a target column
+			targetCol.classList.add("active-timeline-col");
+
+			// Clone the modal for use
+			$($(targetCol).data('target')).appendTo('body');
+		}
+
+		// Trigger the edit modal
 		return buildAddTickerEventModal(teventDataObj);
 
 	}; // inline function onTickerBadgeEdit()

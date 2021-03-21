@@ -27,7 +27,6 @@
 					// If Module is activated
 					if($mod_tickerTape !== false) {
 				?>
-
 					<section id="top_layer" class="widget-squares col-md-12 row">
 						<div class="col-md-12"><?php
 							$TC->load_widget(array(
@@ -37,12 +36,45 @@
 						?></div>
 					</section>
 
-					<section id="highlighted_layer" class="widget-squares col-md-12 row">
-						<div class="col-md-12"></div>
-					</section>
+					<?php
+						// If there are ticker tapes registered
+						if(isSizedArray($mod_tickerTape->store)) {
+					?>
+
+						<section id="highlighted_layer" class="widget-squares col-md-12 row">
+							<?php
+								global $minutes;
+
+								$modStoreKey = strtolower(mod_tickerTape::ACTIVE_MOD . mod_tickerTape::TICKERTAPE_DB_SUFFIX);
+								$nTickerTapes = count($mod_tickerTape->store[$modStoreKey]);
+
+								for($i = 0; $i < $nTickerTapes; $i++) {
+									$tickerTape = $mod_tickerTape->store[$modStoreKey][$i];
+									$gridClass = ((bool)($nTickerTapes % 2 === 0) || (bool)($nTickerTapes === 1)) ? "col-xl-4" : "col-xl-3";
+							?>
+								<div class="<?php echo $gridClass; ?> col-lg-6 col-md-6"><?php
+									$TC->load_widget(array(
+										"mod_name" => "mod_tickerTape",
+										"widget_name" => "tickertape_overview_widget"
+									), [
+										"tickerTape" => $tickerTape
+									], false);
+								?></div>
+
+							<?php } ?>
+						</section>
+
+
+						<?php
+							// Reposition the widget in .content-container
+							$GLOBALS['js']['mod_header-form_toggleSwitch'] = array(
+								"moveElinDOM('#highlighted_layer', '.content-container > .row', true);",
+								[]
+							);
+						?>
+					<?php } ?>
 
 				<?php } ?>
-
 			</div>
 		</div>
 	</div>
